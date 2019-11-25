@@ -1,10 +1,11 @@
 FROM rust:1.39-slim
 
 WORKDIR /usr/src/trackwizz
-COPY src ./src
-COPY Cargo.toml .
 
 RUN cargo install cargo-watch
+
+COPY src ./src
+COPY Cargo.toml .
 
 EXPOSE 5000
 
