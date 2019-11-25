@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    links:
+      - backend
+    volumes:
+      - ./frontend/src:/usr/app/src
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    restart: always
+    volumes:
+      - ./server/src:/usr/src/trackwizz/src
