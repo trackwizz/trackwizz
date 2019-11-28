@@ -18,5 +18,26 @@ services:
     ports:
       - "5000:5000"
     restart: always
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=trackwizz
+      - DB_PASS=password
+    depends_on:
+      - db
+    links:
+      - db
     volumes:
       - ./server/src:/usr/src/trackwizz/src
+  db:
+    image: postgres:12.1-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: trackwizz
+      POSTGRES_DB: main
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - .psql/data/pgdata:/var/lib/postgresql/data/pgdata
