@@ -1,6 +1,15 @@
+extern crate postgres;
+extern crate dotenv;
 mod database;
-use database::database::connect_to_database;
+mod utils;
+
+use database::connect_to_database;
+use postgres::{Connection};
 
 fn main() {
-    connect_to_database().unwrap();
+    let conn:Connection = match connect_to_database() {
+        Ok(conn) => conn,
+        Err(error) => panic!("Could not connect to database: \n\t{}", error)
+    };
+    println!("Successfully Connected to db: {}", conn.is_active());
 }
