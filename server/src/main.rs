@@ -1,3 +1,6 @@
+mod database;
+use database::database::connect_to_database;
+
 fn main() {
-    println!("Hello, world!");
+    connect_to_database().unwrap();
 }

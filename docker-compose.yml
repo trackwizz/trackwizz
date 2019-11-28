@@ -23,6 +23,7 @@ services:
       - DB_PORT=5432
       - DB_USER=trackwizz
       - DB_PASS=password
+      - DB_LIBRARY=main
     depends_on:
       - db
     links:
