@@ -30,6 +30,5 @@ pub fn connect_to_database() -> Result<Connection, Error> {
 
     // Will try to connect 10 times before aborting.
     let params: String = format!("postgresql://{}:{}@{}:{}/{}", db_user, db_password, db_host, db_port, db_library);
-    let conn: Connection = try_connection(&params, 10)?;
-    Ok(conn)
+    try_connection(&params, 10)
 }
