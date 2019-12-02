@@ -4,7 +4,7 @@ mod database;
 mod utils;
 
 use database::connect_to_database;
-use postgres::{Connection};
+use postgres::Connection;
 
 fn main() {
     let conn:Connection = match connect_to_database() {

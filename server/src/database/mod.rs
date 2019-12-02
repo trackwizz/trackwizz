@@ -5,7 +5,7 @@ use super::utils::get_env_variable;
 
 /// Try n-times to get a new connection to a Postgres database.
 fn try_connection(params: &String, tries: u8) -> Result<Connection, Error> {
-    match Connection::connect((*params).borrow(), TlsMode::None) {
+    match Connection::connect(params.borrow(), TlsMode::None) {
         Ok(conn) => Ok(conn),
         Err(error) => {
             match tries {
