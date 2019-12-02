@@ -1,7 +1,7 @@
 use postgres::{Connection, TlsMode, Error};
 use std::borrow::Borrow;
 use std::{thread, time};
-use super::utils::get_env_variable;
+use crate::utils::get_env_variable;
 
 /// Try n-times to get a new connection to a Postgres database.
 fn try_connection(params: &String, tries: u8) -> Result<Connection, Error> {
