@@ -25,6 +25,8 @@ const front_redirect_uri = 'http://localhost:3000/login?';
 const app = express();
 app.use(cors());
 
+const getExpiresAt = expiresIn => new Date().getTime() + expiresIn * 1000 - 120 * 1000;
+
 
 app.get('/login', function(req, res) {
     // Generate and cache secure random state for later verification.
@@ -49,7 +51,6 @@ app.get('/callback', function(req, res) {
 
     // Check that it is indeed Spotify answering us.
     if (state === null || !cache.get(state)) {
-        console.log("Invalid state");
         res.redirect(front_redirect_uri +
             querystring.stringify({
                 error: true
@@ -73,15 +74,16 @@ app.get('/callback', function(req, res) {
     };
     request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-            const access_token = body.access_token,
-                refresh_token = body.refresh_token;
+            const { access_token: accessToken, refresh_token: refreshToken, expires_in: expiresIn } = body;
+            const expiresAt = getExpiresAt(expiresIn);
 
             // pass the token to the front end
             // TODO: we would like to save the tokens in our db here.
             res.redirect(front_redirect_uri +
                 querystring.stringify({
-                    access_token: access_token,
-                    refresh_token: refresh_token
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                    expires_at: expiresAt,
                 }));
         } else {
             res.redirect(front_redirect_uri +
@@ -109,7 +111,10 @@ app.get('/refresh_token', function(req, res) {
 
     request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-            res.send({ access_token: body.access_token });
+            res.send({
+                access_token: body.access_token,
+                expires_at: getExpiresAt(body.expires_in),
+            });
         } else {
             res.send({ error: true });
         }
