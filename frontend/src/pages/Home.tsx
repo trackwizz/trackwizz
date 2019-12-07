@@ -1,7 +1,16 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import {Redirect} from "react-router";
+import {isLoggedIn} from "../utils/auth";
 
-export default class Home extends React.Component {
-  public render(): ReactNode {
-    return <div>Home!</div>;
+
+const Home: React.FC = () => {
+  if (!isLoggedIn()) {
+    return <Redirect to="/login" />
   }
-}
+
+  return (
+    <div>Home!</div>
+  );
+};
+
+export default Home;
