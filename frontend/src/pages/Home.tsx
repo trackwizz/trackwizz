@@ -1,15 +1,33 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 import {Redirect} from "react-router";
-import {isLoggedIn} from "../utils/auth";
+import {CookieKey, isLoggedIn} from "../utils/auth";
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 
 const Home: React.FC = () => {
+  const [track, setTrack] = useState(null);
+
+  useEffect( () => {
+    (async () => {
+      const res = await axios.get(`https://api.spotify.com/v1/search?q=acdc&type=track&market=FR`, {
+        headers: { Authorization: `Bearer ${cookies.get(CookieKey.ACCESS_TOKEN)}`}
+      });
+      setTrack(res.data.tracks.items[1].uri);
+    })();
+  });
+
   if (!isLoggedIn()) {
     return <Redirect to="/login" />
   }
 
   return (
-    <div>Home!</div>
+    <div>
+      <h1>Home!</h1>
+      <p>Track uri: {track}</p>
+    </div>
   );
 };
 
