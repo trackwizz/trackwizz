@@ -26,7 +26,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        * The user is already logged in but the token is expired: fetch a new token with the refresh token.
        * Save the token in a cookie.
        */
-      if (isTokenExpired()) {
+      if (isTokenExpired() && cookies.get(CookieKey.REFRESH_TOKEN)) {
         const url = `http://localhost:8888/refresh_token?refresh_token=${cookies.get(
           CookieKey.REFRESH_TOKEN
         )}`;
