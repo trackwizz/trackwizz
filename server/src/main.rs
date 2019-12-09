@@ -7,6 +7,7 @@ mod utils;
 mod models;
 mod controllers;
 mod server;
+mod tests;
 
 use database::connect_to_database;
 use postgres::Connection;
