@@ -17,7 +17,9 @@ const adjectives = [
   "inspiring",
   "sensational",
   "wonderful",
-  "prodigious"
+  "prodigious",
+  "mysterious",
+  "wizarding"
 ];
 
 const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
@@ -120,7 +122,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
     <div className="login-container">
       <div className="login-wrapper">
         <h1>
-          Welcome on the{" "}
+          Welcome to the{" "}
           <span className="tracking-in-expand">
             {adjectives[superAdjectiveIndex]}
           </span>
