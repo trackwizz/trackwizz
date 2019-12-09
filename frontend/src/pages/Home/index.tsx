@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Redirect } from "react-router";
-import { CookieKey, isTokenValid } from "../utils/auth";
+import { CookieKey, isTokenValid } from "../../utils/auth";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
