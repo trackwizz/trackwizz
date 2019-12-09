@@ -60,6 +60,9 @@
     "@typescript-eslint/space-before-function-paren": [
       "off"
     ],
+    "react/prop-types": [
+      "off"
+    ],
     "@typescript-eslint/type-annotation-spacing": "error",
     "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/ban-ts-ignore": "error",
