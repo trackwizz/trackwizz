@@ -92,7 +92,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   }
 
   const handleLoginButtonClick = async (): Promise<void> => {
-    const response = await axios.get("http://localhost:8888/login");
+    const response = await axios.get("http://localhost:5000/login");
     window.location.href = `https://accounts.spotify.com/authorize?${querystring.stringify(
       response.data
     )}`;

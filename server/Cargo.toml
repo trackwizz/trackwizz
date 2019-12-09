@@ -10,4 +10,5 @@ edition = "2018"
 postgres = "0.15.2"
 dotenv = "0.15.0"
 actix-web = "1.0.9"
+actix-cors = "0.1.0"
 serde = { version = "1.0.103", features = ["derive"] }
