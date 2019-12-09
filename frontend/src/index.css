@@ -15,6 +15,10 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+#root {
+    height: 100%;
+    width: 100%;
+}
 @-webkit-keyframes gradientBG {
     0% {
         background-position: 0 50%;
