@@ -88,7 +88,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   }, [search]);
 
   if (isLoggedIn) {
-    return <Redirect to={"/"} />;
+    return <Redirect to="/" />;
   }
 
   const handleLoginButtonClick = async (): Promise<void> => {
