@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import querystring from 'query-string';
-import {Redirect, RouteComponentProps, withRouter} from "react-router";
-import Cookies from 'universal-cookie';
-import {CookieKey, isTokenValid, isTokenExpired} from "../utils/auth";
+import querystring from "query-string";
+import { Redirect, RouteComponentProps, withRouter } from "react-router";
+import Cookies from "universal-cookie";
+import { CookieKey, isTokenValid, isTokenExpired } from "../utils/auth";
 
 const cookies = new Cookies();
 
 const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
 
-  useEffect( () => {
-    (async () => {
+  useEffect(() => {
+    (async (): Promise<void> => {
       /**
        * The user is already logged in, just pass.
        */
       if (isTokenValid()) {
         setIsLoggedIn(true);
-        setError(false);
+        setHasError(false);
         return;
       }
 
@@ -27,21 +27,27 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        * Save the token in a cookie.
        */
       if (isTokenExpired()) {
-        const url = `http://localhost:8888/refresh_token?refresh_token=${cookies.get(CookieKey.REFRESH_TOKEN)}`;
+        const url = `http://localhost:8888/refresh_token?refresh_token=${cookies.get(
+          CookieKey.REFRESH_TOKEN
+        )}`;
         const response = await axios.get(url);
 
-        const { access_token: accessToken, expires_at: expiresAt, error } = response.data;
+        const {
+          access_token: accessToken,
+          expires_at: expiresAt,
+          hasError
+        } = response.data;
 
-        if (error) {
+        if (hasError) {
           setIsLoggedIn(false);
-          setError(true);
+          setHasError(true);
           return;
         }
 
-        cookies.set(CookieKey.ACCESS_TOKEN, accessToken, { path: '/' });
-        cookies.set(CookieKey.EXPIRES_AT, expiresAt, { path: '/' });
+        cookies.set(CookieKey.ACCESS_TOKEN, accessToken, { path: "/" });
+        cookies.set(CookieKey.EXPIRES_AT, expiresAt, { path: "/" });
         setIsLoggedIn(true);
-        setError(false);
+        setHasError(false);
         return;
       }
 
@@ -50,26 +56,26 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        * Save the token in a cookie.
        */
       const {
-        error,
+        hasError,
         access_token: accessToken,
         refresh_token: refreshToken,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       } = querystring.parse(search);
 
-      if (error) {
+      if (hasError) {
         setIsLoggedIn(false);
-        setError(true);
+        setHasError(true);
         return;
       }
 
       if (accessToken) {
         // An access token is in the query params, the user successfully logged in.
-        cookies.set(CookieKey.ACCESS_TOKEN, accessToken, { path: '/' });
-        cookies.set(CookieKey.REFRESH_TOKEN, refreshToken, { path: '/' });
-        cookies.set(CookieKey.EXPIRES_AT, expiresAt, { path: '/' });
+        cookies.set(CookieKey.ACCESS_TOKEN, accessToken, { path: "/" });
+        cookies.set(CookieKey.REFRESH_TOKEN, refreshToken, { path: "/" });
+        cookies.set(CookieKey.EXPIRES_AT, expiresAt, { path: "/" });
 
         setIsLoggedIn(true);
-        setError(false);
+        setHasError(false);
         return;
       }
 
@@ -77,22 +83,24 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        * The user is not logged in.
        */
       setIsLoggedIn(false);
-      setError(false);
+      setHasError(false);
     })();
-  });
+  }, [search]);
 
   if (isLoggedIn) {
-    return <Redirect to={'/'}/>;
+    return <Redirect to={"/"} />;
   }
 
-  const handleLoginButtonClick = async () => {
+  const handleLoginButtonClick = async (): Promise<void> => {
     const response = await axios.get("http://localhost:8888/login");
-    window.location.href = `https://accounts.spotify.com/authorize?${querystring.stringify(response.data)}`;
+    window.location.href = `https://accounts.spotify.com/authorize?${querystring.stringify(
+      response.data
+    )}`;
   };
 
   return (
     <div>
-      { error && <p>An error happened, please try again</p> }
+      {hasError && <p>An hasError happened, please try again</p>}
       <button onClick={handleLoginButtonClick}>Login with Spotify</button>
     </div>
   );

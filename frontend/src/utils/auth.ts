@@ -1,14 +1,14 @@
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
 export enum CookieKey {
-  ACCESS_TOKEN = 'access_token',
-  REFRESH_TOKEN = 'refresh_token',
-  EXPIRES_AT = 'expires_at',
+  ACCESS_TOKEN = "access_token",
+  REFRESH_TOKEN = "refresh_token",
+  EXPIRES_AT = "expires_at"
 }
 
-export const isTokenExpired = () => {
+export const isTokenExpired = (): boolean => {
   if (!cookies.get(CookieKey.EXPIRES_AT)) {
     return true;
   }
