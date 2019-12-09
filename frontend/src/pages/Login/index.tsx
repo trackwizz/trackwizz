@@ -137,7 +137,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
         <button onClick={handleLoginButtonClick}>Login with Spotify</button>
       </div>
       <p className="soon">
-        (Soon available with Google Play music, Apple Music, Deezer...)
+        (Soon available with Youtube Music, Apple Music, Deezer...)
       </p>
     </div>
   );
