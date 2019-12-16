@@ -9,4 +9,4 @@ COPY Cargo.toml .
 
 EXPOSE 5000
 
-CMD ["cargo", "watch", "-x run"]
+CMD cargo watch -x 'run 5000'
