@@ -2,5 +2,5 @@
 // TODO: remove this
 #[test]
 fn exploration() {
-    assert_eq!(2 + 2, 4);
+    assert_eq!(1 + 1, 2);
 }
