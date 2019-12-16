@@ -1,6 +1,8 @@
-use postgres::{Connection, TlsMode, Error};
+use postgres::{Connection, TlsMode, Error, types, rows};
 use std::borrow::Borrow;
+use std::fs;
 use std::{thread, time};
+use crate::DB;
 use crate::utils::get_env_variable;
 
 /// Try n-times to get a new connection to a Postgres database.
@@ -31,4 +33,101 @@ pub fn connect_to_database() -> Result<Connection, Error> {
     // Will try to connect 10 times before aborting.
     let params: String = format!("postgresql://{}:{}@{}:{}/{}", db_user, db_password, db_host, db_port, db_library);
     try_connection(&params, 10)
+}
+
+/// Read a sql file in that should be in the "/queries" folder
+fn read_sql_file(filename: String) -> String {
+    match fs::read_to_string(filename) {
+        Ok(content) => content,
+        Err(error) => {
+            println!("SQL file not found: \n\t{}", error);
+            "".to_string()
+        }
+    }
+}
+
+/// Executes a SQL statement located in a file.
+pub fn execute(filename: &str, params: &[&dyn types::ToSql]) {
+    let sql:String = read_sql_file(filename.to_string());
+    if sql.len() == 0 { // dont execute empty sql
+        return;
+    }
+
+    unsafe {
+        match &DB {
+            Some(conn) => {
+                match conn.execute(sql.as_str(), params) {
+                    Err(e) => println!("SQL Error {}\n\r", e),
+                    _ => {},
+                }
+            },
+            None => {
+                println!("Db is None!");
+            },
+        }
+    }
+}
+
+/// Executes a SQL query located in a file, returning the resulting rows.
+pub fn query(filename: &str, params: &[&dyn types::ToSql]) -> Option<rows::Rows> {
+    let sql:String = read_sql_file(filename.to_string());
+    if sql.len() == 0 { // dont execute empty sql
+        return None;
+    }
+
+    unsafe {
+        match &DB {
+            Some(conn) => {
+                match conn.query(sql.as_str(), params) {
+                    Ok(rows) => Some(rows),
+                    Err(e) => {
+                        println!("SQL Error {}\n\r", e);
+                        None
+                    },
+                }
+            },
+            None => {
+                println!("Db is None!");
+                None
+            },
+        }
+    }
+}
+
+/// Insert a new row and returns the inserted id.
+pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Option<i32> {
+    let sql:String = read_sql_file(filename.to_string());
+    if sql.len() == 0 { // dont execute empty sql
+        return None;
+    }
+
+    unsafe {
+        match &DB {
+            Some(conn) => {
+                match conn.prepare(sql.as_str()) {
+                    Ok(statement) => {
+                        match statement.query(params) {
+                            Ok(rows) => {
+                                if !rows.is_empty() {
+                                    return rows.get(0).get(0)
+                                }
+                                None
+                            }
+                            _ => None
+                        }
+                    },
+                    _ => None
+                }
+            },
+            None => {
+                println!("Db is None!");
+                None
+            },
+        }
+    }
+}
+
+/// Executes the migrations
+pub fn migrate() {
+    execute("queries/create/create_user.sql", &[]);
 }

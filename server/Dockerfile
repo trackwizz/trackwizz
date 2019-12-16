@@ -4,6 +4,7 @@ WORKDIR /usr/src/trackwizz
 
 RUN cargo install cargo-watch
 
+COPY queries ./queries
 COPY src ./src
 COPY Cargo.toml .
 
