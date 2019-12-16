@@ -40,9 +40,13 @@ jobs:
     - docker save -o docker_images/trackwizz-test.tar $(docker images -a -q)
   - stage: deploy
     name: Deploy
+    before_install:
+      - docker load -i docker_images/trackwizz-deploy.tar || true
     deploy:
       provider: script
       script: bash scripts/deploy.sh
+    after_deploy:
+      - docker save -o docker_images/trackwizz-deploy.tar $(docker images -a -q)
   - stage: release
     name: Release backend
     deploy:
