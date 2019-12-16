@@ -50,7 +50,7 @@ const Quizz: React.FC<{ choices: string[] }> = ({ choices }) => {
   return (
     <div className="flex-container column">
       <div className="text-center">
-        <h2 className="fancy-text">Which music is currently playing?</h2>
+        <h2 className="fancy-text">Which song is currently playing?</h2>
         <img
           height="180px"
           src={dancer}
