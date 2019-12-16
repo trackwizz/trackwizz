@@ -15,3 +15,5 @@ machine git.heroku.com
 
 # release application
 heroku container:release web -a $1
+
+rm -f ~/.netrc
