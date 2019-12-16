@@ -61,7 +61,10 @@ const Quizz: React.FC<{ choices: string[] }> = ({ choices }) => {
       <button
         className="play-button"
         onClick={onButtonClick}
-        style={{ margin: "0 0 0.5rem", padding: isPlaying ? "0" : "0 0 0 0.4rem" }}
+        style={{
+          margin: "0 0 0.5rem",
+          padding: isPlaying ? "0" : "0 0 0 0.4rem"
+        }}
       >
         {isPlaying ? "❙❙" : "►"}
       </button>
