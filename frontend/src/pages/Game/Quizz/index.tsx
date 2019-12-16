@@ -9,7 +9,7 @@ const Quizz: React.FC<{ choices: string[] }> = ({ choices }) => {
     <div className="flex-container column">
       <div className="text-center">
         <h2 className="fancy-text">Which music is currently playing?</h2>
-        <img height="180px" src={dancer} alt="test" />
+        <img height="180px" src={dancer} alt="dancer" />
       </div>
       <div className="grid-container">
         <div>
