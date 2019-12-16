@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router";
 import Quizz from "./Quizz";
 import "./game.css";
+import { isTokenValid } from "../../utils/auth";
 
 const Game: React.FC = () => {
   const [countdown, setCountdown] = useState<number>(3);
@@ -13,6 +15,10 @@ const Game: React.FC = () => {
     }, 1000);
   }, [countdown]);
 
+  if (!isTokenValid()) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <div className="height-100">
       {countdown > 0 ? (
@@ -20,7 +26,7 @@ const Game: React.FC = () => {
           <div className="countdown scale-in-center">{countdown}</div>
         </div>
       ) : (
-        <Quizz choices={["Choix 1", "Choix 2", "Choix 3", "Choix 4"]} />
+        <Quizz choices={["Highway to hell", "Supermassive Black Hole", "Dancing Queen", "The answer D"]} />
       )}
     </div>
   );

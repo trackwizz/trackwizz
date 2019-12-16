@@ -117,3 +117,17 @@ button:hover {
     background: rgba(255, 255, 255, 0.31);
     color: white;
 }
+
+.play-button {
+    margin: 2rem 0 5rem;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid rgb(76, 76, 76);
+    border-radius: 2rem;
+    font-size: 1.6rem;
+    padding: 0 0 0 0.4rem;
+    color: rgb(76, 76, 76);
+}
+.play-button:hover {
+    border-color: white;
+}
