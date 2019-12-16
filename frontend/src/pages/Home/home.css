@@ -1,0 +1,46 @@
+.play-button {
+    margin: 2rem 0 5rem;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid rgb(76, 76, 76);
+    border-radius: 2rem;
+    font-size: 1.6rem;
+    padding: 0 0 0 0.4rem;
+    color: rgb(76, 76, 76);
+}
+.play-button:hover {
+    border-color: white;
+}
+.pulsate-fwd {
+    -webkit-animation: pulsate-fwd 1.6s cubic-bezier(0.455, 0.030, 0.515, 0.955) infinite both;
+    animation: pulsate-fwd 1.6s cubic-bezier(0.455, 0.030, 0.515, 0.955) infinite both;
+}
+
+@-webkit-keyframes pulsate-fwd {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(1.4);
+        transform: scale(1.4);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+@keyframes pulsate-fwd {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(1.4);
+        transform: scale(1.4);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}

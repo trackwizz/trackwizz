@@ -1,12 +1,3 @@
-.login-container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
 .login-wrapper {
     display: flex;
     flex-direction: column;
@@ -25,23 +16,8 @@
     font-size: 3rem;
 }
 
-.login-wrapper > h1 > span.brand-name {
-    font-family: 'Indie Flower', cursive;
-}
-
 .login-wrapper > button {
-    font-size: 1rem;
-    border-radius: 5px;
-    padding: 0.5rem 2rem;
-    background: white;
-    border: 2px solid white;
-    cursor: pointer;
-    color: #282c34;
-}
-
-.login-wrapper > button:hover {
-    background: rgba(255, 255, 255, 0.31);
-    color: white;
+    margin-bottom: 5rem;
 }
 
 .login-wrapper .error {
@@ -68,6 +44,7 @@
 .tracking-in-expand {
     -webkit-animation: tracking-in-expand 8s cubic-bezier(0.215, 0.610, 0.355, 1.000) infinite;
     animation: tracking-in-expand 8s cubic-bezier(0.215, 0.610, 0.355, 1.000) infinite;
+    animation-delay: 0.1s;
 }
 
 @-webkit-keyframes tracking-in-expand {

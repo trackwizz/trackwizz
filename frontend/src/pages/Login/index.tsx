@@ -4,7 +4,7 @@ import querystring from "query-string";
 import { Redirect, RouteComponentProps, withRouter } from "react-router";
 import Cookies from "universal-cookie";
 import { CookieKey, isTokenValid, isTokenExpired } from "../../utils/auth";
-import UseInterval from "../../utils/setInterval";
+import useInterval from "../../utils/setInterval";
 
 import "./login.css";
 
@@ -27,7 +27,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   const [hasError, setHasError] = useState<boolean>(false);
   const [superAdjectiveIndex, setSuperAdjectiveIndex] = useState<number>(0);
 
-  UseInterval(() => {
+  useInterval(() => {
     setSuperAdjectiveIndex((superAdjectiveIndex + 1) % adjectives.length);
   }, 8000);
 
@@ -119,15 +119,14 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="flex-container">
       <div className="login-wrapper">
         <h1>
-          Welcome to the{" "}
+          Welcome on the{" "}
           <span className="tracking-in-expand">
             {adjectives[superAdjectiveIndex]}
-          </span>
-          <br />
-          <span className="brand-name">TRACKWIZZ</span> app !
+          </span>{" "}
+          <span className="brand-name">Blind-test</span>!
         </h1>
         {hasError && (
           <div className="error">

@@ -1,40 +1,27 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Redirect } from "react-router";
-import { CookieKey, isTokenValid } from "../../utils/auth";
-import Cookies from "universal-cookie";
+import React from "react";
+import { Redirect, RouteComponentProps, withRouter } from "react-router";
+import { isTokenValid } from "../../utils/auth";
 
-const cookies = new Cookies();
+import "./home.css";
 
-const Home: React.FC = () => {
-  const [track, setTrack] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async (): Promise<void> => {
-      if (isTokenValid()) {
-        const res = await axios.get(
-          "https://api.spotify.com/v1/search?q=acdc&type=track&market=FR",
-          {
-            headers: {
-              Authorization: `Bearer ${cookies.get(CookieKey.ACCESS_TOKEN)}`
-            }
-          }
-        );
-        setTrack(res.data.tracks.items[1].uri);
-      }
-    })();
-  }, []);
-
+const Home: React.FC<RouteComponentProps> = ({ history }) => {
   if (!isTokenValid()) {
     return <Redirect to="/login" />;
   }
 
   return (
-    <div>
-      <h1>Home!</h1>
-      <p>Track uri: {track}</p>
+    <div className="flex-container column">
+      <button
+        className="play-button pulsate-fwd"
+        onClick={(event): void => {
+          event.preventDefault();
+          history.push("/game");
+        }}
+      >
+        &#9658;
+      </button>
     </div>
   );
 };
 
-export default Home;
+export default withRouter(Home);
