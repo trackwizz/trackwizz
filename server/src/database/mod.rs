@@ -46,6 +46,15 @@ fn read_sql_file(filename: String) -> String {
     }
 }
 
+/// Returns the global DB variable
+fn get_db_conn() -> &'static Option<Connection> {
+    let db: &Option<Connection>;
+    unsafe {
+        db = &DB;
+    }
+    db
+}
+
 /// Executes a SQL statement located in a file.
 pub fn execute(filename: &str, params: &[&dyn types::ToSql]) {
     let sql:String = read_sql_file(filename.to_string());
@@ -53,18 +62,16 @@ pub fn execute(filename: &str, params: &[&dyn types::ToSql]) {
         return;
     }
 
-    unsafe {
-        match &DB {
-            Some(conn) => {
-                match conn.execute(sql.as_str(), params) {
-                    Err(e) => println!("SQL Error {}\n\r", e),
-                    _ => {},
-                }
-            },
-            None => {
-                println!("Db is None!");
-            },
-        }
+    match get_db_conn() {
+        Some(conn) => {
+            match conn.execute(sql.as_str(), params) {
+                Err(e) => println!("SQL Error {}\n\r", e),
+                _ => {},
+            }
+        },
+        None => {
+            println!("Db is None!");
+        },
     }
 }
 
@@ -75,22 +82,20 @@ pub fn query(filename: &str, params: &[&dyn types::ToSql]) -> Option<rows::Rows>
         return None;
     }
 
-    unsafe {
-        match &DB {
-            Some(conn) => {
-                match conn.query(sql.as_str(), params) {
-                    Ok(rows) => Some(rows),
-                    Err(e) => {
-                        println!("SQL Error {}\n\r", e);
-                        None
-                    },
-                }
-            },
-            None => {
-                println!("Db is None!");
-                None
-            },
-        }
+    match get_db_conn() {
+        Some(conn) => {
+            match conn.query(sql.as_str(), params) {
+                Ok(rows) => Some(rows),
+                Err(e) => {
+                    println!("SQL Error {}\n\r", e);
+                    None
+                },
+            }
+        },
+        None => {
+            println!("Db is None!");
+            None
+        },
     }
 }
 
@@ -101,29 +106,27 @@ pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Option<i32> {
         return None;
     }
 
-    unsafe {
-        match &DB {
-            Some(conn) => {
-                match conn.prepare(sql.as_str()) {
-                    Ok(statement) => {
-                        match statement.query(params) {
-                            Ok(rows) => {
-                                if !rows.is_empty() {
-                                    return rows.get(0).get(0)
-                                }
-                                None
+    match get_db_conn() {
+        Some(conn) => {
+            match conn.prepare(sql.as_str()) {
+                Ok(statement) => {
+                    match statement.query(params) {
+                        Ok(rows) => {
+                            if !rows.is_empty() {
+                                return rows.get(0).get(0)
                             }
-                            _ => None
+                            None
                         }
-                    },
-                    _ => None
-                }
-            },
-            None => {
-                println!("Db is None!");
-                None
-            },
-        }
+                        _ => None
+                    }
+                },
+                _ => None
+            }
+        },
+        None => {
+            println!("Db is None!");
+            None
+        },
     }
 }
 

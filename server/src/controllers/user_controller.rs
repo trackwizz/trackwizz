@@ -3,7 +3,7 @@ use actix_web::{web, http, HttpResponse, HttpRequest, guard};
 use crate::models::user_model::{User, get_all_users, get_one_user_by_id};
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(web::scope("/user")
+    cfg.service(web::scope("/users")
         .route("", web::get().to(get_all))
         .route("", web::post()
             .guard(guard::Header("content-type", "application/json"))
