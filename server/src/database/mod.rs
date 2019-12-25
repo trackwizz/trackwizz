@@ -132,5 +132,8 @@ pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Option<i32> {
 
 /// Executes the migrations
 pub fn migrate() {
-    execute("queries/create/create_user.sql", &[]);
+    execute("queries/create/create_users.sql", &[]);
+    execute("queries/create/create_playlists.sql", &[]);
+    execute("queries/create/create_genres.sql", &[]);
+    execute("queries/create/create_tracks.sql", &[]);
 }
