@@ -27,4 +27,4 @@ FROM scratch
 COPY --from=build /volume/server/target/x86_64-unknown-linux-musl/release/server .
 
 # set the startup command to run binary
-ENTRYPOINT ["/server", "$PORT"]
+ENTRYPOINT ["/server"]
