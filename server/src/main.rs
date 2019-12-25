@@ -2,6 +2,8 @@ extern crate postgres;
 extern crate dotenv;
 extern crate actix_web;
 
+static mut DB: Option<Connection> = None;
+
 mod database;
 mod utils;
 mod models;
@@ -9,7 +11,7 @@ mod controllers;
 mod server;
 mod tests;
 
-use database::connect_to_database;
+use database::{connect_to_database, migrate};
 use postgres::Connection;
 use std::env;
 
@@ -21,7 +23,11 @@ fn main() {
         Ok(conn) => conn,
         Err(error) => panic!("Could not connect to database: \n\t{}", error)
     };
-    println!("Successfully Connected to db: {}", conn.is_active());
+    unsafe {
+        DB = Some(conn);
+    }
 
+    migrate(); // create all the tables.
+    println!("Server listening on port {}!", port);
     server::start(port);
 }
