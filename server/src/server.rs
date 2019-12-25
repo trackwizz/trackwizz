@@ -6,6 +6,7 @@ use crate::utils::get_env_variable;
 use crate::controllers::{user_controller};
 use crate::controllers::{genre_controller};
 use crate::controllers::{playlist_controller};
+use crate::controllers::{track_controller};
 
 pub fn start() {
     let port: String = get_env_variable("PORT", "8080");
@@ -19,6 +20,7 @@ pub fn start() {
             .configure(user_controller::routes)
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
+            .configure(track_controller::routes)
     })
         .bind(format!("0.0.0.0:{}", &port))
         .unwrap()
