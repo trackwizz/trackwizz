@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router";
 import Quizz from "./Quizz";
 import "./game.css";
 import { isTokenValid } from "../../utils/auth";
+import Countdown from "./Countdown";
+import { IGameEnum } from "./types";
 import Score from "./Score";
 
 const Game: React.FC = () => {
-  const [countdown, setCountdown] = useState<number>(0);
+  const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [score, setScore] = useState<number>(0);
-  const [hasEnded, setHasEnded] = useState<boolean>(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (countdown > 0) {
-        setCountdown(countdown - 1);
-      }
-    }, 1000);
-  }, [countdown]);
-
-  const incrementScore = () => {
+  const incrementScore = (): void => {
     setScore(score + 1);
   };
 
@@ -28,24 +21,11 @@ const Game: React.FC = () => {
 
   return (
     <div className="height-100">
-      {countdown > 0 && (
-        <div className="flex-container">
-          <div className="countdown scale-in-center">{countdown}</div>
-        </div>
+      {step === IGameEnum.COUNTDOWN && <Countdown setStep={setStep} />}
+      {step === IGameEnum.QUIZZ && (
+        <Quizz incrementScore={incrementScore} setStep={setStep} />
       )}
-      {countdown === 0 && hasEnded === false && (
-        <Quizz
-          choices={[
-            "Highway to hell",
-            "Supermassive Black Hole",
-            "Dancing Queen",
-            "The answer D"
-          ]}
-          setHasEnded={setHasEnded}
-          incrementScore={incrementScore}
-        />
-      )}
-      {countdown === 0 && hasEnded === true && <Score score={score} />}
+      {step === IGameEnum.SCORE && <Score score={score} />}
     </div>
   );
 };

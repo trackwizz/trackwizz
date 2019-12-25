@@ -1,0 +1,98 @@
+import React, { useState, useEffect } from "react";
+import dancers from "../../../../utils/dancers";
+import "./quizz.css";
+
+interface IQuestion {
+  track: string;
+  choices: string[];
+  incrementScore: () => void;
+  incrementIndex: () => void;
+}
+
+const Question: React.FC<IQuestion> = ({
+  track,
+  choices,
+  incrementScore,
+  incrementIndex
+}: IQuestion) => {
+  const [dancer] = useState<string>(
+    dancers[Math.floor(Math.random() * dancers.length)]
+  );
+  const [remainingTime, setremainingTime] = useState<number>(30);
+  const [isNextTrackAvailable, setIsNextTrackAvailable] = useState<boolean>(
+    false
+  );
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (remainingTime > 0 && isNextTrackAvailable === false) {
+        setremainingTime(remainingTime - 1);
+      }
+
+      if (remainingTime === 0) {
+        handleTimeEnd();
+      }
+    }, 1000);
+  }, [remainingTime]);
+
+  const handleAnswer = () => () => {
+    handleTimeEnd();
+    // TODO : Request to have the rigth answer ?
+    const isAnswerTrue = true;
+
+    if (isAnswerTrue) {
+      incrementScore();
+    }
+  };
+
+  const handleTimeEnd = (): void => {
+    (document.getElementById("player") as HTMLAudioElement).pause();
+    setIsNextTrackAvailable(true);
+  };
+
+  const handleNextQuestion = () => {
+    setIsNextTrackAvailable(false);
+    incrementIndex();
+  };
+
+  return (
+    <div className="flex-container column">
+      <div className="text-center">
+        <h2 className="fancy-text">Which song is currently playing?</h2>
+        <img
+          height="180px"
+          src={dancer}
+          alt="dancer"
+          className={isNextTrackAvailable === false ? "" : "hidden"}
+        />
+      </div>
+      <div className="grid-container">
+        <div>
+          <div className="grid">
+            {choices.map((c, index) => (
+              <button key={index} onClick={handleAnswer()}>
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="nextContainer">
+        {isNextTrackAvailable && (
+          <button onClick={handleNextQuestion}>Next</button>
+        )}
+      </div>
+
+      <div>
+        {track && (
+          <audio id="player" autoPlay={true} data-vscid="obacc5arn">
+            <source src={track} type="audio/mpeg" />
+          </audio>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Question;

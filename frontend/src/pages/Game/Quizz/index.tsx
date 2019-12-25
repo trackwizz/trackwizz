@@ -1,59 +1,73 @@
-import React, { useState } from "react";
-import dancers from "../../../utils/dancers";
-import "./quizz.css";
+import React, { useState, useEffect } from "react";
+import Question from "./Question";
+import { IGameEnum } from "../types";
 
 interface IQuizz {
-  track: string;
-  choices: string[];
   incrementScore: () => void;
+  setStep: React.Dispatch<React.SetStateAction<IGameEnum>>;
 }
 
-const Quizz: React.FC<IQuizz> = ({
-  track,
-  choices,
-  incrementScore
-}: IQuizz) => {
-  const [dancer] = useState<string>(
-    dancers[Math.floor(Math.random() * dancers.length)]
-  );
+interface ITracks {
+  track: string;
+  choices: string[];
+}
 
-  const handleAnswer = () => () => {
-    // TODO : Faire requete au back
-    const isAnswerTrue = true;
+interface IRequest {
+  data: ITracks[];
+  complete: boolean;
+  error: boolean;
+}
 
-    if (isAnswerTrue) {
-      incrementScore();
+const Quizz: React.FC<IQuizz> = ({ incrementScore, setStep }: IQuizz) => {
+  const [tracks, setTracks] = useState<ITracks[] | null>(null);
+  const [indexTrack, setIndexTrack] = useState<number>(0);
+
+  useEffect(() => {
+    // TODO: Request to get tracks and choices
+    const request: IRequest = {
+      data: [
+        {
+          track: "Hello world !",
+          choices: ["1", "2", "3", "4"]
+        },
+        {
+          track: "Hello world ! v2",
+          choices: ["1.2", "2.2", "3.2", "4.2"]
+        }
+      ],
+      complete: true,
+      error: false
+    };
+
+    if (request.error === false && request.complete === true) {
+      setTracks(request.data);
     }
+  }, []);
 
-    return;
+  const incrementIndex = () => {
+    if (tracks) {
+      if (indexTrack < tracks.length - 1) {
+        setIndexTrack(indexTrack + 1);
+      } else {
+        setStep(IGameEnum.SCORE);
+      }
+    }
   };
 
-  return (
-    <div className="flex-container column">
-      <div className="text-center">
-        <h2 className="fancy-text">Which song is currently playing?</h2>
-        <img height="180px" src={dancer} alt="dancer" />
-      </div>
-      <div className="grid-container">
-        <div>
-          <div className="grid">
-            {choices.map((c, index) => (
-              <button key={index} onClick={handleAnswer()}>
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+  if (tracks === null) {
+    console.log(new Error("No tracks have been found"));
+    return <div />;
+  }
 
-      <div>
-        {track && (
-          <audio id="player" autoPlay={true} data-vscid="obacc5arn">
-            <source src={track} type="audio/mpeg" />
-          </audio>
-        )}
-      </div>
-    </div>
+  return (
+    <React.Fragment>
+      <Question
+        track={tracks[indexTrack].track}
+        choices={tracks[indexTrack].choices}
+        incrementScore={incrementScore}
+        incrementIndex={incrementIndex}
+      />
+    </React.Fragment>
   );
 };
 
