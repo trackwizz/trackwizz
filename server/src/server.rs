@@ -5,6 +5,7 @@ use env_logger;
 use crate::utils::get_env_variable;
 use crate::controllers::{user_controller};
 use crate::controllers::{genre_controller};
+use crate::controllers::{playlist_controller};
 
 pub fn start() {
     let port: String = get_env_variable("PORT", "8080");
@@ -17,6 +18,7 @@ pub fn start() {
             .wrap(Logger::new("%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms"))
             .configure(user_controller::routes)
             .configure(genre_controller::routes)
+            .configure(playlist_controller::routes)
     })
         .bind(format!("0.0.0.0:{}", &port))
         .unwrap()

@@ -1,1 +1,1 @@
-SELECT id, name from Genre;
+SELECT id, name from Genre order by id;
