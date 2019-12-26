@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dancers from "../../../../utils/dancers";
 import "./quizz.css";
 
@@ -18,15 +18,16 @@ const Question: React.FC<IQuestion> = ({
   const [dancer] = useState<string>(
     dancers[Math.floor(Math.random() * dancers.length)]
   );
-  const [remainingTime, setremainingTime] = useState<number>(30);
+  const [remainingTime, setRemainingTime] = useState<number>(30);
   const [isNextTrackAvailable, setIsNextTrackAvailable] = useState<boolean>(
     false
   );
+  const player = useRef<null | HTMLAudioElement>(null);
 
   useEffect(() => {
     setTimeout(() => {
       if (remainingTime > 0 && isNextTrackAvailable === false) {
-        setremainingTime(remainingTime - 1);
+        setRemainingTime(remainingTime - 1);
       }
 
       if (remainingTime === 0) {
@@ -46,7 +47,11 @@ const Question: React.FC<IQuestion> = ({
   };
 
   const handleTimeEnd = (): void => {
-    (document.getElementById("player") as HTMLAudioElement).pause();
+    if (player.current === null) {
+      console.log(new Error("Player is not associated with anything"));
+    }
+
+    (player.current as HTMLAudioElement).pause();
     setIsNextTrackAvailable(true);
   };
 
@@ -86,7 +91,7 @@ const Question: React.FC<IQuestion> = ({
 
       <div>
         {track && (
-          <audio id="player" autoPlay={true} data-vscid="obacc5arn">
+          <audio ref={player} autoPlay={true} data-vscid="obacc5arn">
             <source src={track} type="audio/mpeg" />
           </audio>
         )}
