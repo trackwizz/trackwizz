@@ -1,6 +1,6 @@
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
 
-use crate::models::genre_model::{Genre, get_all_genres, get_one_genre_by_id};
+use crate::models::genre_model::Genre;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::scope("/genres")
@@ -17,12 +17,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok().json(get_all_genres())
+    HttpResponse::Ok().json(Genre::get_all())
 }
 
 fn get_one(req: HttpRequest) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match get_one_genre_by_id(id) {
+        Ok(id) => match Genre::get_one_by_id(id) {
             Some(genre) =>   HttpResponse::Ok().json(genre),
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },

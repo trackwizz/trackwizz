@@ -1,5 +1,5 @@
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
-use crate::models::track_model::{Track, get_all_tracks, get_one_track_by_id, delete_track};
+use crate::models::track_model::Track;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::scope("/tracks")
@@ -16,12 +16,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok().json(get_all_tracks())
+    HttpResponse::Ok().json(Track::get_all())
 }
 
 fn get_one(req: HttpRequest) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match get_one_track_by_id(id) {
+        Ok(id) => match Track::get_one_by_id(id) {
             Some(track) =>   HttpResponse::Ok().json(track),
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },
@@ -44,7 +44,7 @@ fn create(_req: HttpRequest, new_track: web::Json<Track>) -> HttpResponse  {
 
 fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match get_one_track_by_id(id) {
+        Ok(id) => match  Track::get_one_by_id(id) {
             Some(mut track) => {
                 if updated_track.spotify_id.len() > 0 {
                     track.spotify_id = updated_track.spotify_id.to_string();
@@ -57,6 +57,7 @@ fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {
                 }
                 if updated_track.id_genre != 0 {
                     track.id_genre = updated_track.id_genre;
+                    track.genre = None;
                 }
                 track.update();
                 HttpResponse::Ok().json(track)
@@ -70,7 +71,7 @@ fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {
 fn delete(req: HttpRequest) -> HttpResponse {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => {
-            delete_track(id);
+            Track::delete(id);
             HttpResponse::new(http::StatusCode::NO_CONTENT)
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)

@@ -8,44 +8,44 @@ pub struct Playlist {
     pub title: String,
 }
 
-pub fn get_all_playlists() -> Vec<Playlist> {
-    let mut playlists: Vec<Playlist> = vec![];
-
-    match query("queries/playlist/getAll.sql", &[]) {
-        Some(rows) => {
-            for row in rows.iter() {
-                playlists.push(Playlist{
-                    id: row.get(0),
-                    title: row.get(1),
-                });
-            }
-        }
-        _ => {}
-    }
-
-    playlists
-}
-
-pub fn get_one_playlist_by_id(id: i32) -> Option<Playlist> {
-    let mut playlist: Option<Playlist> = None;
-
-    match query("queries/playlist/getOne.sql", &[&id]) {
-        Some(rows) => {
-            if !rows.is_empty() {
-                let row = rows.get(0);
-                playlist = Some(Playlist{
-                    id: row.get(0),
-                    title: row.get(1),
-                });
-            }
-        }
-        _ => {}
-    }
-
-    playlist
-}
-
 impl Playlist {
+    pub fn get_all() -> Vec<Playlist> {
+        let mut playlists: Vec<Playlist> = vec![];
+
+        match query("queries/playlist/getAll.sql", &[]) {
+            Some(rows) => {
+                for row in rows.iter() {
+                    playlists.push(Playlist{
+                        id: row.get(0),
+                        title: row.get(1),
+                    });
+                }
+            }
+            _ => {}
+        }
+
+        playlists
+    }
+
+    pub fn get_one_by_id(id: i32) -> Option<Playlist> {
+        let mut playlist: Option<Playlist> = None;
+
+        match query("queries/playlist/getOne.sql", &[&id]) {
+            Some(rows) => {
+                if !rows.is_empty() {
+                    let row = rows.get(0);
+                    playlist = Some(Playlist{
+                        id: row.get(0),
+                        title: row.get(1),
+                    });
+                }
+            }
+            _ => {}
+        }
+
+        playlist
+    }
+
     pub fn create(&mut self) {
         match insert("queries/playlist/insert.sql", &[&self.title]) {
             Some(id) => {

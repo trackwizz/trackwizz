@@ -1,5 +1,5 @@
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
-use crate::models::playlist_model::{Playlist, get_all_playlists, get_one_playlist_by_id};
+use crate::models::playlist_model::Playlist;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::scope("/playlists")
@@ -16,12 +16,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok().json(get_all_playlists())
+    HttpResponse::Ok().json(Playlist::get_all())
 }
 
 fn get_one(req: HttpRequest) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match get_one_playlist_by_id(id) {
+        Ok(id) => match Playlist::get_one_by_id(id) {
             Some(playlist) =>   HttpResponse::Ok().json(playlist),
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },

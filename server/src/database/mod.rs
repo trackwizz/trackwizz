@@ -141,4 +141,5 @@ pub fn migrate() {
     execute("queries/migrations/create_playlist.sql", &[]);
     execute("queries/migrations/create_genre.sql", &[]);
     execute("queries/migrations/create_track.sql", &[]);
+    execute("queries/migrations/create_rel_playlist_tracks.sql", &[]);
 }

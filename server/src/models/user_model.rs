@@ -8,44 +8,44 @@ pub struct User {
     pub name: String,
 }
 
-pub fn get_all_users() -> Vec<User> {
-    let mut users: Vec<User> = vec![];
-
-    match query("queries/user/getAll.sql", &[]) {
-        Some(rows) => {
-            for row in rows.iter() {
-                users.push(User{
-                    id: row.get(0),
-                    name: row.get(1),
-                });
-            }
-        }
-        _ => {}
-    }
-
-    users
-}
-
-pub fn get_one_user_by_id(id: i32) -> Option<User> {
-    let mut user: Option<User> = None;
-
-    match query("queries/user/getOne.sql", &[&id]) {
-        Some(rows) => {
-            if !rows.is_empty() {
-                let row = rows.get(0);
-                user = Some(User{
-                    id: row.get(0),
-                    name: row.get(1),
-                });
-            }
-        }
-        _ => {}
-    }
-
-    user
-}
-
 impl User {
+    pub fn get_all() -> Vec<User> {
+        let mut users: Vec<User> = vec![];
+
+        match query("queries/user/getAll.sql", &[]) {
+            Some(rows) => {
+                for row in rows.iter() {
+                    users.push(User{
+                        id: row.get(0),
+                        name: row.get(1),
+                    });
+                }
+            }
+            _ => {}
+        }
+
+        users
+    }
+
+    pub fn get_one_by_id(id: i32) -> Option<User> {
+        let mut user: Option<User> = None;
+
+        match query("queries/user/getOne.sql", &[&id]) {
+            Some(rows) => {
+                if !rows.is_empty() {
+                    let row = rows.get(0);
+                    user = Some(User{
+                        id: row.get(0),
+                        name: row.get(1),
+                    });
+                }
+            }
+            _ => {}
+        }
+
+        user
+    }
+
     pub fn create(&mut self) {
         match insert("queries/user/insert.sql", &[&self.name]) {
             Some(id) => {

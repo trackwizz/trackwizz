@@ -1,6 +1,6 @@
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
 
-use crate::models::user_model::{User, get_all_users, get_one_user_by_id};
+use crate::models::user_model::User;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::scope("/users")
@@ -17,12 +17,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok().json(get_all_users())
+    HttpResponse::Ok().json(User::get_all())
 }
 
 fn get_one(req: HttpRequest) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match get_one_user_by_id(id) {
+        Ok(id) => match User::get_one_by_id(id) {
             Some(user) =>   HttpResponse::Ok().json(user),
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },
