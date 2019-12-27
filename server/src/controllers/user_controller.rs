@@ -46,8 +46,10 @@ fn edit(req: HttpRequest, updated_user: web::Json<User>) -> HttpResponse  {
                 id,
                 name: updated_user.name.to_string(),
             };
-            user.update();
-            HttpResponse::Ok().json(user)
+            match user.update() {
+                Err(mut e) => e.send(),
+                _ => HttpResponse::Ok().json(user),
+            }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }
@@ -60,8 +62,10 @@ fn delete(req: HttpRequest) -> HttpResponse {
                 id,
                 name: "".to_string(),
             };
-            user.delete();
-            HttpResponse::new(http::StatusCode::NO_CONTENT)
+            match user.delete() {
+                Err(mut e) => e.send(),
+                _ => HttpResponse::new(http::StatusCode::NO_CONTENT),
+            }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }

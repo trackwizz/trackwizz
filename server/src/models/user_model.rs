@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::database::{query, insert, execute};
+use crate::utils::errors::AppError;
 
 #[derive(Serialize, Deserialize)]
 pub struct User {
@@ -48,18 +49,18 @@ impl User {
 
     pub fn create(&mut self) {
         match insert("queries/user/insert.sql", &[&self.name]) {
-            Some(id) => {
+            Ok(id) => {
                 self.id = id;
             }
             _ => {}
         }
     }
 
-    pub fn update(&mut self) {
-        execute("queries/user/update.sql", &[&self.id, &self.name]);
+    pub fn update(&mut self) -> Result<(), AppError> {
+        execute("queries/user/update.sql", &[&self.id, &self.name])
     }
 
-    pub fn delete(&mut self) {
-        execute("queries/user/delete.sql", &[&self.id]);
+    pub fn delete(&mut self) -> Result<(), AppError> {
+        execute("queries/user/delete.sql", &[&self.id])
     }
 }

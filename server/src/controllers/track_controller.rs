@@ -37,6 +37,7 @@ fn create(_req: HttpRequest, new_track: web::Json<Track>) -> HttpResponse  {
         length: new_track.length,
         id_genre: new_track.id_genre,
         genre: None,
+        track_index: None,
     };
     track.create();
     HttpResponse::Ok().json(track)
@@ -59,8 +60,10 @@ fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {
                     track.id_genre = updated_track.id_genre;
                     track.genre = None;
                 }
-                track.update();
-                HttpResponse::Ok().json(track)
+                match track.update() {
+                    Err(mut e) => e.send(),
+                    _ => HttpResponse::Ok().json(track),
+                }
             },
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },
@@ -71,8 +74,10 @@ fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {
 fn delete(req: HttpRequest) -> HttpResponse {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => {
-            Track::delete(id);
-            HttpResponse::new(http::StatusCode::NO_CONTENT)
+            match Track::delete(id) {
+                Err(mut e) => e.send(),
+                _ => HttpResponse::new(http::StatusCode::NO_CONTENT),
+            }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }

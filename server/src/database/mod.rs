@@ -4,6 +4,7 @@ use std::fs;
 use std::{thread, time};
 use crate::DB;
 use crate::utils::get_env_variable;
+use crate::utils::errors::AppError;
 
 /// Try n-times to get a new connection to a Postgres database.
 fn try_connection(params: &String, tries: u8) -> Result<Connection, Error> {
@@ -61,21 +62,25 @@ fn get_db_conn() -> &'static Option<Connection> {
 }
 
 /// Executes a SQL statement located in a file.
-pub fn execute(filename: &str, params: &[&dyn types::ToSql]) {
+pub fn execute(filename: &str, params: &[&dyn types::ToSql]) -> Result<(), AppError> {
     let sql:String = read_sql_file(filename.to_string());
     if sql.len() == 0 { // dont execute empty sql
-        return;
+        return Err(AppError::new(1, "Sql file not found."));
     }
 
     match get_db_conn() {
         Some(conn) => {
             match conn.execute(sql.as_str(), params) {
-                Err(e) => println!("SQL Error {}\n\r", e),
-                _ => {},
+                Err(e) => {
+                    println!("SQL Error {}\n\r", e);
+                    Err(AppError::new(3, e.to_string().as_str()))
+                },
+                _ => Ok(()),
             }
         },
         None => {
             println!("Db is None!");
+            Err(AppError::new(0, "Could not connect to database."))
         },
     }
 }
@@ -105,10 +110,10 @@ pub fn query(filename: &str, params: &[&dyn types::ToSql]) -> Option<rows::Rows>
 }
 
 /// Insert a new row and returns the inserted id.
-pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Option<i32> {
+pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Result<i32, AppError> {
     let sql:String = read_sql_file(filename.to_string());
     if sql.len() == 0 { // dont execute empty sql
-        return None;
+        return Err(AppError::new(1, "Sql file not found."));
     }
 
     match get_db_conn() {
@@ -118,28 +123,29 @@ pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Option<i32> {
                     match statement.query(params) {
                         Ok(rows) => {
                             if !rows.is_empty() {
-                                return rows.get(0).get(0)
+                                let inserted_id:Option<i32> = rows.get(0).get(0);
+                                return inserted_id.ok_or(AppError::new(5, "Insert statement did not return the inserted id."))
                             }
-                            None
+                            Err(AppError::new(4, "Insert statement did not return the inserted id."))
                         }
-                        _ => None
+                        Err(e) => Err(AppError::new(3, e.to_string().as_str()))
                     }
                 },
-                _ => None
+                Err(e) => Err(AppError::new(2, e.to_string().as_str()))
             }
         },
         None => {
             println!("Db is None!");
-            None
+            Err(AppError::new(0, "Could not connect to database."))
         },
     }
 }
 
 /// Executes the migrations
 pub fn migrate() {
-    execute("queries/migrations/create_user.sql", &[]);
-    execute("queries/migrations/create_playlist.sql", &[]);
-    execute("queries/migrations/create_genre.sql", &[]);
-    execute("queries/migrations/create_track.sql", &[]);
-    execute("queries/migrations/create_rel_playlist_tracks.sql", &[]);
+    execute("queries/migrations/create_user.sql", &[]).ok();
+    execute("queries/migrations/create_playlist.sql", &[]).ok();
+    execute("queries/migrations/create_genre.sql", &[]).ok();
+    execute("queries/migrations/create_track.sql", &[]).ok();
+    execute("queries/migrations/create_rel_playlist_tracks.sql", &[]).ok();
 }

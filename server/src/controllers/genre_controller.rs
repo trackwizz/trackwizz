@@ -46,8 +46,10 @@ fn edit(req: HttpRequest, updated_genre: web::Json<Genre>) -> HttpResponse  {
                 id,
                 name: updated_genre.name.to_string(),
             };
-            genre.update();
-            HttpResponse::Ok().json(genre)
+            match genre.update() {
+                Err(mut e) => e.send(),
+                _ => HttpResponse::Ok().json(genre),
+            }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }
@@ -56,12 +58,10 @@ fn edit(req: HttpRequest, updated_genre: web::Json<Genre>) -> HttpResponse  {
 fn delete(req: HttpRequest) -> HttpResponse {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => {
-            let mut genre = Genre{
-                id,
-                name: "".to_string(),
-            };
-            genre.delete();
-            HttpResponse::new(http::StatusCode::NO_CONTENT)
+            match Genre::delete(id) {
+                Err(mut e) => e.send(),
+                _ => HttpResponse::new(http::StatusCode::NO_CONTENT),
+            }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }
