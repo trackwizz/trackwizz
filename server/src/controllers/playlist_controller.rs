@@ -37,8 +37,10 @@ fn get_one(req: HttpRequest) -> HttpResponse  {
 
 fn create(_req: HttpRequest, new_playlist: web::Json<Playlist>) -> HttpResponse  {
     let mut playlist = Playlist::new(0, new_playlist.title.to_string());
-    playlist.create();
-    HttpResponse::Ok().json(playlist)
+    match playlist.create() {
+        Err(mut e) => e.send(),
+        _ => HttpResponse::Ok().json(playlist),
+    }
 }
 
 fn edit(req: HttpRequest, updated_playlist: web::Json<Playlist>) -> HttpResponse  {

@@ -39,8 +39,10 @@ fn create(_req: HttpRequest, new_track: web::Json<Track>) -> HttpResponse  {
         genre: None,
         track_index: None,
     };
-    track.create();
-    HttpResponse::Ok().json(track)
+    match track.create() {
+        Err(mut e) => e.send(),
+        _ => HttpResponse::Ok().json(track),
+    }
 }
 
 fn edit(req: HttpRequest, updated_track: web::Json<Track>) -> HttpResponse  {

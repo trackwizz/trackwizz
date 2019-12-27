@@ -4,7 +4,7 @@ use std::fs;
 use std::{thread, time};
 use crate::DB;
 use crate::utils::get_env_variable;
-use crate::utils::errors::AppError;
+use crate::utils::errors::{AppError, ErrorCode};
 
 /// Try n-times to get a new connection to a Postgres database.
 fn try_connection(params: &String, tries: u8) -> Result<Connection, Error> {
@@ -65,7 +65,7 @@ fn get_db_conn() -> &'static Option<Connection> {
 pub fn execute(filename: &str, params: &[&dyn types::ToSql]) -> Result<(), AppError> {
     let sql:String = read_sql_file(filename.to_string());
     if sql.len() == 0 { // dont execute empty sql
-        return Err(AppError::new(1, "Sql file not found."));
+        return Err(AppError::new(ErrorCode::NoSqlFile, "Sql file not found."));
     }
 
     match get_db_conn() {
@@ -73,14 +73,14 @@ pub fn execute(filename: &str, params: &[&dyn types::ToSql]) -> Result<(), AppEr
             match conn.execute(sql.as_str(), params) {
                 Err(e) => {
                     println!("SQL Error {}\n\r", e);
-                    Err(AppError::new(3, e.to_string().as_str()))
+                    Err(AppError::new(ErrorCode::QueryError, e.to_string().as_str()))
                 },
                 _ => Ok(()),
             }
         },
         None => {
             println!("Db is None!");
-            Err(AppError::new(0, "Could not connect to database."))
+            Err(AppError::new(ErrorCode::NoDb, "Could not connect to database."))
         },
     }
 }
@@ -113,7 +113,7 @@ pub fn query(filename: &str, params: &[&dyn types::ToSql]) -> Option<rows::Rows>
 pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Result<i32, AppError> {
     let sql:String = read_sql_file(filename.to_string());
     if sql.len() == 0 { // dont execute empty sql
-        return Err(AppError::new(1, "Sql file not found."));
+        return Err(AppError::new(ErrorCode::NoSqlFile, "Sql file not found."));
     }
 
     match get_db_conn() {
@@ -124,19 +124,19 @@ pub fn insert(filename: &str, params: &[&dyn types::ToSql]) -> Result<i32, AppEr
                         Ok(rows) => {
                             if !rows.is_empty() {
                                 let inserted_id:Option<i32> = rows.get(0).get(0);
-                                return inserted_id.ok_or(AppError::new(5, "Insert statement did not return the inserted id."))
+                                return inserted_id.ok_or(AppError::new(ErrorCode::EmptyRows, "Insert statement did not return the inserted id."))
                             }
-                            Err(AppError::new(4, "Insert statement did not return the inserted id."))
+                            Err(AppError::new(ErrorCode::EmptyRows, "Insert statement did not return the inserted id."))
                         }
-                        Err(e) => Err(AppError::new(3, e.to_string().as_str()))
+                        Err(e) => Err(AppError::new(ErrorCode::QueryError, e.to_string().as_str()))
                     }
                 },
-                Err(e) => Err(AppError::new(2, e.to_string().as_str()))
+                Err(e) => Err(AppError::new(ErrorCode::PrepareError, e.to_string().as_str()))
             }
         },
         None => {
             println!("Db is None!");
-            Err(AppError::new(0, "Could not connect to database."))
+            Err(AppError::new(ErrorCode::NoDb, "Could not connect to database."))
         },
     }
 }

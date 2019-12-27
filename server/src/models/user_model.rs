@@ -3,6 +3,7 @@ use crate::database::{query, insert, execute};
 use crate::utils::errors::AppError;
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
 pub struct User {
     #[serde(default)]
     pub id: i32,
@@ -47,12 +48,13 @@ impl User {
         user
     }
 
-    pub fn create(&mut self) {
+    pub fn create(&mut self)-> Result<(), AppError>  {
         match insert("queries/user/insert.sql", &[&self.name]) {
             Ok(id) => {
                 self.id = id;
+                Ok(())
             }
-            _ => {}
+            Err(e) => Err(e)
         }
     }
 

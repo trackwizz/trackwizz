@@ -35,8 +35,10 @@ fn create(_req: HttpRequest, new_genre: web::Json<Genre>) -> HttpResponse  {
         id: 0,
         name: new_genre.name.to_string(),
     };
-    genre.create();
-    HttpResponse::Ok().json(genre)
+    match genre.create() {
+        Err(mut e) => e.send(),
+        _ => HttpResponse::Ok().json(genre),
+    }
 }
 
 fn edit(req: HttpRequest, updated_genre: web::Json<Genre>) -> HttpResponse  {

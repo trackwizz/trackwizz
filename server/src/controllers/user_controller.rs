@@ -35,8 +35,10 @@ fn create(_req: HttpRequest, new_user: web::Json<User>) -> HttpResponse  {
         id: 0,
         name: new_user.name.to_string(),
     };
-    user.create();
-    HttpResponse::Ok().json(user)
+    match user.create() {
+        Err(mut e) => e.send(),
+        _ => HttpResponse::Ok().json(user),
+    }
 }
 
 fn edit(req: HttpRequest, updated_user: web::Json<User>) -> HttpResponse  {

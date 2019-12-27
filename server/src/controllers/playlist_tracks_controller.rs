@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
 use crate::models::playlist_model::Playlist;
+use crate::models::rel_playlist_tracks::RelPlaylistTracks;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::scope("/tracks")
@@ -43,15 +43,6 @@ fn get_one(req: HttpRequest) -> HttpResponse  {
         },
         _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }
-}
-
-#[derive(Serialize, Deserialize)]
-struct RelPlaylistTracks {
-    #[serde(default)]
-    #[serde(skip_serializing)]
-    id_track: i32,
-    #[serde(default)]
-    track_index: i32,
 }
 
 fn create(req: HttpRequest, new_rel: web::Json<RelPlaylistTracks>) -> HttpResponse  {

@@ -12,3 +12,4 @@ dotenv = "0.15.0"
 actix-web = "1.0.9"
 serde = { version = "1.0.103", features = ["derive"] }
 env_logger = "0.7.1"
+serde_repr = "0.1.5"

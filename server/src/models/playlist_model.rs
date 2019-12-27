@@ -5,6 +5,7 @@ use crate::models::track_model::Track;
 use crate::utils::errors::AppError;
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
 pub struct Playlist {
     #[serde(default)]
     pub id: i32,
@@ -62,12 +63,13 @@ impl Playlist {
         playlist
     }
 
-    pub fn create(&mut self) {
+    pub fn create(&mut self) -> Result<(), AppError> {
         match insert("queries/playlist/insert.sql", &[&self.title]) {
             Ok(id) => {
                 self.id = id;
+                Ok(())
             }
-            _ => {}
+            Err(e) => Err(e)
         }
     }
 
