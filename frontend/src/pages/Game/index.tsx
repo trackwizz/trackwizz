@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router";
 import Quizz from "./Quizz";
 import "./game.css";
 import { isTokenValid } from "../../utils/auth";
+import Countdown from "./Countdown";
+import { IGameEnum } from "./types";
+import Score from "./Score";
 
 const Game: React.FC = () => {
-  const [countdown, setCountdown] = useState<number>(3);
+  const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
+  const [score, setScore] = useState<number>(0);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (countdown > 0) {
-        setCountdown(countdown - 1);
-      }
-    }, 1000);
-  }, [countdown]);
+  const incrementScore = (): void => {
+    setScore(score + 1);
+  };
 
   if (!isTokenValid()) {
     return <Redirect to="/login" />;
@@ -21,13 +21,11 @@ const Game: React.FC = () => {
 
   return (
     <div className="height-100">
-      {countdown > 0 ? (
-        <div className="flex-container">
-          <div className="countdown scale-in-center">{countdown}</div>
-        </div>
-      ) : (
-        <Quizz choices={["Highway to hell", "Supermassive Black Hole", "Dancing Queen", "The answer D"]} />
+      {step === IGameEnum.COUNTDOWN && <Countdown setStep={setStep} />}
+      {step === IGameEnum.QUIZZ && (
+        <Quizz incrementScore={incrementScore} setStep={setStep} />
       )}
+      {step === IGameEnum.SCORE && <Score score={score} />}
     </div>
   );
 };
