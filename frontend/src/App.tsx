@@ -4,13 +4,12 @@ import "./App.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Game from "./pages/Game";
+import Navbar from "./components/Navbar";
 
 const App: React.FC = () => {
   return (
     <div className="main-container">
-      <div className="brand text-center">
-        <h1 className="brand-name">Trackwizz</h1>
-      </div>
+      <Navbar />
       <div className="flex-1">
         <Router>
           <Switch>
