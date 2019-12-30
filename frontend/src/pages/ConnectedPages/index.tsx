@@ -1,6 +1,6 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router";
-import { isTokenValid } from "../../utils/auth";
+import { Switch, Route } from "react-router";
+// import { isTokenValid } from "../../utils/auth";
 
 import "./connectedPages.css";
 
@@ -11,9 +11,9 @@ import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
 
 const ConnectedPages: React.FC = () => {
-  if (!isTokenValid()) {
-    return <Redirect to="/login" />;
-  }
+  //   if (!isTokenValid()) {
+  //     return <Redirect to="/login" />;
+  //   }
 
   return (
     <div className="flex-container column">

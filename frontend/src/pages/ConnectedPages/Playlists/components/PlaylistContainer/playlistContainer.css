@@ -16,6 +16,7 @@
 }
 
 .playlists::-webkit-scrollbar {
+<<<<<<< HEAD
   height: 4px;
   border: 1px solid #d5d5d5;
   border-radius: 10px;
@@ -25,6 +26,9 @@
   background: #d5d5d5;
   border-radius: 10px;
   width: 10px;
+=======
+  width: 0px;
+>>>>>>> Add selection playlist
 }
 
 .playlistsTitle {
