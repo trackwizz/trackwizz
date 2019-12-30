@@ -1,14 +1,9 @@
 import React from "react";
-import { Redirect, RouteComponentProps, withRouter } from "react-router";
-import { isTokenValid } from "../../utils/auth";
+import { RouteComponentProps, withRouter } from "react-router";
 
 import "./home.css";
 
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
-  if (!isTokenValid()) {
-    return <Redirect to="/login" />;
-  }
-
   return (
     <div className="flex-container column">
       <button
