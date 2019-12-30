@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
     ) {
       setIsLeaderboard(true);
     }
-  });
+  }, []);
 
   const setHomeStyle = (): string => {
     return isHome ? "navbarButton currentLocation" : "navbarButton";
