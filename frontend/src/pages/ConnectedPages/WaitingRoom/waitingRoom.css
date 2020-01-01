@@ -1,0 +1,96 @@
+.waitingRoomTitle {
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.waitingRoomContainer {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.waitingRoomSubContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.playersContainer {
+  width: 300px;
+}
+
+.playersTitle {
+  margin: 2rem 1rem;
+}
+
+.player {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.startGameContainer {
+  display: flex;
+  flex: 1 1 0%;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pulsate-fwd {
+  -webkit-animation: pulsate-fwd 1.6s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+    infinite both;
+  animation: pulsate-fwd 1.6s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite
+    both;
+}
+
+@-webkit-keyframes pulsate-fwd {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+@keyframes pulsate-fwd {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.usernameTitle {
+  margin-right: 8px;
+  font-size: 2rem;
+}
+
+.usernameInput {
+  background: none;
+  border: none;
+  border-bottom: 1px solid white;
+  color: white;
+  padding: 8px 0 5px 0;
+  font-size: 2rem;
+}
+
+.usernameInput:focus {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  outline: none;
+}

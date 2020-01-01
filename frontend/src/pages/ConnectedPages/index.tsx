@@ -5,6 +5,7 @@ import { isTokenValid } from "../../utils/auth";
 import Game from "./Game";
 import Home from "./Home";
 import Playlists from "./Playlists";
+import WaitingRoom from "./WaitingRoom";
 
 const ConnectedPages: React.FC = () => {
   if (!isTokenValid()) {
@@ -16,6 +17,7 @@ const ConnectedPages: React.FC = () => {
       <Switch>
         <Route path="/game" component={Game} />
         <Route path="/playlists" component={Playlists} />
+        <Route path="/waitingRoom" component={WaitingRoom} />
         <Route path="/" component={Home} />
       </Switch>
     </div>
