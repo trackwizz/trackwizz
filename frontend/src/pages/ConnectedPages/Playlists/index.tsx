@@ -71,7 +71,7 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   }, []);
 
   return (
-    <div className="flex-container column">
+    <React.Fragment>
       <PlaylistContainer
         title="Your playlists"
         playlists={yourPlaylists || []}
@@ -80,7 +80,7 @@ const Playlists: React.FC<RouteComponentProps> = () => {
         title="Most popular playlists"
         playlists={mostPopularPlaylists || []}
       />
-    </div>
+    </React.Fragment>
   );
 };
 

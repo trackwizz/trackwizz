@@ -14,7 +14,7 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <div className="flex-container column">
+    <React.Fragment>
       <img height="180px" src={dancer} alt="dancer" />
       <div className="homeContainer">
         <button className="homeButton" onClick={handleNewGame}>
@@ -22,7 +22,7 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
         </button>
         <button className="homeButton">Join current game</button>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

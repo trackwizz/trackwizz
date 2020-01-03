@@ -12,11 +12,13 @@ const ConnectedPages: React.FC = () => {
   }
 
   return (
-    <Switch>
-      <Route path="/game" component={Game} />
-      <Route path="/playlists" component={Playlists} />
-      <Route path="/" component={Home} />
-    </Switch>
+    <div className="flex-container column">
+      <Switch>
+        <Route path="/game" component={Game} />
+        <Route path="/playlists" component={Playlists} />
+        <Route path="/" component={Home} />
+      </Switch>
+    </div>
   );
 };
 
