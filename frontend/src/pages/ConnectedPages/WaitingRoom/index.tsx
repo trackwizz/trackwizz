@@ -70,7 +70,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <div className="flex-container column">
+    <React.Fragment>
       <h2 className="waitingRoomTitle">Room : {roomId}</h2>
       <div className="waitingRoomContainer">
         <div className="waitingRoomSubContainer">
@@ -103,7 +103,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
           </div>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 
