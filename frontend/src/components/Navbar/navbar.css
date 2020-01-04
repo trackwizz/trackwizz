@@ -4,6 +4,7 @@
   justify-content: flex-end;
   width: 100%;
   height: 100px;
+  top: 0;
 }
 
 .navbarButton {
