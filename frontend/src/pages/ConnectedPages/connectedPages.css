@@ -1,0 +1,23 @@
+.inputContainer {
+  margin-bottom: 16px;
+}
+
+.inputLabel {
+  margin-right: 8px;
+  font-size: 2rem;
+}
+
+.input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid white;
+  color: white;
+  padding: 8px 0 5px 0;
+  font-size: 2rem;
+}
+
+.input:focus {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  outline: none;
+}

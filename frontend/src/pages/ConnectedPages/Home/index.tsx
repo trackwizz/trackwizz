@@ -13,6 +13,10 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
     history.push("/playlists");
   };
 
+  const handleJoinGame = (): void => {
+    history.push("/joinRoom");
+  };
+
   return (
     <React.Fragment>
       <img height="180px" src={dancer} alt="dancer" />
@@ -20,7 +24,9 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
         <button className="homeButton" onClick={handleNewGame}>
           Create new game
         </button>
-        <button className="homeButton">Join current game</button>
+        <button className="homeButton" onClick={handleJoinGame}>
+          Join current game
+        </button>
       </div>
     </React.Fragment>
   );

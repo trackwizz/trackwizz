@@ -2,10 +2,13 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router";
 import { isTokenValid } from "../../utils/auth";
 
+import "./connectedPages.css";
+
 import Game from "./Game";
 import Home from "./Home";
 import Playlists from "./Playlists";
 import WaitingRoom from "./WaitingRoom";
+import JoinRoom from "./JoinRoom";
 
 const ConnectedPages: React.FC = () => {
   if (!isTokenValid()) {
@@ -18,6 +21,7 @@ const ConnectedPages: React.FC = () => {
         <Route path="/game" component={Game} />
         <Route path="/playlists" component={Playlists} />
         <Route path="/waitingRoom" component={WaitingRoom} />
+        <Route path="/joinRoom" component={JoinRoom} />
         <Route path="/" component={Home} />
       </Switch>
     </div>
