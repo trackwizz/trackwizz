@@ -12,7 +12,7 @@ import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
 
 const ConnectedPages: React.FC = () => {
-  if (isTokenValid()) {
+  if (!isTokenValid()) {
     return <Redirect to="/login" />;
   }
 
