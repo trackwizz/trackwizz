@@ -18,6 +18,9 @@ pub fn start() {
 
     HttpServer::new(|| {
         App::new()
+            .wrap(Logger::new(
+                "%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms",
+            ))
             .wrap(
                 Cors::new() // <- Construct CORS middleware builder
                     .allowed_origin("http://localhost:3000")
@@ -25,7 +28,6 @@ pub fn start() {
                     .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                     .allowed_header(http::header::CONTENT_TYPE)
                     .max_age(3600),
-                Logger::new("%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms"),
             )
             .configure(login_controller::routes)
             .configure(user_controller::routes)
