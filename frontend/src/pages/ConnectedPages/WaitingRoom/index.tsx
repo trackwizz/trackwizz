@@ -71,7 +71,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <React.Fragment>
-      <h2 className="waitingRoomTitle">Room : {roomId}</h2>
+      <h2 className="waitingRoomTitle">Room Name : {roomId}</h2>
       <div className="waitingRoomContainer">
         <div className="waitingRoomSubContainer">
           <div className="playersContainer">
@@ -92,7 +92,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
               &#9658;
             </button>
             <div>
-              <label className="usernameTitle">Username:</label>
+              <label className="inputLabel">Username:</label>
               <input
                 type="text"
                 value={nickName}
