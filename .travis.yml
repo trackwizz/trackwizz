@@ -1,0 +1,51 @@
+sudo: false
+services:
+- docker
+addons:
+  apt:
+    packages:
+    - pass
+    - gnupg2
+env:
+  global:
+  - REGISTRY_URL=registry.heroku.com
+  - HEROKU_APP_FRONT=trackwizz
+  - HEROKU_APP_BACK=trackwizz-api
+  - DOCKER_REPO_FRONT=trackwizz/web
+  - DOCKER_REPO_BACK=trackwizz-api/web
+  - BUILD_BACKEND=trackwizz-api.herokuapp.com
+  - secure: elG3r35kyXuPdSFlce6MrXtxy9ZQTWBlWNNO0/6pMakUPV75FoCr2d2nGwBsBjul0ZxpCzPUDAVDc2lgVoibDxcWfONpgSHnfZidkcAkmRkohSs3teZQtuDSMXfhFdrM91G1LyxOLA4YQ0IxcaISO+/a3NKCdZFLqS2bbsYMohM4+zUTiX8urqTSaMnSuRKcWgk1jQams5xE0dFNG/ZYp5gzI/oYMijA9CpN7zhi2cPY9tkb5QaasJc7Dnx37DrNeNEWhKQIzj6pq94pVfgxvoSwTmFyfAUQKEh87h+AR/EfoQv2wIgZgaExEIKwX4o8qn2PnqKV1uspFzPr9LNSKg2f+tElfEcbfL4tiVbBP2HBiv4CfovHtLBFojjJwXmAaAM9XvAo9fFRSzOm5dak4Stbjleixu4zJc9YSGoYLCoe0UYnAd/80YZR2Pj48Qt7GXta8GExhvQGImAuzUUOvNJ7o6QP0hSXvU+Pu0S8YUzpSD+AiPoomhdpNNybP3A0BubXrO7p84Io8hgROoiye67Rf3aJ95A2jIE9OM96DWpw59lmK4W3lANcqv99oGz2MEK4272nBeSjt9RvkWCIyPivaeI+EVjUhdyN9FLydDpE6vmwKitiA0yS1Gsb2J/i9w6UtDeXPJOd0CMDJlIE1jwhITA9+bGMmmZhNv9rxN8=
+  - secure: 2e65G0Jyb/fgOYxCNB/hxiZS3Hnrbjtl7N4GQVInLBFo/x8aM1WjJaA/5Zs/tbFiKwc36PAYvhq/TmoZTrLIbRXfmDJeeO/4mY5N5vvpeba6TpsbFrZoyAmCB3tP8+dRjdEk+J75ZqRwiYWNM8ctCysDBLhlbixmmZDp8pxoj4qQL6neuQr8c1+pisflziJZld/VfboDk9x08cIbzxy5ldnDq37W3O9VhlwCWetI4Nt1KTA67YnrS2eZCXtbgbVfBiyOAAK/YrYHXIQksbRicKJtDg9hZAvq5S30uqEpjbcS7UwIMj1a18G675VR915ubqD6JxmazLzxFtA5xS4ZCWeqROvRbf+Fixi0sJv3PxDtIQT6QVpfCoCnwCStE0Odp1NGhb19X4MgFcTXG7BFo+UH1bCm5acludwYySWsUPTVLz3TVOsqI6I2aqrXE8L4In1D+/8zPwTiSgpzOaVX8+jRfiTLo/Ge7sShVIMcYCSAseumN8M5ekmddSkygBKhl5CU+jBhtDpQUZyZoCnEuu24pw6eLgfxRsd8hAes5P9YUCBhgrNZ+/hGCgN3KhDLKrrfuEYW8qmU2R5O84bF1h8ZhLLK1mQjtIWzdjK4MRZHJmgww4uLZFsdNrcJ34IODFScdlhg+L3GLbDzePDCQGu6CzkxftqLwltpP8CvwJw=
+  - secure: vT/EgCIRWlUCa+Fao8RI/zQOQS5YctaBVgHY7+gY5Pggkf65D8R1b+4klaX/eqHWyQLm4zVUN4gGDz1rjcJjOAlZBo+7VWb+qPXbBsB4OMRo/Tmn73HCs+OU6KEf4LSDPocyf+DvxvuwLluWIEbTSsYqDqQajrzSId3N9QCnp+ibNdZ42fPF3pUQc/o9Eisy6yfIHvRI9aYaDDKBos5uUedwaUnNEV5P0Gi+BvbyR4iZx2T8w5nLt80iWriC50NonBvb14Gkl+9whIBSC3mszdRhFpNTutAkul5Q7yrO9MGTaTCMkj23G+yIWjG08jfYkbs86f7dJgaeZ1HuTeeG1MJRnw4WTcU6CoL17SSGTOQnlRnaOgYtBkjbleM/K1yf+JqcDVRjwzS/OA63W2o85aqjFeDKgp2oPTlGnvVfxlGUzs0PBiamfbD2Yzez8LVQ8ji704dr4H67+PTojW5ZZEEebxOzNXq9cpJMRNSBUEqIlx/fUhCqbJhzBnWM9hfqQHxy+nLeeR/kPhIQoTUCNMWSKPt1Rvxd6BZXvLiTnQgLhsz8K69ZXMlDLI1+V+mjzyxjsjRMufp+mRN74yrQkzE/ichj3MrRvxb9urr2dpTD4nQrSNSHEkBIdzm2y4VMGKWnGYJcDiShgv4BSrcxHltqeRBdf0qXciTh7ovVbf0=
+  - secure: l3qzYuoFfD1ii6akkFRGHziIppg+61SwwfRzfaO/NRKm8CahSpFUmsW2opbEqNoQXcKT1wE+F2mrn/a4n+kp6b8Xz0CF30khv23jccY95WbZXI1eoKVTij+g42qpy4LaAERNAP8m8FbQYweRV7CDhEiM9XYHPCv46sQpCDNcKb0OD4Er4KrbEwllJbR4hCfSX9HYAenwHSEv8xhbtFAxV25tGr/ad/YzNeHjtGQytdjCuQlHjet2ajKg8BIvBPfl5un4E/yZLyf5xM9GeDx+yYnzQ9mh9Hk7fXDJgejGauQWAgqJVuu3o4+ab/YJW29DTDYnzIWtNsVLpQVrDUMx0oRvEc1ge2dPl1HbFhxamChVT4FLq0pb8D7mJNpUa9iFes54Q3Bgqc6dzI2BAf1/vcEGeWahgFmsPaXCG6kQtwQGE886iMCwPRFdGdE6pDeT/Y9WR4DkvCBqoA/C9mNGIQb5JyhHPtdVxPPxp+eMO+Wb2gskOLeyLHZBzIs63rGJwJBKYRO1BoryeglmHLJ7hsNFQLoy26b+Ge1es51BpCu8jMrFaG/C/nYM6qEh7eTgiKS4ij8gFSrdWVJ6X3iv30uOU9mDozymqOhfJfUik65M8lTIBuAZlk6zS/Micg2mgssWScD89lnVlkjnSYAlu9tyzkB0QL+9uhS5uO+RlzA=
+script:
+- echo "Skipping tests"
+stages:
+- test
+- name: deploy
+  if: branch = master
+- name: release
+  if: branch = master
+jobs:
+  include:
+  - stage: test
+    name: Test
+    before_script:
+    - docker-compose build
+    script:
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml run backend
+  - stage: deploy
+    name: Deploy
+    deploy:
+      provider: script
+      script: bash scripts/deploy.sh
+  - stage: release
+    name: Release backend
+    deploy:
+      provider: script
+      script: bash scripts/heroku_release.sh $HEROKU_APP_BACK
+  - stage: release
+    name: Release frontend
+    deploy:
+      provider: script
+      script: bash scripts/heroku_release.sh $HEROKU_APP_FRONT

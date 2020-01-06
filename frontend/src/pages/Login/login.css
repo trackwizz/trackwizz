@@ -1,0 +1,97 @@
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.login-wrapper > div {
+    display: flex;
+    flex-direction: row;
+}
+
+.login-wrapper > h1 {
+    padding: 0;
+    margin: 1rem;
+    font-size: 3rem;
+}
+
+.login-wrapper > button {
+    margin-bottom: 5rem;
+}
+
+.login-wrapper .error {
+    background-color: rgba(250, 250, 250, 0.6);
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    color: #971317;
+    position: relative;
+    margin: 1rem;
+}
+
+.login-wrapper .error > p {
+    padding: 0;
+    margin: 0;
+}
+
+.soon {
+    position: absolute;
+    right: 1rem;
+    bottom: 0;
+}
+
+.tracking-in-expand {
+    -webkit-animation: tracking-in-expand 8s cubic-bezier(0.215, 0.610, 0.355, 1.000) infinite;
+    animation: tracking-in-expand 8s cubic-bezier(0.215, 0.610, 0.355, 1.000) infinite;
+    animation-delay: 0.1s;
+}
+
+@-webkit-keyframes tracking-in-expand {
+    0% {
+        letter-spacing: -0.5em;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    25% {
+        opacity: 1;
+        letter-spacing: unset;
+    }
+    75% {
+        opacity: 1;
+        letter-spacing: unset;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        letter-spacing: -0.5em;
+        opacity: 0;
+    }
+}
+@keyframes tracking-in-expand {
+    0% {
+        letter-spacing: -0.5em;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    25% {
+        opacity: 1;
+        letter-spacing: unset;
+    }
+    75% {
+        opacity: 1;
+        letter-spacing: unset;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        letter-spacing: -0.5em;
+        opacity: 0;
+    }
+}

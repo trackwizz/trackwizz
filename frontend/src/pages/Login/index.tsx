@@ -3,13 +3,33 @@ import axios from "axios";
 import querystring from "query-string";
 import { Redirect, RouteComponentProps, withRouter } from "react-router";
 import Cookies from "universal-cookie";
-import { CookieKey, isTokenValid, isTokenExpired } from "../utils/auth";
+import { CookieKey, isTokenValid, isTokenExpired } from "../../utils/auth";
+import useInterval from "../../utils/setInterval";
+
+import "./login.css";
 
 const cookies = new Cookies();
+const adjectives = [
+  "incredible",
+  "amazing",
+  "extraordinary",
+  "beyond belief",
+  "inspiring",
+  "sensational",
+  "wonderful",
+  "prodigious",
+  "mysterious",
+  "wizarding"
+];
 
 const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [superAdjectiveIndex, setSuperAdjectiveIndex] = useState<number>(0);
+
+  useInterval(() => {
+    setSuperAdjectiveIndex((superAdjectiveIndex + 1) % adjectives.length);
+  }, 8000);
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -99,9 +119,25 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   };
 
   return (
-    <div>
-      {hasError && <p>An hasError happened, please try again</p>}
-      <button onClick={handleLoginButtonClick}>Login with Spotify</button>
+    <div className="flex-container">
+      <div className="login-wrapper">
+        <h1>
+          Welcome on the{" "}
+          <span className="tracking-in-expand">
+            {adjectives[superAdjectiveIndex]}
+          </span>{" "}
+          <span className="brand-name">Blind-test</span>!
+        </h1>
+        {hasError && (
+          <div className="error">
+            <p>An hasError happened, please try again...</p>
+          </div>
+        )}
+        <button onClick={handleLoginButtonClick}>Login with Spotify</button>
+      </div>
+      <p className="soon">
+        (Soon available with Youtube Music, Apple Music, Deezer...)
+      </p>
     </div>
   );
 };

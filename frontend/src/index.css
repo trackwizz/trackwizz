@@ -1,13 +1,133 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  width: 100%;
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
+  color: #fff;
+  background: -o-linear-gradient(135deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  -webkit-animation: gradientBG 10s ease infinite;
+  animation: gradientBG 10s ease infinite;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+#root {
+  height: 100%;
+  width: 100%;
+}
+@-webkit-keyframes gradientBG {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+@keyframes gradientBG {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.flex-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-container.column {
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: "Indie Flower", cursive;
+  font-size: 3rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.fancy-text {
+  font-family: "Indie Flower", cursive;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.flex-1 {
+  flex: 1;
+}
+.height-100 {
+  height: 100%;
+}
+h2.fancy-text {
+  font-size: 2.5rem;
+}
+
+h1 {
+  margin: 2rem 0;
+  padding: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  h1 {
+    margin: 0.6rem 0;
+    padding: 0;
+  }
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-size: 1rem;
+  border-radius: 5px;
+  padding: 0.5rem 2rem;
+  background: white;
+  border: 2px solid white;
+  cursor: pointer;
+  color: #282c34;
+  outline: none;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.31);
+  color: white;
+}
+
+.play-button {
+  margin: 2rem 0 5rem;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid rgb(76, 76, 76);
+  border-radius: 2rem;
+  font-size: 1.6rem;
+  padding: 0 0 0 0.4rem;
+  color: rgb(76, 76, 76);
+}
+.play-button:hover {
+  border-color: white;
 }

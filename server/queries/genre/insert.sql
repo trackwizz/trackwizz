@@ -1,0 +1,1 @@
+INSERT INTO Genre (name) VALUES ($1) RETURNING id;

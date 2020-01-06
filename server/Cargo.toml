@@ -13,3 +13,5 @@ actix-web = "1.0.9"
 actix-cors = "0.1.0"
 reqwest = "0.9.22"
 serde = { version = "1.0.103", features = ["derive"] }
+env_logger = "0.7.1"
+serde_repr = "0.1.5"
