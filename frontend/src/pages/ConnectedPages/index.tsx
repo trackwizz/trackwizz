@@ -9,6 +9,7 @@ import Home from "./Home";
 import Playlists from "./Playlists";
 import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
+import Leaderboard from "./Leaderboard";
 
 const ConnectedPages: React.FC = () => {
   if (!isTokenValid()) {
@@ -22,6 +23,7 @@ const ConnectedPages: React.FC = () => {
         <Route path="/playlists" component={Playlists} />
         <Route path="/waitingRoom" component={WaitingRoom} />
         <Route path="/joinRoom" component={JoinRoom} />
+        <Route path="/leaderboard" component={Leaderboard} />
         <Route path="/" component={Home} />
       </Switch>
     </div>

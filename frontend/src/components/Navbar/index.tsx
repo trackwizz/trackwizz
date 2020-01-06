@@ -1,51 +1,71 @@
 import React, { useState, useEffect } from "react";
 import "./navbar.css";
+import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<RouteComponentProps> = ({ location }) => {
   const [isHome, setIsHome] = useState<boolean>(false);
+  const [isHomeRedirection, setIsHomeRedirection] = useState<boolean>(false);
   const [isLeaderboard, setIsLeaderboard] = useState<boolean>(false);
+  const [isLeaderboardRedirection, setIsLeaderboardRedirection] = useState<
+    boolean
+  >(false);
 
   useEffect(() => {
-    if (
-      window.location.href
-        .split("/")
-        .slice(-1)
-        .pop() === "home"
-    ) {
-      setIsHome(true);
+    let isHomeLocation = false;
+    let isLeaderboardLocation = false;
+
+    if (location.pathname === "/") {
+      isHomeLocation = true;
     }
 
-    if (
-      window.location.href
-        .split("/")
-        .slice(-1)
-        .pop() === "setIsLeaderboard"
-    ) {
-      setIsLeaderboard(true);
+    if (location.pathname === "/leaderboard") {
+      isLeaderboardLocation = true;
     }
-  }, []);
 
-  const setHomeStyle = (): string => {
-    return isHome ? "navbarButton currentLocation" : "navbarButton";
+    setIsHome(isHomeLocation);
+    setIsLeaderboard(isLeaderboardLocation);
+  }, [location]);
+
+  const handleHomeRedirection = (): void => {
+    setIsHomeRedirection(true);
   };
 
-  const setLeaderboardStyle = (): string => {
-    return isLeaderboard ? "navbarButton currentLocation" : "navbarButton";
+  const handleLeaderboardRedirection = (): void => {
+    setIsLeaderboardRedirection(true);
   };
+
+  if (isHomeRedirection) {
+    return <Redirect to="/" />;
+  }
+
+  if (isLeaderboardRedirection) {
+    return <Redirect to="/leaderboard" />;
+  }
+
+  if (!isHome && !isLeaderboard) {
+    return <React.Fragment></React.Fragment>;
+  }
 
   return (
     <React.Fragment>
-      <div className="brand text-center">
-        <h1 className="brand-name">Trackwizz</h1>
+      <div className="navbarContainer">
+        <button
+          className={isHome ? "navbarButton currentLocation" : "navbarButton"}
+          onClick={handleHomeRedirection}
+        >
+          Home
+        </button>
+        <button
+          className={
+            isLeaderboard ? "navbarButton currentLocation" : "navbarButton"
+          }
+          onClick={handleLeaderboardRedirection}
+        >
+          Leaderboard
+        </button>
       </div>
-      {(isHome || isLeaderboard) && (
-        <div className="navbarContainer">
-          <button className={setHomeStyle()}>Home</button>
-          <button className={setLeaderboardStyle()}>Leaderboard</button>
-        </div>
-      )}
     </React.Fragment>
   );
 };
 
-export default Navbar;
+export default withRouter(Navbar);

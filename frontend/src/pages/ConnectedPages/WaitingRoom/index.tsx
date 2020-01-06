@@ -96,7 +96,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
               <input
                 type="text"
                 value={nickName}
-                className="usernameInput"
+                className="input"
                 onChange={handleChangeNickName}
               />
             </div>
