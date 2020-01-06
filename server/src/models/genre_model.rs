@@ -4,20 +4,20 @@ use crate::utils::errors::AppError;
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
-pub struct User {
+pub struct Genre {
     #[serde(default)]
     pub id: i32,
     pub name: String,
 }
 
-impl User {
-    pub fn get_all() -> Vec<User> {
-        let mut users: Vec<User> = vec![];
+impl Genre {
+    pub fn get_all() -> Vec<Genre> {
+        let mut genres: Vec<Genre> = vec![];
 
-        match query("queries/user/getAll.sql", &[]) {
+        match query("queries/genre/getAll.sql", &[]) {
             Some(rows) => {
                 for row in rows.iter() {
-                    users.push(User{
+                    genres.push(Genre{
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -26,17 +26,17 @@ impl User {
             _ => {}
         }
 
-        users
+        genres
     }
 
-    pub fn get_one_by_id(id: i32) -> Option<User> {
-        let mut user: Option<User> = None;
+    pub fn get_one_by_id(id: i32) -> Option<Genre> {
+        let mut genre: Option<Genre> = None;
 
-        match query("queries/user/getOne.sql", &[&id]) {
+        match query("queries/genre/getOne.sql", &[&id]) {
             Some(rows) => {
                 if !rows.is_empty() {
                     let row = rows.get(0);
-                    user = Some(User{
+                    genre = Some(Genre{
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -45,11 +45,11 @@ impl User {
             _ => {}
         }
 
-        user
+        genre
     }
 
-    pub fn create(&mut self)-> Result<(), AppError>  {
-        match insert("queries/user/insert.sql", &[&self.name]) {
+    pub fn create(&mut self) -> Result<(), AppError> {
+        match insert("queries/genre/insert.sql", &[&self.name]) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
@@ -59,10 +59,10 @@ impl User {
     }
 
     pub fn update(&mut self) -> Result<(), AppError> {
-        execute("queries/user/update.sql", &[&self.id, &self.name])
+        execute("queries/genre/update.sql", &[&self.id, &self.name])
     }
 
-    pub fn delete(&mut self) -> Result<(), AppError> {
-        execute("queries/user/delete.sql", &[&self.id])
+    pub fn delete(id: i32) -> Result<(), AppError> {
+        execute("queries/genre/delete.sql", &[&id])
     }
 }

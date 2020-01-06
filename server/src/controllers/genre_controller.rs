@@ -1,9 +1,9 @@
 use actix_web::{web, http, HttpResponse, HttpRequest, guard};
 
-use crate::models::user_model::User;
+use crate::models::genre_model::Genre;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(web::scope("/users")
+    cfg.service(web::scope("/genres")
         .route("", web::get().to(get_all))
         .route("", web::post()
             .guard(guard::Header("content-type", "application/json"))
@@ -17,40 +17,40 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 fn get_all(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok().json(User::get_all())
+    HttpResponse::Ok().json(Genre::get_all())
 }
 
 fn get_one(req: HttpRequest) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
-        Ok(id) => match User::get_one_by_id(id) {
-            Some(user) =>   HttpResponse::Ok().json(user),
+        Ok(id) => match Genre::get_one_by_id(id) {
+            Some(genre) =>   HttpResponse::Ok().json(genre),
             _ => HttpResponse::new(http::StatusCode::NOT_FOUND)
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
     }
 }
 
-fn create(_req: HttpRequest, new_user: web::Json<User>) -> HttpResponse  {
-    let mut user = User{
+fn create(_req: HttpRequest, new_genre: web::Json<Genre>) -> HttpResponse  {
+    let mut genre = Genre{
         id: 0,
-        name: new_user.name.to_string(),
+        name: new_genre.name.to_string(),
     };
-    match user.create() {
+    match genre.create() {
         Err(mut e) => e.send(),
-        _ => HttpResponse::Ok().json(user),
+        _ => HttpResponse::Ok().json(genre),
     }
 }
 
-fn edit(req: HttpRequest, updated_user: web::Json<User>) -> HttpResponse  {
+fn edit(req: HttpRequest, updated_genre: web::Json<Genre>) -> HttpResponse  {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => {
-            let mut user = User{
+            let mut genre = Genre{
                 id,
-                name: updated_user.name.to_string(),
+                name: updated_genre.name.to_string(),
             };
-            match user.update() {
+            match genre.update() {
                 Err(mut e) => e.send(),
-                _ => HttpResponse::Ok().json(user),
+                _ => HttpResponse::Ok().json(genre),
             }
         },
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND)
@@ -60,11 +60,7 @@ fn edit(req: HttpRequest, updated_user: web::Json<User>) -> HttpResponse  {
 fn delete(req: HttpRequest) -> HttpResponse {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => {
-            let mut user = User{
-                id,
-                name: "".to_string(),
-            };
-            match user.delete() {
+            match Genre::delete(id) {
                 Err(mut e) => e.send(),
                 _ => HttpResponse::new(http::StatusCode::NO_CONTENT),
             }
