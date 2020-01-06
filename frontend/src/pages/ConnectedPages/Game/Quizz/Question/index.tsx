@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import dancers from "../../../../utils/dancers";
-import "./quizz.css";
+import dancers from "../../../../../utils/dancers";
+import "./question.css";
 
 interface IQuestion {
   track: string;
