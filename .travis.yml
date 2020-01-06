@@ -30,15 +30,23 @@ jobs:
   include:
   - stage: test
     name: Test
+    before_install:
+    - docker load -i docker_images/trackwizz-test.tar || true
     before_script:
     - docker-compose build
     script:
     - docker-compose -f docker-compose.yml -f docker-compose.test.yml run backend
+    before_cache:
+    - docker save -o docker_images/trackwizz-test.tar $(docker images -a -q)
   - stage: deploy
     name: Deploy
+    before_install:
+      - docker load -i docker_images/trackwizz-deploy.tar || true
     deploy:
       provider: script
       script: bash scripts/deploy.sh
+    after_deploy:
+      - docker save -o docker_images/trackwizz-deploy.tar $(docker images -a -q)
   - stage: release
     name: Release backend
     deploy:
@@ -49,3 +57,6 @@ jobs:
     deploy:
       provider: script
       script: bash scripts/heroku_release.sh $HEROKU_APP_FRONT
+cache:
+  directories:
+  - docker_images

@@ -1,12 +1,21 @@
 FROM rust:1.39-slim
 
-WORKDIR /usr/src/trackwizz
+# create a new empty shell project
+RUN USER=root cargo new --bin server
+WORKDIR /server
 
 RUN cargo install cargo-watch
 
-COPY queries ./queries
-COPY src ./src
-COPY Cargo.toml .
+# copy over manifests
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
+
+# this build step will cache dependencies
+RUN cargo build
+RUN rm src/*.rs
+
+COPY ./queries ./queries
+COPY ./src ./src
 
 EXPOSE 5000
 
