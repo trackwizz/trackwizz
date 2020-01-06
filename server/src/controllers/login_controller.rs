@@ -1,4 +1,4 @@
-use actix_web::{guard, http, web, HttpRequest, HttpResponse};
+use actix_web::{http, web, HttpRequest, HttpResponse};
 use actix_web::client::Client;
 
 //use serde_json;
@@ -110,17 +110,23 @@ async fn callback(_req: HttpRequest) -> HttpResponse {
         json: String::from("http://localhost:5000/callback"),
     };
 
-    let response = Client::new()
+    let response_result = Client::new()
         .post(&authOptions.url)
         .basic_auth(
             String::from("b40d05324ed744d0b7c593f04d6e6821"),
-            Some(String::from("cfe0feb180e84c7bbc5794e276618924")),
+            Some("cfe0feb180e84c7bbc5794e276618924"),
         )
         .send_json(&authOptions)
         .await;
 
-    response.and_then(|response| {   // <- server http response
-        println!("Response: {:?}", response);
-        return HttpResponse::new(http::StatusCode::BAD_REQUEST)
-    });
+    match response_result {
+        Ok(response) => {
+            println!("Response: {:?}", response);
+        },
+        _ => {
+            println!("No response...");
+        }
+    };
+
+    HttpResponse::new(http::StatusCode::BAD_REQUEST)
 }
