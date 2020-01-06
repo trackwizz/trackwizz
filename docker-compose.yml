@@ -19,6 +19,7 @@ services:
       - "5000:5000"
     restart: always
     environment:
+      - PORT=5000
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=trackwizz
@@ -30,6 +31,7 @@ services:
       - db
     volumes:
       - ./server/src:/usr/src/trackwizz/src
+      - ./server/queries:/usr/src/trackwizz/queries
   db:
     image: postgres:12.1-alpine
     restart: always

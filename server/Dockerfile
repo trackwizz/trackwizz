@@ -14,8 +14,9 @@ COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build
 RUN rm src/*.rs
 
+COPY ./queries ./queries
 COPY ./src ./src
 
 EXPOSE 5000
 
-CMD cargo watch -x 'run 5000'
+CMD cargo watch -x run

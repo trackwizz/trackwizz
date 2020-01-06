@@ -1,91 +1,73 @@
-import React, { useEffect, useState } from "react";
-import dancers from "../../../utils/dancers";
-import axios from "axios";
-import "./quizz.css";
-import { CookieKey, isTokenValid } from "../../../utils/auth";
-import Cookies from "universal-cookie";
+import React, { useState, useEffect } from "react";
+import Question from "./Question";
+import { IGameEnum } from "../types";
 
-const cookies = new Cookies();
+interface IQuizz {
+  incrementScore: () => void;
+  setStep: React.Dispatch<React.SetStateAction<IGameEnum>>;
+}
 
-const Quizz: React.FC<{ choices: string[] }> = ({ choices }) => {
-  const [dancer] = useState<string>(
-    dancers[Math.floor(Math.random() * dancers.length)]
-  );
-  const [track, setTrack] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+interface ITracks {
+  track: string;
+  choices: string[];
+}
+
+interface IRequest {
+  data: ITracks[];
+  complete: boolean;
+  error: boolean;
+}
+
+const Quizz: React.FC<IQuizz> = ({ incrementScore, setStep }: IQuizz) => {
+  const [tracks, setTracks] = useState<ITracks[] | null>(null);
+  const [indexTrack, setIndexTrack] = useState<number>(0);
 
   useEffect(() => {
-    (async (): Promise<void> => {
-      if (isTokenValid()) {
-        const res = await axios.get(
-          "https://api.spotify.com/v1/search?q=muse&type=track&market=FR",
-          {
-            headers: {
-              Authorization: `Bearer ${cookies.get(CookieKey.ACCESS_TOKEN)}`
-            }
-          }
-        );
-        console.log(res.data.tracks.items[2]);
-        setTrack(res.data.tracks.items[2].preview_url);
-      }
-    })();
+    // TODO: Request to get tracks and choices
+    const request: IRequest = {
+      data: [
+        {
+          track: "Hello world !",
+          choices: ["1", "2", "3", "4"]
+        },
+        {
+          track: "Hello world ! v2",
+          choices: ["1.2", "2.2", "3.2", "4.2"]
+        }
+      ],
+      complete: true,
+      error: false
+    };
+
+    if (request.error === false && request.complete === true) {
+      setTracks(request.data);
+    }
   }, []);
 
-  const onPlayClicked = (): void => {
-    (document.getElementById("player") as HTMLAudioElement).play();
-  };
-  const onPausedClicked = (): void => {
-    (document.getElementById("player") as HTMLAudioElement).pause();
+  const incrementIndex = () => {
+    if (tracks) {
+      if (indexTrack < tracks.length - 1) {
+        setIndexTrack(indexTrack + 1);
+      } else {
+        setStep(IGameEnum.SCORE);
+      }
+    }
   };
 
-  const onButtonClick = (): void => {
-    if (isPlaying) {
-      onPausedClicked();
-    } else {
-      onPlayClicked();
-    }
-    setIsPlaying(!isPlaying);
-  };
+  if (tracks === null) {
+    console.log(new Error("No tracks have been found"));
+    return <div />;
+  }
 
   return (
-    <div className="flex-container column">
-      <div className="text-center">
-        <h2 className="fancy-text">Which song is currently playing?</h2>
-        <img
-          height="180px"
-          src={dancer}
-          alt="dancer"
-          className={isPlaying ? "" : "hidden"}
-        />
-      </div>
-      <button
-        className="play-button"
-        onClick={onButtonClick}
-        style={{
-          margin: "0 0 0.5rem",
-          padding: isPlaying ? "0" : "0 0 0 0.4rem"
-        }}
-      >
-        {isPlaying ? "❙❙" : "►"}
-      </button>
-      <div className="grid-container">
-        <div>
-          <div className="grid">
-            {choices.map((c, index) => (
-              <button key={index}>{c}</button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div>
-        {track && (
-          <audio id="player" autoPlay={true} data-vscid="obacc5arn">
-            <source src={track} type="audio/mpeg" />
-          </audio>
-        )}
-      </div>
-    </div>
+    <React.Fragment>
+      <Question
+        track={tracks[indexTrack].track}
+        choices={tracks[indexTrack].choices}
+        incrementScore={incrementScore}
+        incrementIndex={incrementIndex}
+      />
+    </React.Fragment>
   );
 };
 
