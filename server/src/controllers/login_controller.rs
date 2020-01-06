@@ -1,7 +1,5 @@
 use actix_web::{guard, http, web, HttpRequest, HttpResponse};
-
-use reqwest;
-use reqwest::Client;
+use actix_web::client::Client;
 
 //use serde_json;
 
@@ -78,7 +76,7 @@ pub struct TokensResponse {
     pub expires_in: String,
 }
 
-fn callback(_req: HttpRequest) -> HttpResponse {
+async fn callback(_req: HttpRequest) -> HttpResponse {
     //let code = String::from(_req.query().get("code"));
     //let state = String::from(_req.query().get("state"));
 
@@ -112,58 +110,17 @@ fn callback(_req: HttpRequest) -> HttpResponse {
         json: String::from("http://localhost:5000/callback"),
     };
 
-    let mut response:Result<TokensResponse, Error> = match Client::new()
+    let response = Client::new()
         .post(&authOptions.url)
         .basic_auth(
             String::from("b40d05324ed744d0b7c593f04d6e6821"),
             Some(String::from("cfe0feb180e84c7bbc5794e276618924")),
         )
-        .json(&authOptions)
-        .send()?
-        .json()?;
+        .send_json(&authOptions)
+        .await;
 
-    match response
-    {
-        Ok(val) => val,
-        Err(error) => return HttpResponse::Ok().json(authOptions),
-    };
-
-    //response.json()?
-
-    // match response.json() {
-    //     Ok(val) => return val,
-    //     Err(error) => return HttpResponse::Ok().json(authOptions),
-    // };
-
-    HttpResponse::Ok().json(response)
-
-    // let gist: Gist = response.json()?;
-
-    // fn main() -> Result<()> {
-    //     let gh_user = env::var("GH_USER")?;
-    //     let gh_pass = env::var("GH_PASS")?;
-    //     let gist_body = json!({
-    //         "description": "the description for this gist",
-    //         "public": true,
-    //         "files": {
-    //              "main.rs": {
-    //              "content": r#"fn main() { println!("hello world!");}"#
-    //             }
-    //         }});
-    //     let request_url = "https://api.github.com/gists";
-    //     let mut response = Client::new()
-    //         .post(request_url)
-    //         .basic_auth(gh_user.clone(), Some(gh_pass.clone()))
-    //         .json(&gist_body)
-    //         .send()?;
-    //     let gist: Gist = response.json()?;
-    //     println!("Created {:?}", gist);
-    //     let request_url = format!("{}/{}",request_url, gist.id);
-    //     let response = Client::new()
-    //         .delete(&request_url)
-    //         .basic_auth(gh_user, Some(gh_pass))
-    //         .send()?;
-    //     println!("Gist {} deleted! Status code: {}",gist.id, response.status());
-    //     Ok(())
-    // }
+    response.and_then(|response| {   // <- server http response
+        println!("Response: {:?}", response);
+        return HttpResponse::new(http::StatusCode::BAD_REQUEST)
+    });
 }

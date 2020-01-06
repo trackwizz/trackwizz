@@ -10,7 +10,7 @@ use crate::controllers::track_controller;
 use crate::controllers::user_controller;
 use crate::utils::get_env_variable;
 
-pub fn start() {
+pub async fn start() {
     let port: String = get_env_variable("PORT", "8080");
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
@@ -27,7 +27,8 @@ pub fn start() {
                     .allowed_methods(vec!["GET", "POST"])
                     .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                     .allowed_header(http::header::CONTENT_TYPE)
-                    .max_age(3600),
+                    .max_age(3600)
+                    .finish(),
             )
             .configure(login_controller::routes)
             .configure(user_controller::routes)
@@ -38,5 +39,5 @@ pub fn start() {
     .bind(format!("0.0.0.0:{}", &port))
     .unwrap()
     .run()
-    .unwrap();
+    .await;
 }
