@@ -23,7 +23,7 @@ interface IRequestPlayers {
 const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
-  const [nicknName, setNickName] = useState<string>("Player");
+  const [nickName, setNickName] = useState<string>("Player");
 
   useEffect(() => {
     // TODO: Request room id so others can join
@@ -95,7 +95,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
               <label className="usernameTitle">Username:</label>
               <input
                 type="text"
-                value={nicknName}
+                value={nickName}
                 className="usernameInput"
                 onChange={handleChangeNickName}
               />
