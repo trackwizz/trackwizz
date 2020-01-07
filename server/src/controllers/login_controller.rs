@@ -123,8 +123,8 @@ async fn callback(_req: HttpRequest) -> HttpResponse {
         Ok(response) => {
             println!("Response: {:?}", response);
         },
-        _ => {
-            println!("No response...");
+        Err(err) => {
+            println!("Error: {:?}", err);
         }
     };
 
