@@ -64,10 +64,6 @@ const Leaderboard: React.FC = () => {
     className +=
       (index + 1) % 2 ? "leaderboardEvenRowColor" : "leaderboardParRowColor";
 
-    if (leaderboardTable && index === leaderboardTable.length - 1) {
-      className += " leaderboardLastRow";
-    }
-
     return className;
   };
 
@@ -103,24 +99,30 @@ const Leaderboard: React.FC = () => {
     <div className="leaderboardContainer">
       <h1 className="leaderboardTitle">Leaderboard</h1>
       <table className="leaderboardTable">
-        <tr className="leaderboardTitleRow">
-          <td className="leaderboardTitleColumn firstTitleColumn">Name</td>
-          <td className="leaderboardTitleColumn">Number Games</td>
-          <td className="leaderboardTitleColumn">Total Score</td>
-          <td className="leaderboardTitleColumn lastTitleColumn">
-            Success Rate
-          </td>
-        </tr>
-        {leaderboardTable.map((p, index) => {
-          return (
-            <tr key={index} className={setRowClassName(index)}>
-              <td className={setColumnClassName(index, 0)}>{p.name}</td>
-              <td className={setColumnClassName(index, 1)}>{p.nbGames}</td>
-              <td className={setColumnClassName(index, 2)}>{p.score}</td>
-              <td className={setColumnClassName(index, 3)}>{p.successRate}</td>
-            </tr>
-          );
-        })}
+        <thead className="leaderboardTitleRow">
+          <tr>
+            <td className="leaderboardTitleColumn firstTitleColumn">Name</td>
+            <td className="leaderboardTitleColumn">Number Games</td>
+            <td className="leaderboardTitleColumn">Total Score</td>
+            <td className="leaderboardTitleColumn lastTitleColumn">
+              Success Rate
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {leaderboardTable.map((p, index) => {
+            return (
+              <tr key={index} className={setRowClassName(index)}>
+                <td className={setColumnClassName(index, 0)}>{p.name}</td>
+                <td className={setColumnClassName(index, 1)}>{p.nbGames}</td>
+                <td className={setColumnClassName(index, 2)}>{p.score}</td>
+                <td className={setColumnClassName(index, 3)}>
+                  {p.successRate}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
