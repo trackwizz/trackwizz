@@ -1,12 +1,12 @@
-use actix_web::{http, web, HttpRequest, HttpResponse};
+use std::time::{SystemTime, Duration};
+use actix_web::{web, HttpRequest, HttpResponse};
 use actix_web::client::Client;
+use serde::{Deserialize, Serialize};
 
-//use serde_json;
+use crate::utils::{get_env_variable, redirect_to, to_query_string, get_random_string};
 
-//use serde_json::json;
-
-//const redirect_uri = "http://localhost:8888/callback";
-//const front_redirect_uri = "http://localhost:3000/login?";
+static REDIRECT_URI: &str = "http://localhost:5000/callback";
+static FRONT_REDIRECT_URI: &str = "http://localhost:3000/login?";
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -15,118 +15,129 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
             .route("/callback", web::get().to(callback))
     );
 }
-use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub struct LoginConfig {
+///------------ Login ----------
+#[derive(Serialize)]
+struct LoginConfig {
     #[serde(default)]
-    pub response_type: String,
-    pub client_id: String,
-    pub scope: String,
-    pub redirect_uri: String,
-    pub state: String,
+    response_type: String,
+    client_id: String,
+    scope: String,
+    redirect_uri: String,
+    state: String,
 }
-
-//#TODO do not hardcode client_id,
-//#TODO generate state randomly.
 
 fn login(_req: HttpRequest) -> HttpResponse {
-    println!("goooooood on est là!");
-
     let login_config = LoginConfig {
         response_type: String::from("code"),
-        client_id: String::from("b40d05324ed744d0b7c593f04d6e6821"),
+        client_id: get_env_variable("CLIENT_ID", ""),
         scope: String::from("user-read-private user-read-email user-read-playback-state"),
-        redirect_uri: String::from("http://localhost:5000/callback"),
-        state: String::from("118218"),
+        redirect_uri: REDIRECT_URI.to_string().clone(),
+        state: get_random_string(32),
     };
-
     HttpResponse::Ok().json(login_config)
-    // HttpResponse::Ok().json()
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct AuthOptions {
+///------------ Callback --------
+#[derive(Serialize)]
+struct CallbackForm {
+    code: String,
+    redirect_uri: String,
+    grant_type: String,
+}
+
+#[derive(Deserialize)]
+struct CallbackSuccess {
     #[serde(default)]
-    pub url: String,
-    pub form: Form,
-    pub headers: Header,
-    pub json: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Form {
+    access_token: String,
     #[serde(default)]
-    pub code: String,
-    pub redirect_uri: String,
-    pub grant_type: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Header {
+    refresh_token: String,
     #[serde(default)]
-    pub authorization: String,
+    expires_in: u64, // check type
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct TokensResponse {
+impl CallbackSuccess {
+    fn default() -> CallbackSuccess {
+        CallbackSuccess {
+            access_token: String::default(),
+            refresh_token: String::default(),
+            expires_in: 0,
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct CallbackError {
     #[serde(default)]
-    pub access_token: String,
-    pub refresh_token: String,
-    pub expires_in: String,
+    error: String,
+    #[serde(default)]
+    error_description: String,
 }
 
-async fn callback(_req: HttpRequest) -> HttpResponse {
-    //let code = String::from(_req.query().get("code"));
-    //let state = String::from(_req.query().get("state"));
+impl CallbackError {
+    fn default() -> CallbackError {
+        CallbackError {
+            error: String::default(),
+            error_description: String::default(),
+        }
+    }
+}
 
-    //const authOptions = {
-    //    url: 'https://accounts.spotify.com/api/token',
-    //    form: {
-    //        code,
-    //        redirect_uri,
-    //        grant_type: 'authorization_code'
-    //    },
-    //    headers: {
-    //        Authorization: `Basic ${new Buffer(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')}`
-    //    },
-    //    json: true
-    //};
+#[derive(Deserialize)]
+struct CallbackInfo {
+    #[serde(default)]
+    code: Option<String>,
+    #[serde(default)]
+    state: Option<String>,
+}
 
-    println!("coucou on est là!");
+async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResponse {
+    let code: String = info.code.as_ref().unwrap_or(&String::default()).parse().unwrap();
+    let state: Option<&String> = info.state.as_ref();
+    if state.is_none() || state.unwrap().len() == 0 {
+        let query_params: String = to_query_string(&[("error", true)]);
+        return redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str())
+    }
 
-    let authOptions = AuthOptions {
-        url: String::from("https://accounts.spotify.com/api/token"),
-        form: Form {
-            code: String::from("code"),
-            redirect_uri: String::from("http://localhost:5000/callback"),
-            grant_type: String::from("authorization_code"),
-        },
-        headers: Header {
-            authorization: String::from(
-                "Basic b40d05324ed744d0b7c593f04d6e6821:cfe0feb180e84c7bbc5794e276618924",
-            ),
-        },
-        json: String::from("http://localhost:5000/callback"),
+    let form: CallbackForm = CallbackForm {
+        code,
+        redirect_uri: String::from("http://localhost:5000/callback"),
+        grant_type: String::from("authorization_code"),
     };
 
-    let response_result = Client::new()
-        .post(&authOptions.url)
+    let request = Client::new()
+        .post("https://accounts.spotify.com/api/token")
+        .header("Content-Type", "application/x-www-form-urlencoded")
         .basic_auth(
-            String::from("b40d05324ed744d0b7c593f04d6e6821"),
-            Some("cfe0feb180e84c7bbc5794e276618924"),
+            get_env_variable("CLIENT_ID", ""),
+            Some(get_env_variable("CLIENT_SECRET", "").as_ref()),
         )
-        .send_json(&authOptions)
+        .send_form(&form)
         .await;
 
-    match response_result {
-        Ok(response) => {
-            println!("Response: {:?}", response);
+    match request {
+        Ok(mut body) => {
+            let success: bool = body.status().as_u16() < 400;
+            if success { // Success, send token to frontend
+                // TODO: we would like to save the tokens in our db here.
+                let callback_success: CallbackSuccess = body.json::<CallbackSuccess>().await.unwrap_or(CallbackSuccess::default());
+                let current_timestamp: u64 = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::default()).as_secs();
+                let query_params: String = to_query_string(&[
+                    ("access_token", callback_success.access_token),
+                    ("refresh_token", callback_success.refresh_token),
+                    ("expires_at", (current_timestamp + callback_success.expires_in * 1000 - 120 * 1000).to_string())
+                ]);
+                return redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str());
+            } else { // Error
+                let callback_error: CallbackError = body.json::<CallbackError>().await.unwrap_or(CallbackError::default());
+                println!("{}: {}", callback_error.error, callback_error.error_description);
+            }
         },
         Err(err) => {
             println!("Error: {:?}", err);
-        }
+        },
     };
 
-    HttpResponse::new(http::StatusCode::BAD_REQUEST)
+    let query_params: String = to_query_string(&[("error", true)]);
+    redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str())
 }

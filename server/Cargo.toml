@@ -15,3 +15,5 @@ serde = { version = "1.0.103", features = ["derive"] }
 env_logger = "0.7.1"
 serde_repr = "0.1.5"
 actix-rt = "1.0.0"
+serde_urlencoded = "0.6.1"
+rand = "0.7.2"

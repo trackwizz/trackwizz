@@ -24,5 +24,5 @@ async fn main() {
         DB = Some(conn);
     }
     migrate(); // create all the tables.
-    server::start().await;
+    server::start().await.unwrap();
 }
