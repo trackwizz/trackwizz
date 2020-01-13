@@ -58,10 +58,6 @@
   background-color: #00000030;
 }
 
-.leaderboardLastRow {
-  border-radius: 0 0 10px 10px;
-}
-
 .leaderboardLastRowFirstColumn {
   border-radius: 0 0 0 10px;
 }
