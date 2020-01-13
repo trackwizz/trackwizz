@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
-import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Game from "./pages/Game";
+import ConnectedPages from "./pages/ConnectedPages";
+import Navbar from "./components/Navbar";
 
 const App: React.FC = () => {
   return (
@@ -13,10 +13,10 @@ const App: React.FC = () => {
       </div>
       <div className="flex-1">
         <Router>
+          <Navbar />
           <Switch>
-            <Route path="/game" component={Game} />
             <Route path="/login" component={Login} />
-            <Route path="/" component={Home} />
+            <Route path="/" component={ConnectedPages} />
           </Switch>
         </Router>
       </div>
