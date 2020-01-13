@@ -18,10 +18,13 @@ services:
     ports:
       - "5000:5000"
     restart: always
-    env_file:
-      - ./server/.env
     environment:
+      - PORT=5000
       - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=trackwizz
+      - DB_PASS=password
+      - DB_LIBRARY=main
     depends_on:
       - db
     links:
