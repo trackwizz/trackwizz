@@ -51,5 +51,8 @@
     "eslint-plugin-react-hooks": "^2.3.0",
     "prettier": "^1.19.1",
     "tslint": "^5.20.1"
+  },
+  "resolutions": {
+    "serialize-javascript": "^2.1.1"
   }
 }

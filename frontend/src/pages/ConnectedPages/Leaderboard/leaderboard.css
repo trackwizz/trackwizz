@@ -1,0 +1,67 @@
+.leaderboardContainer {
+  margin: 32px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  box-sizing: border-box;
+  width: 90%;
+}
+
+.leaderboardTitle {
+  margin: 2rem;
+}
+
+.leaderboardTable {
+  margin: 0 3rem;
+  border-spacing: 0px;
+}
+
+.leaderboardTitleRow {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: #00000085;
+  border-radius: 10px 10px 0 0;
+}
+
+.leaderboardTitleColumn {
+  padding: 8px;
+}
+
+.firstTitleColumn {
+  border-radius: 10px 0 0 0;
+}
+
+.lastTitleColumn {
+  border-radius: 0 10px 0 0;
+}
+
+.leaderboardFirstColumn {
+  text-align: center;
+  padding: 8px;
+}
+
+.leaderboardColumn {
+  text-align: end;
+  padding: 8px;
+}
+
+.leaderboardEvenRowColor {
+  background-color: #00000014;
+}
+
+.leaderboardParRowColor {
+  background-color: #00000030;
+}
+
+.leaderboardLastRowFirstColumn {
+  border-radius: 0 0 0 10px;
+}
+
+.leaderboardLastRowLastColumn {
+  border-radius: 0 0 10px 0;
+}

@@ -1,0 +1,27 @@
+.playlistCard {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-width: 300px;
+  height: 200px;
+  text-align: center;
+  background-color: white;
+  border-radius: 8px;
+  margin: 8px;
+  box-shadow: 3px 3px 16px 0px rgb(76, 76, 76);
+}
+
+.playlistCard:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.playlistTitle {
+  background-color: #484848;
+  width: 100%;
+  position: 0px 0px;
+  margin: 0px;
+  padding: 16px 0px 4px 0px;
+  border-radius: 8px;
+  background: linear-gradient(rgba(255, 255, 255, 0), black, black);
+}
