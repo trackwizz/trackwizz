@@ -47,7 +47,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        * Save the token in a cookie.
        */
       if (isTokenExpired() && cookies.get(CookieKey.REFRESH_TOKEN)) {
-        const url = `http://localhost:8888/refresh_token?refresh_token=${cookies.get(
+        const url = `http://localhost:5000/refresh_token?refresh_token=${cookies.get(
           CookieKey.REFRESH_TOKEN
         )}`;
         const response = await axios.get(url);

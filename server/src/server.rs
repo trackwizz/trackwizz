@@ -15,7 +15,7 @@ fn hello_world() -> HttpResponse {
 }
 
 pub async fn start() -> Result<(), ()> {
-    let port: String = get_env_variable("PORT", "8080");
+    let port: String = get_env_variable("PORT", "5000");
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
     println!("Server listening on port {}!", port);
@@ -27,7 +27,7 @@ pub async fn start() -> Result<(), ()> {
             ))
             .wrap( // Construct CORS middleware builder
                 Cors::new()
-                    .allowed_origin("*")
+                    .send_wildcard()
                     .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                     .allowed_header(http::header::CONTENT_TYPE)
                     .max_age(3600)

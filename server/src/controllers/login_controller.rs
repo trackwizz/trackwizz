@@ -53,7 +53,7 @@ struct CallbackSuccess {
     #[serde(default)]
     refresh_token: String,
     #[serde(default)]
-    expires_in: u64, // check type
+    expires_in: u128, // check type
 }
 
 impl CallbackSuccess {
@@ -101,7 +101,7 @@ async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResp
 
     let form: CallbackForm = CallbackForm {
         code,
-        redirect_uri: String::from("http://localhost:5000/callback"),
+        redirect_uri: REDIRECT_URI.to_string().clone(),
         grant_type: String::from("authorization_code"),
     };
 
@@ -121,7 +121,8 @@ async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResp
             if success { // Success, send token to frontend
                 // TODO: we would like to save the tokens in our db here.
                 let callback_success: CallbackSuccess = body.json::<CallbackSuccess>().await.unwrap_or(CallbackSuccess::default());
-                let current_timestamp: u64 = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::default()).as_secs();
+                let current_timestamp: u128 = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::default()).as_millis();
+
                 let query_params: String = to_query_string(&[
                     ("access_token", callback_success.access_token),
                     ("refresh_token", callback_success.refresh_token),
@@ -134,7 +135,8 @@ async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResp
             }
         },
         Err(err) => {
-            println!("Error: {:?}", err);
+            // TODO redirect frontend to error page.
+            println!("Error on Spotify response: {:?}", err);
         },
     };
 
