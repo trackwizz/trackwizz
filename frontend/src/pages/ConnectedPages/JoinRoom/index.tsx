@@ -26,7 +26,7 @@ const JoinRoom: React.FC = () => {
   };
 
   if (isRedirected) {
-    return <Redirect to="/waitingRoom" />;
+    return <Redirect to={`/waitingRoom?roomId=${roomId}`} />;
   }
 
   return (
