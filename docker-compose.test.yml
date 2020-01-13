@@ -3,7 +3,6 @@ services:
     backend:
         restart: "no"
         command: ["cargo", "test"]
-        env_file: "" # override the dev env_file
         environment: 
             - PORT
             - DB_HOST
