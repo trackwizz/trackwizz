@@ -148,4 +148,5 @@ pub fn migrate() {
     execute("queries/migrations/create_genre.sql", &[]).ok();
     execute("queries/migrations/create_track.sql", &[]).ok();
     execute("queries/migrations/create_rel_playlist_tracks.sql", &[]).ok();
+    execute("queries/migrations/create_game.sql", &[]).ok();
 }
