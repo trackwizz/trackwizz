@@ -1,4 +1,5 @@
 use actix_web::{web};
+pub mod login;
 mod playlists;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {

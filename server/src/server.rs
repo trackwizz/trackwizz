@@ -1,4 +1,3 @@
-use crate::controllers::login_controller;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
 use actix_web::{http, App, HttpServer, HttpResponse, web};
@@ -8,6 +7,7 @@ use crate::controllers::genre_controller;
 use crate::controllers::playlist_controller;
 use crate::controllers::track_controller;
 use crate::controllers::user_controller;
+use crate::spotify::login;
 use crate::spotify;
 use crate::utils::get_env_variable;
 
@@ -40,7 +40,7 @@ pub async fn start() -> Result<(), ()> {
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
             .configure(spotify::routes)
-            .configure(login_controller::routes)
+            .configure(login::routes)
     })
     .bind(format!("0.0.0.0:{}", &port))
     .unwrap()
