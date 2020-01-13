@@ -41,7 +41,7 @@ jobs:
     before_install:
     - docker load -i docker_images/trackwizz-test.tar || true
     before_script:
-    - docker-compose build
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml build
     script:
     - docker-compose -f docker-compose.yml -f docker-compose.test.yml run backend
     before_cache:
