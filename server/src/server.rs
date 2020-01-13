@@ -8,6 +8,7 @@ use crate::controllers::genre_controller;
 use crate::controllers::playlist_controller;
 use crate::controllers::track_controller;
 use crate::controllers::user_controller;
+use crate::spotify;
 use crate::utils::get_env_variable;
 
 fn hello_world() -> HttpResponse {
@@ -38,6 +39,7 @@ pub async fn start() -> Result<(), ()> {
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
+            .configure(spotify::routes)
             .configure(login_controller::routes)
     })
     .bind(format!("0.0.0.0:{}", &port))

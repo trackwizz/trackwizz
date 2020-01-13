@@ -4,9 +4,9 @@ use actix_web::client::{Client, ClientRequest};
 use serde::{Deserialize, Serialize};
 
 use crate::utils::{get_env_variable, redirect_to, to_query_string, get_random_string};
+use crate::REDIRECT_URI;
+use crate::FRONT_REDIRECT_URI;
 
-static REDIRECT_URI: &str = "http://localhost:5000/callback";
-static FRONT_REDIRECT_URI: &str = "http://localhost:3000/login?";
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(

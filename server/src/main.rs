@@ -3,13 +3,16 @@ extern crate dotenv;
 extern crate actix_web;
 
 static mut DB: Option<Connection> = None;
+static REDIRECT_URI: &str = "http://localhost:5000/callback";
+static FRONT_REDIRECT_URI: &str = "http://localhost:3000/login?";
 
-mod database;
 mod utils;
+mod database;
 mod models;
 mod controllers;
 mod server;
 mod tests;
+mod spotify;
 
 use database::{connect_to_database, migrate};
 use postgres::Connection;
