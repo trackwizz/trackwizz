@@ -1,6 +1,6 @@
-use actix_web::{HttpResponse};
-use serde_repr::Serialize_repr;
+use actix_web::HttpResponse;
 use serde::Serialize;
+use serde_repr::Serialize_repr;
 
 #[derive(Serialize_repr)]
 #[repr(u8)]
@@ -20,13 +20,13 @@ pub struct AppError {
 
 impl AppError {
     pub fn new(error_code: ErrorCode, msg: &str) -> AppError {
-        AppError{
+        AppError {
             error_code,
             msg: msg.to_string(),
         }
     }
 
-    pub fn send(&mut self) -> HttpResponse  {
+    pub fn send(&mut self) -> HttpResponse {
         HttpResponse::InternalServerError().json(self)
     }
 }

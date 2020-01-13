@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
-use postgres::rows::Row;
 use super::genre_model::Genre;
-use crate::database::{query, insert, execute};
+use crate::database::{execute, insert, query};
 use crate::utils::errors::AppError;
+use postgres::rows::Row;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
@@ -27,13 +27,13 @@ pub struct Track {
 
 impl Track {
     pub fn new_from_row(row: Row) -> Track {
-        Track{
+        Track {
             id: row.get(0),
             spotify_id: row.get(1),
             title: row.get(2),
             length: row.get(3),
             id_genre: row.get(4),
-            genre: Some(Genre{
+            genre: Some(Genre {
                 id: row.get(4),
                 name: row.get(5),
             }),
@@ -73,17 +73,29 @@ impl Track {
     }
 
     pub fn create(&mut self) -> Result<(), AppError> {
-        match insert("queries/track/insert.sql", &[&self.spotify_id, &self.title, &self.length, &self.id_genre]) {
+        match insert(
+            "queries/track/insert.sql",
+            &[&self.spotify_id, &self.title, &self.length, &self.id_genre],
+        ) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
             }
-            Err(e) => Err(e)
+            Err(e) => Err(e),
         }
     }
 
     pub fn update(&mut self) -> Result<(), AppError> {
-        execute("queries/track/update.sql", &[&self.id, &self.spotify_id, &self.title, &self.length, &self.id_genre])
+        execute(
+            "queries/track/update.sql",
+            &[
+                &self.id,
+                &self.spotify_id,
+                &self.title,
+                &self.length,
+                &self.id_genre,
+            ],
+        )
     }
 
     pub fn delete(id: i32) -> Result<(), AppError> {

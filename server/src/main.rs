@@ -1,23 +1,23 @@
-extern crate postgres;
-extern crate dotenv;
 extern crate actix_web;
+extern crate dotenv;
+extern crate postgres;
 
 static mut DB: Option<Connection> = None;
 
-mod database;
-mod utils;
-mod models;
 mod controllers;
+mod database;
+mod models;
 mod server;
 mod tests;
+mod utils;
 
 use database::{connect_to_database, migrate};
 use postgres::Connection;
 
 fn main() {
-    let conn:Connection = match connect_to_database() {
+    let conn: Connection = match connect_to_database() {
         Ok(conn) => conn,
-        Err(error) => panic!("Could not connect to database: \n\t{}", error)
+        Err(error) => panic!("Could not connect to database: \n\t{}", error),
     };
     unsafe {
         DB = Some(conn);
