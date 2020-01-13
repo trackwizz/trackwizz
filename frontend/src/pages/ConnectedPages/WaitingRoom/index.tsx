@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
 
 import "./waitingRoom.css";
 
@@ -20,41 +20,107 @@ interface IRequestPlayers {
   error: boolean;
 }
 
-const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
+const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
   const [nickName, setNickName] = useState<string>("Player");
 
   useEffect(() => {
-    // TODO: Request room id so others can join
-    const requestRoom: IRequestRoom = {
-      data: "idRoom",
-      complete: true,
-      error: false
-    };
+    if (location.search !== "") {
+      if (
+        location.search
+          .slice(1)
+          .split("&")
+          .find(el => el.includes("playlist")) !== undefined
+      ) {
+        const idPlaylist = (
+          location.search
+            .slice(1)
+            .split("&")
+            .find(el => el.includes("playlist")) || ""
+        )
+          .split("playlist=")
+          .filter(el => el !== "")
+          .shift();
+        console.log(idPlaylist);
 
-    // TODO: Since the other players are going to come, this should be a web socket...
-    const requestPlayers: IRequestPlayers = {
-      data: [
-        {
-          id: "aojs",
-          name: "Player 1"
-        },
-        {
-          id: "dovjsoc",
-          name: "Player 2"
+        // TODO: Add persons to game
+        // POST "http://localhost:5000/game"
+        // const requestRoom = axios({
+        //   method: "POST",
+        //   url: "http://localhost:5000/game"
+        //   data: {
+        //     playlistId: "idPlaylist"
+        //   }
+        // });
+        // data: string;
+
+        const requestRoom: IRequestRoom = {
+          data: "roomId",
+          complete: true,
+          error: false
+        };
+
+        if (requestRoom.complete === true && requestRoom.error === false) {
+          setRoomId(requestRoom.data);
         }
-      ],
-      complete: true,
-      error: false
-    };
 
-    if (requestRoom.complete === true && requestRoom.error === false) {
-      setRoomId(requestRoom.data);
-    }
+        if (requestRoom.complete === true && requestRoom.error === true) {
+          setError(true);
+        }
+      }
 
-    if (requestPlayers.complete === true && requestPlayers.error === false) {
-      setPlayers(requestPlayers.data);
+      if (
+        location.search
+          .slice(1)
+          .split("&")
+          .find(el => el.includes("roomId")) !== undefined
+      ) {
+        // TODO: Request room id to add personne to room
+        // POST "http://localhost:8888/game"
+        // const requestRoom = axios({
+        //   method: "PUT",
+        //   url: "http://localhost:8888/game/:id/newPlayer"
+        //   data: {
+        //     player: "hello"
+        //   }
+        // })
+
+        const requestRoom: IRequestRoom = {
+          data: "roomId",
+          complete: true,
+          error: false
+        };
+
+        if (requestRoom.complete === true && requestRoom.error === false) {
+          setRoomId(requestRoom.data);
+        }
+      }
+
+      // TODO: Since the other players are going to come, this should be a web socket...
+      const requestPlayers: IRequestPlayers = {
+        data: [
+          {
+            id: "aojs",
+            name: "Player 1"
+          },
+          {
+            id: "dovjsoc",
+            name: "Player 2"
+          }
+        ],
+        complete: true,
+        error: false
+      };
+
+      if (requestPlayers.complete === true && requestPlayers.error === false) {
+        setPlayers(requestPlayers.data);
+      }
+
+      if (requestPlayers.complete === true && requestPlayers.error === true) {
+        setError(true);
+      }
     }
   }, []);
 
@@ -66,8 +132,12 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
 
   const handleStart = (event: React.MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    history.push("/game");
+    history.push("/game?gameId=sidfj");
   };
+
+  if (location.search === "" || error === true) {
+    return <Redirect to={"/"} />;
+  }
 
   return (
     <React.Fragment>
