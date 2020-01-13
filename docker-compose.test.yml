@@ -3,12 +3,3 @@ services:
     backend:
         restart: "no"
         command: ["cargo", "test"]
-        environment: 
-            - PORT
-            - DB_HOST
-            - DB_PORT
-            - DB_USER
-            - DB_PASS
-            - DB_LIBRARY
-            - CLIENT_ID
-            - CLIENT_SECRET
