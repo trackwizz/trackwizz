@@ -2,6 +2,7 @@ use actix_web::{App, HttpServer};
 use actix_web::middleware::Logger;
 use env_logger;
 
+use crate::controllers::game_controller;
 use crate::utils::get_env_variable;
 use crate::controllers::{user_controller};
 use crate::controllers::{genre_controller};
@@ -21,6 +22,7 @@ pub fn start() {
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
+            .configure(game_controller::routes)
     })
         .bind(format!("0.0.0.0:{}", &port))
         .unwrap()
