@@ -1,29 +1,52 @@
-use actix_web::{App, HttpServer};
+use actix_cors::Cors;
 use actix_web::middleware::Logger;
+use actix_web::{http, App, HttpServer, HttpResponse, web};
 use env_logger;
 
+use crate::controllers::genre_controller;
+use crate::controllers::playlist_controller;
+use crate::controllers::track_controller;
+use crate::controllers::user_controller;
+use crate::spotify::login;
+use crate::spotify;
 use crate::utils::get_env_variable;
-use crate::controllers::{user_controller};
-use crate::controllers::{genre_controller};
-use crate::controllers::{playlist_controller};
-use crate::controllers::{track_controller};
 
-pub fn start() {
-    let port: String = get_env_variable("PORT", "8080");
+fn hello_world() -> HttpResponse {
+    HttpResponse::Ok().body("Trackwizz server is running !")
+}
+
+pub async fn start() -> Result<(), ()> {
+    let port: String = get_env_variable("PORT", "5000");
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
     println!("Server listening on port {}!", port);
 
-    HttpServer::new(|| {
+    match HttpServer::new(|| {
         App::new()
-            .wrap(Logger::new("%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms"))
+            .wrap(Logger::new( // Add Logger
+                "%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms",
+            ))
+            .wrap( // Construct CORS middleware builder
+                Cors::new()
+                    .send_wildcard()
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600)
+                    .finish(),
+            )
+            .route("/", web::get().to(hello_world))
             .configure(user_controller::routes)
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
+            .configure(spotify::routes)
+            .configure(login::routes)
     })
-        .bind(format!("0.0.0.0:{}", &port))
-        .unwrap()
-        .run()
-        .unwrap();
+    .bind(format!("0.0.0.0:{}", &port))
+    .unwrap()
+    .run()
+    .await {
+        Ok(()) => Ok(()),
+        Err(_err) => Err(()),
+    }
 }
