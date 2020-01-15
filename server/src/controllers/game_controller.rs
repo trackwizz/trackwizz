@@ -28,7 +28,7 @@ fn create(_req: HttpRequest, new_game: web::Json<Game>) -> HttpResponse {
         is_ended: new_game.is_ended,
         score: new_game.score,
         title: new_game.title.to_string(),
-        tracks_number: new_game.tracks_number,
+        questions_number: new_game.questions_number,
         is_public: new_game.is_public,
         mode: new_game.mode,
     };
@@ -57,8 +57,8 @@ fn edit(req: HttpRequest, updated_game: web::Json<Game>) -> HttpResponse {
                 if updated_game.title.len() > 0 {
                     game.title = updated_game.title.to_string();
                 }
-                if updated_game.tracks_number > 0 {
-                    game.tracks_number = updated_game.tracks_number;
+                if updated_game.questions_number > 0 {
+                    game.questions_number = updated_game.questions_number;
                 }
                 // can't update game mode
                 match game.update() {

@@ -17,7 +17,7 @@ pub struct Game {
     #[serde(default)]
     pub title: String,
     #[serde(default)]
-    pub tracks_number: i32,
+    pub questions_number: i32,
     #[serde(default)]
     pub is_public: bool,
     #[serde(default)]
@@ -32,7 +32,7 @@ impl Game {
             is_ended: row.get(2),
             score: row.get(3),
             title: row.get(4),
-            tracks_number: row.get(5),
+            questions_number: row.get(5),
             is_public: row.get(6),
             mode: row.get(7),
         }
@@ -64,7 +64,7 @@ impl Game {
                 &self.is_ended,
                 &self.score,
                 &self.title,
-                &self.tracks_number,
+                &self.questions_number,
                 &self.is_public,
                 &self.mode,
             ],
@@ -86,7 +86,7 @@ impl Game {
                 &self.is_ended,
                 &self.score,
                 &self.title,
-                &self.tracks_number,
+                &self.questions_number,
                 &self.is_public,
                 &self.mode,
             ],
