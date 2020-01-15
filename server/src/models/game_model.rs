@@ -54,6 +54,8 @@ impl Game {
         game
     }
 
+    /// Create the game in the database, updating the ID of the game with
+    /// the one returned by the database.
     pub fn create(&mut self) -> Result<(), AppError> {
         match insert(
             "queries/game/insert.sql",
