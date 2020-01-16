@@ -3,6 +3,9 @@ import { RouteComponentProps, withRouter } from "react-router";
 
 import { IPlaylist, IPlaylistRequest } from "./types";
 import PlaylistContainer from "./components/PlaylistContainer";
+import { axiosRequest, createHeader } from "../components/Dancers/axiosRequest";
+import { getToken } from "../../../utils/auth";
+import { Method } from "axios";
 
 const MusicImage = require("./MusicImage.jpg");
 
@@ -12,12 +15,13 @@ const Playlists: React.FC<RouteComponentProps> = () => {
     IPlaylist[] | null
   >(null);
 
-  useEffect(() => {
-    // TODO: Get user playlists
-    // GET "http://localhost:5000/spotify/playlists" <- most popular playlists
-    // const yourPlaylistRequest: IPlaylistRequest = await axios.get("http://localhost:8888/:id/playlists")
-    // data: IData;
+  // TODO: Fix this when final request is operational
+  const [testRequest, setTestRequest] = useState<any>(null);
 
+  useEffect(() => {
+    requestPlaylists();
+
+    // TODO: Prepare to delete this
     const yourPlaylistRequest: IPlaylistRequest = {
       data: {
         yourPlaylistsRequest: [
@@ -72,6 +76,19 @@ const Playlists: React.FC<RouteComponentProps> = () => {
       setMostPopularPlaylists(yourPlaylistRequest.data.mostPopularPlaylists);
     }
   }, []);
+
+  const requestPlaylists = async () => {
+    const header = createHeader(getToken());
+    const request = {
+      header,
+      method: "GET" as Method,
+      url: "http://localhost:5000/spotify/playlists"
+    };
+    const response = await axiosRequest(request);
+
+    setTestRequest(response);
+  };
+  console.log(testRequest);
 
   return (
     <React.Fragment>
