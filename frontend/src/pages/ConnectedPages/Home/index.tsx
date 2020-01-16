@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import "./home.css";
-import dancers from "../../../utils/dancers";
+import Dancers from "../components/Dancers";
 
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
-  const [dancer] = useState<string>(
-    dancers[Math.floor(Math.random() * dancers.length)]
-  );
-
   const handleNewGame = (): void => {
     history.push("/playlists");
   };
@@ -19,7 +15,7 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <React.Fragment>
-      <img height="180px" src={dancer} alt="dancer" />
+      <Dancers />
       <div className="homeContainer">
         <button className="homeButton" onClick={handleNewGame}>
           Create new game

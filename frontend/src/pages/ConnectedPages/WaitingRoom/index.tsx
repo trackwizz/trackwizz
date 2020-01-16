@@ -46,10 +46,10 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
         console.log(idPlaylist);
 
         // TODO: Add persons to game
-        // POST "http://localhost:5000/game"
+        // POST "http://localhost:5000/games/"
         // const requestRoom = axios({
         //   method: "POST",
-        //   url: "http://localhost:5000/game"
+        //   url: "http://localhost:5000/games"
         //   data: {
         //     playlistId: "idPlaylist"
         //   }

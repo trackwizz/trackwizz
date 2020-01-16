@@ -14,7 +14,7 @@ const Playlists: React.FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     // TODO: Get user playlists
-    // GET "http://localhost:5000/:id/playlists"
+    // GET "http://localhost:5000/spotify/playlists" <- most popular playlists
     // const yourPlaylistRequest: IPlaylistRequest = await axios.get("http://localhost:8888/:id/playlists")
     // data: IData;
 
