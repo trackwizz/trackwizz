@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
-use postgres::rows::Row;
-use crate::database::{query, insert, execute};
+use crate::database::{execute, insert, query};
 use crate::utils::errors::AppError;
+use postgres::rows::Row;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
@@ -24,27 +24,36 @@ pub struct Score {
 
 impl Score {
     pub fn new_from_row(row: Row) -> Score {
-        Score{
+        Score {
             id: row.get(0),
             id_game: row.get(1),
             id_user: row.get(2),
             spotify_track_id: row.get(3),
             timestamp: row.get(4),
             is_correct: row.get(5),
-            reaction_time_ms: row.get(6)
+            reaction_time_ms: row.get(6),
         }
     }
 
-    pub fn get_all() -> Vec<Score> {
+    pub fn get_all(group_id: Option<i32>) -> Vec<Score> {
         let mut scores: Vec<Score> = vec![];
-
-        match query("queries/score/getAll.sql", &[]) {
-            Some(rows) => {
-                for row in rows.iter() {
-                    scores.push(Score::new_from_row(row));
+        match group_id {
+            Some(grp_id) => match query("queries/score/getAllFromGroup.sql", &[&grp_id]) {
+                Some(rows) => {
+                    for row in rows.iter() {
+                        scores.push(Score::new_from_row(row));
+                    }
                 }
-            }
-            _ => {}
+                _ => {}
+            },
+            None => match query("queries/score/getAll.sql", &[]) {
+                Some(rows) => {
+                    for row in rows.iter() {
+                        scores.push(Score::new_from_row(row));
+                    }
+                }
+                _ => {}
+            },
         }
 
         scores
@@ -67,17 +76,38 @@ impl Score {
     }
 
     pub fn create(&mut self) -> Result<(), AppError> {
-        match insert("queries/score/insert.sql", &[&self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time_ms]) {
+        match insert(
+            "queries/score/insert.sql",
+            &[
+                &self.id_game,
+                &self.id_user,
+                &self.spotify_track_id,
+                &self.timestamp,
+                &self.is_correct,
+                &self.reaction_time_ms,
+            ],
+        ) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
             }
-            Err(e) => Err(e)
+            Err(e) => Err(e),
         }
     }
 
     pub fn update(&mut self) -> Result<(), AppError> {
-        execute("queries/score/update.sql", &[&self.id, &self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time_ms])
+        execute(
+            "queries/score/update.sql",
+            &[
+                &self.id,
+                &self.id_game,
+                &self.id_user,
+                &self.spotify_track_id,
+                &self.timestamp,
+                &self.is_correct,
+                &self.reaction_time_ms,
+            ],
+        )
     }
 
     pub fn delete(id: i32) -> Result<(), AppError> {
