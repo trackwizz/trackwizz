@@ -1,7 +1,3 @@
-use actix_web::middleware::Logger;
-use actix_web::{App, HttpServer};
-use env_logger;
-
 use crate::controllers::game_controller;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
