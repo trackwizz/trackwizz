@@ -17,8 +17,12 @@ COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build
 RUN rm src/*.rs
 
+# copy source tree
 COPY ./queries ./queries
 COPY ./src ./src
+
+RUN rm ./target/debug/deps/server*
+RUN cargo build
 
 EXPOSE 5000
 
