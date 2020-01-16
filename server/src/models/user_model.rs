@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use crate::database::{query, insert, execute};
+use crate::database::{execute, insert, query};
 use crate::utils::errors::AppError;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
@@ -17,7 +17,7 @@ impl User {
         match query("queries/user/getAll.sql", &[]) {
             Some(rows) => {
                 for row in rows.iter() {
-                    users.push(User{
+                    users.push(User {
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -36,7 +36,7 @@ impl User {
             Some(rows) => {
                 if !rows.is_empty() {
                     let row = rows.get(0);
-                    user = Some(User{
+                    user = Some(User {
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -48,13 +48,13 @@ impl User {
         user
     }
 
-    pub fn create(&mut self)-> Result<(), AppError>  {
+    pub fn create(&mut self) -> Result<(), AppError> {
         match insert("queries/user/insert.sql", &[&self.name]) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
             }
-            Err(e) => Err(e)
+            Err(e) => Err(e),
         }
     }
 

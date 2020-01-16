@@ -1,19 +1,18 @@
-use std::time::{SystemTime, Duration};
-use actix_web::{web, HttpRequest, HttpResponse};
 use actix_web::client::{Client, ClientRequest};
+use actix_web::{web, HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
+use std::time::{Duration, SystemTime};
 
-use crate::utils::{get_env_variable, redirect_to, to_query_string, get_random_string};
-use crate::REDIRECT_URI;
+use crate::utils::{get_env_variable, get_random_string, redirect_to, to_query_string};
 use crate::FRONT_REDIRECT_URI;
-
+use crate::REDIRECT_URI;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/")
             .route("/login", web::get().to(login))
             .route("/callback", web::get().to(callback))
-            .route("/refresh_token", web::get().to(refresh_token))
+            .route("/refresh_token", web::get().to(refresh_token)),
     );
 }
 
@@ -112,12 +111,17 @@ struct CallbackInfo {
 }
 
 async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResponse {
-    let code: String = info.code.as_ref().unwrap_or(&String::default()).parse().unwrap();
+    let code: String = info
+        .code
+        .as_ref()
+        .unwrap_or(&String::default())
+        .parse()
+        .unwrap();
     let state: Option<&String> = info.state.as_ref();
 
     if state.is_none() || state.unwrap().len() == 0 {
         let query_params: String = to_query_string(&[("error", true)]);
-        return redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str())
+        return redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str());
     }
 
     let form: CallbackForm = CallbackForm {
@@ -126,30 +130,41 @@ async fn callback(_req: HttpRequest, info: web::Query<CallbackInfo>) -> HttpResp
         grant_type: String::from("authorization_code"),
     };
 
-    let request = make_spotify_request()
-        .send_form(&form)
-        .await;
+    let request = make_spotify_request().send_form(&form).await;
 
     match request {
         Ok(mut body) => {
             let success: bool = body.status().as_u16() < 400;
             if success {
-                let callback_success: CallbackSuccess = body.json::<CallbackSuccess>().await.unwrap_or(CallbackSuccess::default());
+                let callback_success: CallbackSuccess = body
+                    .json::<CallbackSuccess>()
+                    .await
+                    .unwrap_or(CallbackSuccess::default());
 
                 let query_params: String = to_query_string(&[
                     ("access_token", callback_success.access_token),
                     ("refresh_token", callback_success.refresh_token),
-                    ("expires_at", get_expires_at(callback_success.expires_in).to_string()),
+                    (
+                        "expires_at",
+                        get_expires_at(callback_success.expires_in).to_string(),
+                    ),
                 ]);
                 return redirect_to(format!("{}{}", FRONT_REDIRECT_URI, query_params).as_str());
-            } else { // Error
-                let callback_error: CallbackError = body.json::<CallbackError>().await.unwrap_or(CallbackError::default());
-                println!("{}: {}", callback_error.error, callback_error.error_description);
+            } else {
+                // Error
+                let callback_error: CallbackError = body
+                    .json::<CallbackError>()
+                    .await
+                    .unwrap_or(CallbackError::default());
+                println!(
+                    "{}: {}",
+                    callback_error.error, callback_error.error_description
+                );
             }
-        },
+        }
         Err(err) => {
             println!("Error on Spotify response: {:?}", err);
-        },
+        }
     };
 
     let query_params: String = to_query_string(&[("error", true)]);
@@ -206,9 +221,7 @@ async fn refresh_token(_req: HttpRequest, query: web::Query<RefreshTokenQuery>) 
         refresh_token: refresh_token_string,
     };
 
-    let request = make_spotify_request()
-        .send_form(&form)
-        .await;
+    let request = make_spotify_request().send_form(&form).await;
 
     let error: RefreshTokenErrorResponse = RefreshTokenErrorResponse {
         error: String::from("Spotify returned an error."),
@@ -218,7 +231,8 @@ async fn refresh_token(_req: HttpRequest, query: web::Query<RefreshTokenQuery>) 
         Ok(mut body) => {
             let success: bool = body.status().as_u16() < 400;
             if success {
-                let res_body: RefreshTokenSpotifyResponse = body.json::<RefreshTokenSpotifyResponse>().await.unwrap();
+                let res_body: RefreshTokenSpotifyResponse =
+                    body.json::<RefreshTokenSpotifyResponse>().await.unwrap();
 
                 let response: RefreshTokenResponse = RefreshTokenResponse {
                     access_token: res_body.access_token,
@@ -229,9 +243,7 @@ async fn refresh_token(_req: HttpRequest, query: web::Query<RefreshTokenQuery>) 
             } else {
                 HttpResponse::BadRequest().json(error)
             }
-        },
-        Err(_err) => {
-            HttpResponse::BadRequest().json(error)
-        },
+        }
+        Err(_err) => HttpResponse::BadRequest().json(error),
     };
 }

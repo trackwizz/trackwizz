@@ -1,5 +1,5 @@
-use actix_web::{HttpRequest, HttpResponse};
 use actix_web::client::Client;
+use actix_web::{HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -15,7 +15,7 @@ struct SpotifyPlaylist {
 }
 #[derive(Deserialize)]
 struct SpotifyPlaylistItems {
-    items: Vec<SpotifyPlaylist>
+    items: Vec<SpotifyPlaylist>,
 }
 #[derive(Deserialize)]
 struct SpotifyPlaylists {
@@ -31,7 +31,10 @@ struct NewPlaylist {
 }
 
 pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
-    let bearer_token: Option<&str> = req.headers().get("Authorization").and_then(|t| { Some(t.to_str().unwrap()) });
+    let bearer_token: Option<&str> = req
+        .headers()
+        .get("Authorization")
+        .and_then(|t| Some(t.to_str().unwrap()));
 
     let mut playlists: Vec<NewPlaylist> = vec![];
 
@@ -49,27 +52,30 @@ pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
                 Ok(mut body) => {
                     let success: bool = body.status().as_u16() < 400;
                     if success {
-                        let resp_body: SpotifyPlaylists = body.json::<SpotifyPlaylists>().await.unwrap();
+                        let resp_body: SpotifyPlaylists =
+                            body.json::<SpotifyPlaylists>().await.unwrap();
                         for playlist in resp_body.playlists.items {
                             playlists.push(NewPlaylist {
                                 description: playlist.description,
                                 id: playlist.id,
                                 name: playlist.name,
-                                image: playlist.images.get(0).and_then(|i: &SpotifyImage| { Some(i.url.clone()) }),
+                                image: playlist
+                                    .images
+                                    .get(0)
+                                    .and_then(|i: &SpotifyImage| Some(i.url.clone())),
                             });
                         }
-                    } else { // Error
+                    } else {
+                        // Error
                         println!("response: {:?}", body);
                     }
-                },
+                }
                 Err(err) => {
                     println!("Error on Spotify response: {:?}", err);
-                },
+                }
             };
-        },
-        None => {
-
-        },
+        }
+        None => {}
     };
 
     HttpResponse::Ok().json(playlists)

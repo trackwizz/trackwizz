@@ -1,8 +1,8 @@
-use std::borrow::Borrow;
-use serde::{Deserialize, Serialize};
-use crate::database::{query, insert, execute};
+use crate::database::{execute, insert, query};
 use crate::models::track_model::Track;
 use crate::utils::errors::AppError;
+use serde::{Deserialize, Serialize};
+use std::borrow::Borrow;
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
@@ -17,7 +17,7 @@ pub struct Playlist {
 
 impl Playlist {
     pub fn new(id: i32, title: String) -> Playlist {
-        Playlist{
+        Playlist {
             id,
             title,
             tracks: None,
@@ -30,7 +30,7 @@ impl Playlist {
         match query("queries/playlist/getAll.sql", &[]) {
             Some(rows) => {
                 for row in rows.iter() {
-                    playlists.push(Playlist{
+                    playlists.push(Playlist {
                         id: row.get(0),
                         title: row.get(1),
                         tracks: None,
@@ -50,7 +50,7 @@ impl Playlist {
             Some(rows) => {
                 if !rows.is_empty() {
                     let row = rows.get(0);
-                    playlist = Some(Playlist{
+                    playlist = Some(Playlist {
                         id: row.get(0),
                         title: row.get(1),
                         tracks: None,
@@ -69,7 +69,7 @@ impl Playlist {
                 self.id = id;
                 Ok(())
             }
-            Err(e) => Err(e)
+            Err(e) => Err(e),
         }
     }
 
@@ -93,37 +93,49 @@ impl Playlist {
                     track.track_index = Some(track_index);
                     tracks.push(track);
                 }
-            },
-            _ => {},
+            }
+            _ => {}
         }
         self.tracks = Some(tracks);
         self.tracks.as_ref().unwrap()
     }
 
     pub fn get_track(&mut self, id_track: i32) -> Option<Track> {
-        match query("queries/rel_playlist_tracks/getOne.sql", &[&self.id, &id_track]) {
+        match query(
+            "queries/rel_playlist_tracks/getOne.sql",
+            &[&self.id, &id_track],
+        ) {
             Some(rows) => {
                 if !rows.is_empty() {
                     let track_index: i32 = rows.borrow().get(0).get(6);
                     let mut track: Track = Track::new_from_row(rows.get(0));
                     track.track_index = Some(track_index);
-                    return Some(track)
+                    return Some(track);
                 }
                 None
-            },
+            }
             _ => None,
         }
     }
 
     pub fn add_track(&mut self, id_track: i32) -> Result<i32, AppError> {
-        insert("queries/rel_playlist_tracks/insert.sql", &[&id_track, &self.id])
+        insert(
+            "queries/rel_playlist_tracks/insert.sql",
+            &[&id_track, &self.id],
+        )
     }
 
     pub fn update_track_index(&mut self, id_track: i32, track_index: i32) -> Result<(), AppError> {
-        execute("queries/rel_playlist_tracks/update.sql", &[&id_track, &self.id, &track_index])
+        execute(
+            "queries/rel_playlist_tracks/update.sql",
+            &[&id_track, &self.id, &track_index],
+        )
     }
 
     pub fn delete_track(&mut self, id_track: i32) -> Result<(), AppError> {
-        execute("queries/rel_playlist_tracks/delete.sql", &[&id_track, &self.id])
+        execute(
+            "queries/rel_playlist_tracks/delete.sql",
+            &[&id_track, &self.id],
+        )
     }
 }
