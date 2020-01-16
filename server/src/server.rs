@@ -8,6 +8,7 @@ use crate::controllers::genre_controller;
 use crate::controllers::playlist_controller;
 use crate::controllers::track_controller;
 use crate::controllers::user_controller;
+use crate::controllers::score_controller;
 use crate::spotify;
 use crate::spotify::login;
 use crate::utils::get_env_variable;
@@ -43,6 +44,7 @@ pub async fn start() -> Result<(), ()> {
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
             .configure(game_controller::routes)
+            .configure(score_controller::routes)
             .configure(spotify::routes)
             .configure(login::routes)
     })
