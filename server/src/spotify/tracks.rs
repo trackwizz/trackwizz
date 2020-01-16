@@ -1,7 +1,7 @@
+use crate::utils::to_query_string;
 use actix_web::client::Client;
 use actix_web::{HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
-use crate::utils::to_query_string;
 
 // documentation link:
 // https://developer.spotify.com/documentation/web-api/reference/playlists/get-playlists-tracks/
@@ -26,9 +26,7 @@ struct SpotifyTrackItems {
 }
 impl SpotifyTrackItems {
     fn default() -> SpotifyTrackItems {
-        SpotifyTrackItems {
-            items: vec![],
-        }
+        SpotifyTrackItems { items: vec![] }
     }
 }
 
@@ -65,7 +63,9 @@ pub async fn get_playlist_tracks(req: HttpRequest) -> HttpResponse {
         .headers()
         .get("Authorization")
         .and_then(|t| Some(t.to_str().unwrap()));
-    let spotify_playlist_id: String = serde_urlencoded::from_str::<Payload>(req.query_string()).unwrap_or(Payload::default()).playlist_id;
+    let spotify_playlist_id: String = serde_urlencoded::from_str::<Payload>(req.query_string())
+        .unwrap_or(Payload::default())
+        .playlist_id;
 
     let mut tracks: Vec<NewTrack> = vec![];
 
@@ -75,10 +75,12 @@ pub async fn get_playlist_tracks(req: HttpRequest) -> HttpResponse {
 
     match bearer_token {
         Some(token) => {
-
             let query_params: String = to_query_string(&[
-                ("fields", "items(track(name, id, artists, preview_url, track_number))"),
-                ("market", "FR")
+                (
+                    "fields",
+                    "items(track(name, id, artists, preview_url, track_number))",
+                ),
+                ("market", "FR"),
             ]);
 
             let request = Client::new()
@@ -96,15 +98,14 @@ pub async fn get_playlist_tracks(req: HttpRequest) -> HttpResponse {
                 Ok(mut body) => {
                     let success: bool = body.status().as_u16() < 400;
                     if success {
-                        let resp_body: SpotifyTrackItems = match body.json::<SpotifyTrackItems>().await {
-                            Ok(sp_ti) => {
-                                sp_ti
-                            },
-                            Err(err) => {
-                                println!("Err: {:?}", err);
-                                SpotifyTrackItems::default()
-                            },
-                        };
+                        let resp_body: SpotifyTrackItems =
+                            match body.json::<SpotifyTrackItems>().await {
+                                Ok(sp_ti) => sp_ti,
+                                Err(err) => {
+                                    println!("Err: {:?}", err);
+                                    SpotifyTrackItems::default()
+                                }
+                            };
 
                         for global_track in resp_body.items {
                             tracks.push(NewTrack {
@@ -112,7 +113,13 @@ pub async fn get_playlist_tracks(req: HttpRequest) -> HttpResponse {
                                 id: global_track.track.id,
                                 name: global_track.track.name,
                                 track_number: global_track.track.track_number,
-                                artist: global_track.track.artists.iter().map(|artist: &SpotifyArtist| { artist.name.clone() }).collect::<Vec<String>>().join(" & "),
+                                artist: global_track
+                                    .track
+                                    .artists
+                                    .iter()
+                                    .map(|artist: &SpotifyArtist| artist.name.clone())
+                                    .collect::<Vec<String>>()
+                                    .join(" & "),
                             });
                         }
                     } else {
