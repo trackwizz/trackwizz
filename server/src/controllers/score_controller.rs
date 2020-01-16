@@ -37,7 +37,7 @@ fn create(_req: HttpRequest, new_score: web::Json<Score>) -> HttpResponse  {
         spotify_track_id: new_score.spotify_track_id.to_string(),
         timestamp: new_score.timestamp,
         is_correct: new_score.is_correct,
-        reaction_time: new_score.reaction_time
+        reaction_time_ms: new_score.reaction_time_ms
     };
     match score.create() {
         Err(mut e) => e.send(),
@@ -61,8 +61,8 @@ fn edit(req: HttpRequest, updated_score: web::Json<Score>) -> HttpResponse {
                 if updated_score.timestamp > 0 {
                     score.timestamp = updated_score.timestamp
                 }
-                if updated_score.reaction_time > 0 {
-                    score.reaction_time = updated_score.reaction_time
+                if updated_score.reaction_time_ms > 0 {
+                    score.reaction_time_ms = updated_score.reaction_time_ms
                 }
                 score.is_correct = updated_score.is_correct;
                 match score.update() {

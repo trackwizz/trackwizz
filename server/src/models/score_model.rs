@@ -19,7 +19,7 @@ pub struct Score {
     #[serde(default)]
     pub is_correct: bool,
     #[serde(default)]
-    pub reaction_time: i32,
+    pub reaction_time_ms: i32,
 }
 
 impl Score {
@@ -31,7 +31,7 @@ impl Score {
             spotify_track_id: row.get(3),
             timestamp: row.get(4),
             is_correct: row.get(5),
-            reaction_time: row.get(6)
+            reaction_time_ms: row.get(6)
         }
     }
 
@@ -67,7 +67,7 @@ impl Score {
     }
 
     pub fn create(&mut self) -> Result<(), AppError> {
-        match insert("queries/score/insert.sql", &[&self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time]) {
+        match insert("queries/score/insert.sql", &[&self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time_ms]) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
@@ -77,7 +77,7 @@ impl Score {
     }
 
     pub fn update(&mut self) -> Result<(), AppError> {
-        execute("queries/score/update.sql", &[&self.id, &self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time])
+        execute("queries/score/update.sql", &[&self.id, &self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time_ms])
     }
 
     pub fn delete(id: i32) -> Result<(), AppError> {
