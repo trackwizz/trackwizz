@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import dancers from "../../../../../utils/dancers";
 import "./question.css";
+import Dancers from "../../../components/Dancers";
 
 interface IQuestion {
   track: string;
@@ -64,6 +65,7 @@ const Question: React.FC<IQuestion> = ({
     <div className="flex-container column">
       <div className="text-center">
         <h2 className="fancy-text">Which song is currently playing?</h2>
+        <Dancers className={isNextTrackAvailable === false ? "" : "hidden"} />
         <img
           height="180px"
           src={dancer}
