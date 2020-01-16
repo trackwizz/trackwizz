@@ -21,3 +21,7 @@ export const isTokenValid = (): boolean => {
   const isTokenValid = !isTokenExpired();
   return hasToken && isTokenValid;
 };
+
+export const getToken = (): string => {
+  return cookies.get(CookieKey.ACCESS_TOKEN);
+};

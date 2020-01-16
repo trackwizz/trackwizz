@@ -1,5 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
 
+function createHeader(token: string) {
+  return {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  };
+}
+
 interface IResponse<T> {
   data: null | T;
   error: null | boolean;
@@ -34,4 +42,4 @@ async function axiosRequest<T>(req: AxiosRequestConfig): Promise<IResponse<T>> {
   return response;
 }
 
-export { axiosRequest };
+export { createHeader, axiosRequest };
