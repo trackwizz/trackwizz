@@ -12,13 +12,17 @@ RUN cargo install cargo-watch
 # copy over manifests
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
-COPY ./src ./src
 
 # this build step will cache dependencies
 RUN cargo build
-# RUN rm src/*.rs
+RUN rm src/*.rs
 
+# copy source tree
 COPY ./queries ./queries
+COPY ./src ./src
+
+RUN rm ./target/debug/deps/server*
+RUN cargo build
 
 EXPOSE 5000
 
