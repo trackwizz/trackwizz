@@ -30,8 +30,8 @@ services:
     links:
       - db
     volumes:
-      - ./server/src:/usr/src/trackwizz/src
-      - ./server/queries:/usr/src/trackwizz/queries
+      - ./server/src:/server/src
+      - ./server/queries:/server/queries
   db:
     image: postgres:11.6-alpine
     restart: always

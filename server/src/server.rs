@@ -1,14 +1,15 @@
+use crate::controllers::game_controller;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
-use actix_web::{http, App, HttpServer, HttpResponse, web};
+use actix_web::{http, web, App, HttpResponse, HttpServer};
 use env_logger;
 
 use crate::controllers::genre_controller;
 use crate::controllers::playlist_controller;
 use crate::controllers::track_controller;
 use crate::controllers::user_controller;
-use crate::spotify::login;
 use crate::spotify;
+use crate::spotify::login;
 use crate::utils::get_env_variable;
 
 fn hello_world() -> HttpResponse {
@@ -23,10 +24,12 @@ pub async fn start() -> Result<(), ()> {
 
     match HttpServer::new(|| {
         App::new()
-            .wrap(Logger::new( // Add Logger
+            .wrap(Logger::new(
+                // Add Logger
                 "%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %Dms",
             ))
-            .wrap( // Construct CORS middleware builder
+            .wrap(
+                // Construct CORS middleware builder
                 Cors::new()
                     .send_wildcard()
                     .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
@@ -39,13 +42,15 @@ pub async fn start() -> Result<(), ()> {
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
+            .configure(game_controller::routes)
             .configure(spotify::routes)
             .configure(login::routes)
     })
     .bind(format!("0.0.0.0:{}", &port))
     .unwrap()
     .run()
-    .await {
+    .await
+    {
         Ok(()) => Ok(()),
         Err(_err) => Err(()),
     }

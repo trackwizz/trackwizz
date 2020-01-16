@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use crate::database::{query, insert, execute};
+use crate::database::{execute, insert, query};
 use crate::utils::errors::AppError;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
@@ -17,7 +17,7 @@ impl Genre {
         match query("queries/genre/getAll.sql", &[]) {
             Some(rows) => {
                 for row in rows.iter() {
-                    genres.push(Genre{
+                    genres.push(Genre {
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -36,7 +36,7 @@ impl Genre {
             Some(rows) => {
                 if !rows.is_empty() {
                     let row = rows.get(0);
-                    genre = Some(Genre{
+                    genre = Some(Genre {
                         id: row.get(0),
                         name: row.get(1),
                     });
@@ -54,7 +54,7 @@ impl Genre {
                 self.id = id;
                 Ok(())
             }
-            Err(e) => Err(e)
+            Err(e) => Err(e),
         }
     }
 

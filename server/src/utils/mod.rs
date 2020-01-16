@@ -8,12 +8,15 @@ pub fn get_env_variable(key: &str, default_value: &str) -> String {
     dotenv::dotenv().ok(); // get all environment variables
     match dotenv::var(key) {
         Ok(value) => value,
-        Err(_) => default_value.to_string()
+        Err(_) => default_value.to_string(),
     }
 }
 
 pub fn redirect_to(url: &str) -> HttpResponse {
-    HttpResponse::Ok().status(http::StatusCode::FOUND).header("location", url).body(format!("Found. Redirecting to {}", url))
+    HttpResponse::Ok()
+        .status(http::StatusCode::FOUND)
+        .header("location", url)
+        .body(format!("Found. Redirecting to {}", url))
 }
 
 pub fn to_query_string<T: serde::Serialize>(data: T) -> String {
@@ -25,8 +28,10 @@ pub fn get_random_string(i: usize) -> String {
                             abcdefghijklmnopqrstuvwxyz\
                             0123456789";
     let mut rng = rand::thread_rng();
-    (0..i).map(|_| {
-        let idx = rng.gen_range(0, CHARSET.len());
-        CHARSET[idx] as char
-    }).collect()
+    (0..i)
+        .map(|_| {
+            let idx = rng.gen_range(0, CHARSET.len());
+            CHARSET[idx] as char
+        })
+        .collect()
 }

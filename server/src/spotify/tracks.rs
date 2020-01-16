@@ -2,46 +2,51 @@ use actix_web::client::Client;
 use actix_web::{HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
 
+// documentation link:
+// https://developer.spotify.com/documentation/web-api/reference/playlists/get-playlists-tracks/
+
 #[derive(Deserialize)]
-struct SpotifyImage {
-    url: String,
-}
-#[derive(Deserialize)]
-struct SpotifyPlaylist {
-    description: String,
+struct SpotifyTrack {
+    preview_url: String,
     id: String,
-    images: Vec<SpotifyImage>,
     name: String,
 }
+
 #[derive(Deserialize)]
-struct SpotifyPlaylistItems {
-    items: Vec<SpotifyPlaylist>,
+struct SpotifyTrackItems {
+    items: Vec<SpotifyTrackglobal>,
 }
+
 #[derive(Deserialize)]
-struct SpotifyPlaylists {
-    playlists: SpotifyPlaylistItems,
+struct SpotifyTrackglobal {
+    track: SpotifyTrack,
 }
 
 #[derive(Serialize)]
-struct NewPlaylist {
-    description: String,
+struct NewTrack {
     id: String,
     name: String,
-    image: Option<String>,
+    preview_url: String,
 }
 
-pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
+pub async fn get_playlist_tracks(req: HttpRequest) -> HttpResponse {
     let bearer_token: Option<&str> = req
         .headers()
         .get("Authorization")
         .and_then(|t| Some(t.to_str().unwrap()));
 
-    let mut playlists: Vec<NewPlaylist> = vec![];
+    let mut tracks: Vec<NewTrack> = vec![];
 
     match bearer_token {
         Some(token) => {
+            // TODO add playlist id in request parameter
+            let playlist_id = "37i9dQZF1DX4sWSpwq3LiO";
+
             let request = Client::new()
-                .get("https://api.spotify.com/v1/browse/featured-playlists")
+                .get(format!(
+                    "https://api.spotify.com/v1/playlists/{}/tracks",
+                    &playlist_id
+                ))
                 .header("Authorization", token)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
@@ -52,17 +57,14 @@ pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
                 Ok(mut body) => {
                     let success: bool = body.status().as_u16() < 400;
                     if success {
-                        let resp_body: SpotifyPlaylists =
-                            body.json::<SpotifyPlaylists>().await.unwrap();
-                        for playlist in resp_body.playlists.items {
-                            playlists.push(NewPlaylist {
-                                description: playlist.description,
-                                id: playlist.id,
-                                name: playlist.name,
-                                image: playlist
-                                    .images
-                                    .get(0)
-                                    .and_then(|i: &SpotifyImage| Some(i.url.clone())),
+                        let resp_body: SpotifyTrackItems =
+                            body.json::<SpotifyTrackItems>().await.unwrap();
+
+                        for global_track in resp_body.items {
+                            tracks.push(NewTrack {
+                                preview_url: global_track.track.preview_url,
+                                id: global_track.track.id,
+                                name: global_track.track.name,
                             });
                         }
                     } else {
@@ -78,5 +80,5 @@ pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
         None => {}
     };
 
-    HttpResponse::Ok().json(playlists)
+    HttpResponse::Ok().json(tracks)
 }
