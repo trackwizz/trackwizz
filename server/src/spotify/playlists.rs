@@ -41,7 +41,7 @@ pub async fn get_spotify_playlists(req: HttpRequest) -> HttpResponse {
     match bearer_token {
         Some(token) => {
             let request = Client::new()
-                .get("https://api.spotify.com/v1/browse/featured-playlists")
+                .get("https://api.spotify.com/v1/browse/featured-playlists?country=FR")
                 .header("Authorization", token)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
