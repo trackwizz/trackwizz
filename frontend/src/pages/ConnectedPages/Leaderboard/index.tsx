@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import "./leaderboard.css";
-// import axios from "axios";
+import { axiosRequest } from "../components/axiosRequest";
+import { Method } from "axios";
 
 interface ILeaderboard {
   id: string;
@@ -11,57 +12,57 @@ interface ILeaderboard {
   successRate: number;
 }
 
-interface IRequestLeaderboard {
-  data: ILeaderboard[];
-  complete: boolean;
-  error: boolean;
+const requestLeaderboard = async() => {
+  const request = {
+    method : "get" as Method,
+    url : "http://localhost:5000/scores",
+    data : {}
+  }
+
+  const response = await axiosRequest(request);
+  return response;
 }
 
 const Leaderboard: React.FC = () => {
-  const [leaderboardTable, setLeaderboardTable] = useState<
-    ILeaderboard[] | null
-  >(null);
+  const [leaderboardTable, setLeaderboardTable] = useState<ILeaderboard[] | null>(null);
 
   useEffect(() => {
     // TODO: Request Leaderboard from database
     // GET "/leaderboard"
     // const requestLeaderboard: IRequestLeaderboard = await axios.get("http://localhost:8888/leaderboard")
-    // data: ILeaderboard[];
+    // data: ILeaderboard[];    
 
-    const requestLeaderboard: IRequestLeaderboard = {
-      data: [
-        {
-          id: "difh",
-          name: "isdhsij",
-          nbGames: 27,
-          score: 9584,
-          successRate: 0.7
-        },
-        {
-          id: "weovh",
-          name: "xc ijsd",
-          nbGames: 384,
-          score: 38452,
-          successRate: 0.3
-        },
-        {
-          id: "csoj",
-          name: "svsc oc",
-          nbGames: 4975,
-          score: 12938,
-          successRate: 0.5
+    requestLeaderboard()
+      .then((response) => {
+        if (response.complete && !response.error) {
+          setLeaderboardTable(response.data as ILeaderboard[]);
         }
-      ],
-      complete: true,
-      error: false
-    };
-
-    if (
-      requestLeaderboard.complete === true &&
-      requestLeaderboard.error === false
-    ) {
-      setLeaderboardTable(requestLeaderboard.data);
-    }
+        else {
+          setLeaderboardTable([
+            {
+              id: "difh",
+              name: "isdhsij",
+              nbGames: 27,
+              score: 9584,
+              successRate: 0.7
+            },
+            {
+              id: "weovh",
+              name: "xc ijsd",
+              nbGames: 384,
+              score: 38452,
+              successRate: 0.3
+            },
+            {
+              id: "csoj",
+              name: "svsc oc",
+              nbGames: 4975,
+              score: 12938,
+              successRate: 0.5
+            }
+          ])
+        }
+      })
   }, []);
 
   const setRowClassName = (index: number): string => {
