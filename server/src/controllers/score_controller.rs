@@ -45,7 +45,7 @@ fn create(_req: HttpRequest, new_score: web::Json<Score>) -> HttpResponse  {
     }
 }
 
-fn edit(req: HttpRequest, updated_score: web::Json<Score>) -> HttpResponse  {
+fn edit(req: HttpRequest, updated_score: web::Json<Score>) -> HttpResponse {
     match req.match_info().get("id").unwrap().parse::<i32>() {
         Ok(id) => match Score::get_one_by_id(id) {
             Some(mut score) => {
@@ -56,7 +56,7 @@ fn edit(req: HttpRequest, updated_score: web::Json<Score>) -> HttpResponse  {
                     score.id_user = updated_score.id_user
                 }
                 if updated_score.spotify_track_id.len() > 0 {
-                    score.spotify_track_id = updated_score.spotify_track_id
+                    score.spotify_track_id = updated_score.spotify_track_id.to_string();
                 }
                 if updated_score.timestamp > 0 {
                     score.timestamp = updated_score.timestamp
@@ -64,7 +64,7 @@ fn edit(req: HttpRequest, updated_score: web::Json<Score>) -> HttpResponse  {
                 if updated_score.reaction_time > 0 {
                     score.reaction_time = updated_score.reaction_time
                 }
-                score.is_correct = updated_score.is_correct
+                score.is_correct = updated_score.is_correct;
                 match score.update() {
                     Err(mut e) => e.send(),
                     _ => HttpResponse::Ok().json(score),

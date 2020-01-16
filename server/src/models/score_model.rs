@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use postgres::rows::Row;
-use super::genre_model::Genre;
 use crate::database::{query, insert, execute};
 use crate::utils::errors::AppError;
 
@@ -68,7 +67,7 @@ impl Score {
     }
 
     pub fn create(&mut self) -> Result<(), AppError> {
-        match insert("queries/score/insert.sql", &[&self.spotify_id, &self.title, &self.length, &self.id_genre]) {
+        match insert("queries/score/insert.sql", &[&self.id_game, &self.id_user, &self.spotify_track_id, &self.timestamp, &self.is_correct, &self.reaction_time]) {
             Ok(id) => {
                 self.id = id;
                 Ok(())
