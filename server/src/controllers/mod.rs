@@ -1,3 +1,4 @@
+pub mod game_controller;
 pub mod genre_controller;
 pub mod playlist_controller;
 mod playlist_tracks_controller;

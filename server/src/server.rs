@@ -1,3 +1,4 @@
+use crate::controllers::game_controller;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
 use actix_web::{http, web, App, HttpResponse, HttpServer};
@@ -41,6 +42,7 @@ pub async fn start() -> Result<(), ()> {
             .configure(genre_controller::routes)
             .configure(playlist_controller::routes)
             .configure(track_controller::routes)
+            .configure(game_controller::routes)
             .configure(spotify::routes)
             .configure(login::routes)
     })
