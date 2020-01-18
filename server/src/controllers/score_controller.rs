@@ -19,7 +19,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
             )
             .route("/{id}", web::get().to(get_one))
             .route("/{id}", web::delete().to(delete))
-            .route("/group/{id_group}", web::get().to(get_all_from_group)),
+            .route("/game/{id_game}", web::get().to(get_all_from_game)),
     );
 }
 
@@ -27,9 +27,9 @@ fn get_all(_req: HttpRequest) -> HttpResponse {
     HttpResponse::Ok().json(Score::get_all(None))
 }
 
-fn get_all_from_group(req: HttpRequest) -> HttpResponse {
-    match req.match_info().get("id_group").unwrap().parse::<i32>() {
-        Ok(id_group) => HttpResponse::Ok().json(Score::get_all(Some(id_group))),
+fn get_all_from_game(req: HttpRequest) -> HttpResponse {
+    match req.match_info().get("id_game").unwrap().parse::<i32>() {
+        Ok(id_game) => HttpResponse::Ok().json(Score::get_all(Some(id_game))),
         Err(_) => HttpResponse::new(http::StatusCode::NOT_FOUND),
     }
 }

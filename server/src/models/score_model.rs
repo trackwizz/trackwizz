@@ -35,10 +35,10 @@ impl Score {
         }
     }
 
-    pub fn get_all(group_id: Option<i32>) -> Vec<Score> {
+    pub fn get_all(id_game: Option<i32>) -> Vec<Score> {
         let mut scores: Vec<Score> = vec![];
-        match group_id {
-            Some(grp_id) => match query("queries/score/getAllFromGroup.sql", &[&grp_id]) {
+        match id_game {
+            Some(id) => match query("queries/score/getAllFromGame.sql", &[&id]) {
                 Some(rows) => {
                     for row in rows.iter() {
                         scores.push(Score::new_from_row(row));
