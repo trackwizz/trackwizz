@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import dancers from "../../../../../utils/dancers";
 import "./question.css";
 import Dancers from "../../../components/Dancers";
 
@@ -16,9 +15,6 @@ const Question: React.FC<IQuestion> = ({
   incrementScore,
   incrementIndex
 }: IQuestion) => {
-  const [dancer] = useState<string>(
-    dancers[Math.floor(Math.random() * dancers.length)]
-  );
   const [remainingTime, setRemainingTime] = useState<number>(30);
   const [isNextTrackAvailable, setIsNextTrackAvailable] = useState<boolean>(
     false
@@ -66,12 +62,6 @@ const Question: React.FC<IQuestion> = ({
       <div className="text-center">
         <h2 className="fancy-text">Which song is currently playing?</h2>
         <Dancers className={isNextTrackAvailable === false ? "" : "hidden"} />
-        <img
-          height="180px"
-          src={dancer}
-          alt="dancer"
-          className={isNextTrackAvailable === false ? "" : "hidden"}
-        />
       </div>
       <div className="grid-container">
         <div>
