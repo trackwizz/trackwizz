@@ -1,11 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 function createHeader(token: string) {
-  return {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  };
+  return { Authorization: `Bearer ${token}` };
 }
 
 interface IResponse<T> {
