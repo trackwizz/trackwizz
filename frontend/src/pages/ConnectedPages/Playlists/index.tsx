@@ -1,94 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-
-import { IPlaylist, IPlaylistRequest } from "./types";
-import PlaylistContainer from "./components/PlaylistContainer";
-import { axiosRequest, createHeader } from "../components/Dancers/axiosRequest";
-import { getToken } from "../../../utils/auth";
 import { Method } from "axios";
 
-const MusicImage = require("./MusicImage.jpg");
+import PlaylistContainer from "./components/PlaylistContainer";
+import { axiosRequest, createHeader } from "../components/axiosRequest";
+import { getToken } from "../../../utils/auth";
+import { IPlaylist } from "./types";
+import { UserContext } from "../components/UserContext";
 
 const Playlists: React.FC<RouteComponentProps> = () => {
+  const userContext = useContext(UserContext);
+
   const [yourPlaylists, setYourPlaylists] = useState<IPlaylist[] | null>(null);
   const [mostPopularPlaylists, setMostPopularPlaylists] = useState<
     IPlaylist[] | null
   >(null);
 
-  // TODO: Fix this when final request is operational
-  const [testRequest, setTestRequest] = useState<any>(null);
-
   useEffect(() => {
     requestPlaylists();
-
-    // TODO: Prepare to delete this
-    const yourPlaylistRequest: IPlaylistRequest = {
-      data: {
-        yourPlaylistsRequest: [
-          {
-            id: "efuhef",
-            name: "This is a playlist",
-            image: MusicImage
-          },
-          {
-            id: "efuhefde",
-            name: "This is a playlist",
-            image: MusicImage
-          },
-          {
-            id: "efuheffef",
-            name: "This is a playlist",
-            image: MusicImage
-          },
-          {
-            id: "efuhefqwed",
-            name: "This is a playlist",
-            image: MusicImage
-          },
-          {
-            id: "efuhefasd",
-            name: "This is a playlist",
-            image: MusicImage
-          },
-          {
-            id: "efuhefsdv",
-            name: "This is a playlist",
-            image: MusicImage
-          }
-        ],
-        mostPopularPlaylists: [
-          {
-            id: "efuhefvwdewn",
-            name: "This is a playlist",
-            image: MusicImage
-          }
-        ]
-      },
-      complete: true,
-      error: false
-    };
-
-    if (
-      yourPlaylistRequest.complete === true &&
-      yourPlaylistRequest.error === false
-    ) {
-      setYourPlaylists(yourPlaylistRequest.data.yourPlaylistsRequest);
-      setMostPopularPlaylists(yourPlaylistRequest.data.mostPopularPlaylists);
-    }
   }, []);
 
   const requestPlaylists = async () => {
-    const header = createHeader(getToken());
-    const request = {
-      header,
+    const headers = createHeader(getToken());
+
+    if (userContext.user) {
+      const requestUserPlaylists = {
+        headers,
+        method: "GET" as Method,
+        url: `http://localhost:5000/spotify/playlists?userId=${userContext.user.id}`
+      };
+      const responseUserPlaylists = await axiosRequest(requestUserPlaylists);
+
+      if (responseUserPlaylists.complete && !responseUserPlaylists.error) {
+        setYourPlaylists(responseUserPlaylists.data as IPlaylist[]);
+      }
+    }
+
+    const requestMostPopularPlaylists = {
+      headers,
       method: "GET" as Method,
       url: "http://localhost:5000/spotify/playlists"
     };
-    const response = await axiosRequest(request);
+    const responsetMostPopularPlaylists = await axiosRequest(
+      requestMostPopularPlaylists
+    );
 
-    setTestRequest(response);
+    if (
+      responsetMostPopularPlaylists.complete &&
+      !responsetMostPopularPlaylists.error
+    ) {
+      setMostPopularPlaylists(
+        responsetMostPopularPlaylists.data as IPlaylist[]
+      );
+    }
   };
-  console.log(testRequest);
 
   return (
     <React.Fragment>
