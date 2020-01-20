@@ -28,5 +28,5 @@ export class Game {
   mode: number;
 
   @Column({ length: 25 })
-  idSpotify: string;
+  idSpotifyPlaylist: string;
 }
