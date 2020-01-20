@@ -13,7 +13,7 @@ services:
       - ./frontend/src:/usr/app/src
   backend:
     build:
-      context: ./server
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
@@ -30,8 +30,7 @@ services:
     links:
       - db
     volumes:
-      - ./server/src:/server/src
-      - ./server/queries:/server/queries
+      - ./backend/src:/usr/app/src
   db:
     image: postgres:11.6-alpine
     restart: always
