@@ -2,4 +2,4 @@ version: '3.7'
 services:
     backend:
         restart: "no"
-        command: ["yarn", "lint"]
+        command: ["yarn", "test"]
