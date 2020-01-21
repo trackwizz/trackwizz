@@ -22,7 +22,7 @@ interface SpotifyPlaylistsBody {
  * Returns spotify playlists using user token access.
  * If a userID is given, will fetch user playlists. Spotify featured playlists Otherwise.
  *
- * @param token : string, user access token that should be: 'bearer xxxxxxxx'.
+ * @param token : string, user access token that should be: 'Bearer xxxxxxxx'.
  * @param userId : string | undefined, user id.
  */
 export function requestSpotifyPlaylists(token: string, userId: string | undefined): Promise<Array<Playlist>> {
