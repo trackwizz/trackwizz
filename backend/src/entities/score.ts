@@ -1,17 +1,16 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-import { Game } from './game';
-import { User } from './user';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Game } from "./game";
+import { User } from "./user";
 
 @Entity()
 export class Score {
-
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 25 })
   idSpotifyTrack: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: "timestamp" })
   timestamp: Date | null;
 
   @Column()
