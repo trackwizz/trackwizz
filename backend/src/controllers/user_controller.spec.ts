@@ -5,7 +5,7 @@ import { getConnection, getRepository } from "typeorm";
 
 let user: User;
 
-async function createUser() {
+async function createUser(): Promise<User> {
   const user: User = new User();
   user.name = "John";
   await getRepository(User).save(user);

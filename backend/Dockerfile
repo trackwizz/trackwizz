@@ -15,6 +15,7 @@ COPY tsconfig.json .
 COPY .eslintignore .
 COPY .eslintrc.js .
 COPY nodemon.json .
+COPY .prettierrc.js .
 COPY jest.config.js .
 
 COPY __tests__ __tests__
