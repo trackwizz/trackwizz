@@ -4,7 +4,6 @@ import { logger } from "../src/utils/logger";
 import { connectToDatabase } from "../src/utils/database";
 
 beforeAll(async () => {
-  console.log("Running beforeAll script");
   try {
     const connection: Connection | null = await connectToDatabase();
     if (connection === null) {
