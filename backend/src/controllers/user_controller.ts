@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { Controller, get, post, put, del } from './controller';
-import { getRepository } from 'typeorm';
-import { User } from '../entities/user';
+import { NextFunction, Request, Response } from "express";
+import { Controller, get, post, put, del } from "./controller";
+import { getRepository } from "typeorm";
+import { User } from "../entities/user";
 
 export class UserController extends Controller {
   constructor() {
-    super('users');
+    super("users");
   }
 
   @get()
@@ -14,7 +14,7 @@ export class UserController extends Controller {
     res.sendJSON(users);
   }
 
-  @get({ path: '/:id' })
+  @get({ path: "/:id" })
   public async getUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const user: User | undefined = await getRepository(User).findOne(id);
@@ -33,7 +33,7 @@ export class UserController extends Controller {
     res.sendJSON(user);
   }
 
-  @put({ path: '/:id' })
+  @put({ path: "/:id" })
   public async editUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const name: string = req.body.name || null;
@@ -49,7 +49,7 @@ export class UserController extends Controller {
     res.sendJSON(user);
   }
 
-  @del({ path: '/:id' })
+  @del({ path: "/:id" })
   public async deleteTheme(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     await getRepository(User).delete(id);

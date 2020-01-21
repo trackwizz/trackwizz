@@ -1,12 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class Game {
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: "timestamp" })
   startDate: Date | null;
 
   @Column()
@@ -24,7 +23,7 @@ export class Game {
   @Column()
   isPublic: boolean;
 
-  @Column({ type: 'smallint' })
+  @Column({ type: "smallint" })
   mode: number;
 
   @Column({ length: 25 })

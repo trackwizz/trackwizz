@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
-import { Controller, del, get, post, put } from './controller';
-import { getRepository } from 'typeorm';
-import { Game } from '../entities/game';
-import { toDate } from '../utils';
-import { Score } from '../entities/score';
+import { NextFunction, Request, Response } from "express";
+import { Controller, del, get, post, put } from "./controller";
+import { getRepository } from "typeorm";
+import { Game } from "../entities/game";
+import { toDate } from "../utils";
+import { Score } from "../entities/score";
 
 export class GameController extends Controller {
   constructor() {
-    super('games');
+    super("games");
   }
 
   @get()
@@ -16,7 +16,7 @@ export class GameController extends Controller {
     res.send(games);
   }
 
-  @get({ path: '/:id' })
+  @get({ path: "/:id" })
   public async getGame(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const game: Game | undefined = await getRepository(Game).findOne(id);
@@ -27,7 +27,7 @@ export class GameController extends Controller {
     res.sendJSON(game);
   }
 
-  @get({ path: '/:id/scores' })
+  @get({ path: "/:id/scores" })
   public async getGameScores(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const game: Game | undefined = await getRepository(Game).findOne(id);
@@ -35,7 +35,10 @@ export class GameController extends Controller {
       next();
       return;
     }
-    const scores: Score[] = await getRepository(Score).find({ relations: ['user'], where: { game: { id: game.id } } });
+    const scores: Score[] = await getRepository(Score).find({
+      relations: ["user"],
+      where: { game: { id: game.id } },
+    });
     res.send(scores);
   }
 
@@ -54,7 +57,7 @@ export class GameController extends Controller {
     res.sendJSON(game);
   }
 
-  @put({ path: '/:id' })
+  @put({ path: "/:id" })
   public async editGame(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const game: Game | undefined = await getRepository(Game).findOne(id);
@@ -74,7 +77,7 @@ export class GameController extends Controller {
     res.sendJSON(game);
   }
 
-  @del({ path: '/:id' })
+  @del({ path: "/:id" })
   public async deleteGame(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     await getRepository(Game).delete(id);

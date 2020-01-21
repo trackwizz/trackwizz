@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import request from 'request';
-import { Playlist } from '../playlist';
+import { Request, Response } from "express";
+import request from "request";
+import { Playlist } from "../playlist";
 
 interface SpotifyPlaylistsResponse {
   href: string;
@@ -27,11 +27,11 @@ interface SpotifyPlaylistsBody {
  */
 export function requestSpotifyPlaylists(token: string, userId: string | undefined): Promise<Array<Playlist>> {
   const getOptions = {
-    url: userId !== undefined ? `https://api.spotify.com/v1/users/${userId}/playlists` : 'https://api.spotify.com/v1/browse/featured-playlists?country=FR',
+    url: userId !== undefined ? `https://api.spotify.com/v1/users/${userId}/playlists` : "https://api.spotify.com/v1/browse/featured-playlists?country=FR",
     headers: {
       Authorization: token,
     },
-    json: true
+    json: true,
   };
 
   return new Promise<Array<Playlist>>((resolve, reject) => {
@@ -44,7 +44,7 @@ export function requestSpotifyPlaylists(token: string, userId: string | undefine
         } else {
           spotifyPlaylists = body as SpotifyPlaylistsResponse;
         }
-        for(const playlist of spotifyPlaylists.items) {
+        for (const playlist of spotifyPlaylists.items) {
           playlists.push({
             description: playlist.description,
             id: playlist.id,
@@ -67,18 +67,18 @@ export function requestSpotifyPlaylists(token: string, userId: string | undefine
  * @param res
  */
 export async function getSpotifyPlaylists(req: Request, res: Response): Promise<void> {
-  const token: string | undefined = req.header('Authorization');
+  const token: string | undefined = req.header("Authorization");
   const userId: string | undefined = req.query.userId;
   if (token === undefined) {
-    throw ('Bearer authorization missing !')
+    throw "Bearer authorization missing !";
   }
 
   let playlists: Array<Playlist>;
 
-  try{
+  try {
     playlists = await requestSpotifyPlaylists(token, userId);
   } catch (e) {
-    throw ('Error...')
+    throw "Error...";
   }
 
   res.sendJSON(playlists);
