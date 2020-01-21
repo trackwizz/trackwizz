@@ -4,29 +4,25 @@ import { logger } from "./logger";
 import { sleep } from "./index";
 
 const DBConfig = {
-    charset: 'utf8mb4_unicode_ci',
-    database: process.env.DB_LIBRARY || 'main',
-    entities: [
-        path.join(__dirname, '../entities/*.js'),
-        path.join(__dirname, '../entities/*.ts'),
-    ],
-    extra: process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? {
-        ssl: true,
-    } : {},
-    host: process.env.DB_HOST,
-    logging: true,
-    migrations: [
-        path.join(__dirname, '../migration/**/*.js'),
-    ],
-    password: process.env.DB_PASS,
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    subscribers: [
-        path.join(__dirname, '../subscriber/**/*.js'),
-    ],
-    synchronize: true,
-    timezone: 'utc',
-    type: 'postgres' as ('postgres'),
-    username: process.env.DB_USER,
+  charset: "utf8mb4_unicode_ci",
+  database: process.env.DB_LIBRARY || "main",
+  entities: [path.join(__dirname, "../entities/*.js"), path.join(__dirname, "../entities/*.ts")],
+  extra:
+    process.env.NODE_ENV && process.env.NODE_ENV === "production"
+      ? {
+          ssl: true,
+        }
+      : {},
+  host: process.env.DB_HOST,
+  logging: true,
+  migrations: [path.join(__dirname, "../migration/**/*.js")],
+  password: process.env.DB_PASS,
+  port: parseInt(process.env.DB_PORT || "5432", 10),
+  subscribers: [path.join(__dirname, "../subscriber/**/*.js")],
+  synchronize: true,
+  timezone: "utc",
+  type: "postgres" as "postgres",
+  username: process.env.DB_USER,
 };
 
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
