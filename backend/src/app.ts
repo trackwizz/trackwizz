@@ -9,7 +9,7 @@ import { connectToDatabase } from './utils/database';
 async function main(): Promise<void> {
   const connection: Connection | null = await connectToDatabase();
   if (connection === null) {
-    throw new Error('Could not connect to database...');
+    throw new Error("Could not connect to database...");
   }
   logger.info(`Database connection established: ${connection.isConnected}`);
 

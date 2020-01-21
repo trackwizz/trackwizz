@@ -1,7 +1,7 @@
-import path from 'path';
-import { Connection, createConnection } from 'typeorm';
-import { logger } from './logger';
-import { sleep } from './index';
+import path from "path";
+import { Connection, createConnection } from "typeorm";
+import { logger } from "./logger";
+import { sleep } from "./index";
 
 const DBConfig = {
     charset: 'utf8mb4_unicode_ci',
@@ -30,17 +30,17 @@ const DBConfig = {
 };
 
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
-    if (tries === 0) {
-        return null;
-    }
-    let connection: Connection | null = null;
-    try {
-        connection = await createConnection(DBConfig);
-    } catch (e) {
-        logger.error(e);
-        logger.error('Could not connect to database. Retry in 10 seconds...');
-        await sleep(10000);
-        connection = await connectToDatabase(tries - 1);
-    }
-    return connection;
+  if (tries === 0) {
+    return null;
+  }
+  let connection: Connection | null = null;
+  try {
+    connection = await createConnection(DBConfig);
+  } catch (e) {
+    logger.error(e);
+    logger.error("Could not connect to database. Retry in 10 seconds...");
+    await sleep(10000);
+    connection = await connectToDatabase(tries - 1);
+  }
+  return connection;
 }

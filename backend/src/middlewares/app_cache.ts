@@ -1,5 +1,5 @@
-import NodeCache from 'node-cache';
-import { NextFunction, Request, Response } from 'express';
+import NodeCache from "node-cache";
+import { NextFunction, Request, Response } from "express";
 
 const cache = new NodeCache();
 
