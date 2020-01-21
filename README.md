@@ -1,4 +1,7 @@
 # trackwizz
+
+[![Build Status](https://travis-ci.org/trackwizz/trackwizz.svg?branch=master)](https://travis-ci.org/trackwizz/trackwizz)
+
 Blind test application
 
 ## CI Tests
