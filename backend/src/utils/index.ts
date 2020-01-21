@@ -26,3 +26,8 @@ export function toDate(input: number | string): Date | null {
   }
   return new Date(input) || null;
 }
+
+export function getNRandom<T>(array: Array<T>, n: number): Array<T> {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, n);
+}
