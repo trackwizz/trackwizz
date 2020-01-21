@@ -6,7 +6,7 @@ import { sleep } from "./index";
 const DBConfig = {
   charset: "utf8mb4_unicode_ci",
   database: process.env.DB_LIBRARY || "main",
-  entities: [path.join(__dirname, "../entities/*.js")],
+  entities: [path.join(__dirname, "../entities/*.js"), path.join(__dirname, "../entities/*.ts")],
   extra:
     process.env.NODE_ENV && process.env.NODE_ENV === "production"
       ? {
