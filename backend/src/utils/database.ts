@@ -8,6 +8,7 @@ const DBConfig = {
     database: process.env.DB_LIBRARY || 'main',
     entities: [
         path.join(__dirname, '../entities/*.js'),
+        path.join(__dirname, '../entities/*.ts'),
     ],
     extra: process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? {
         ssl: true,
