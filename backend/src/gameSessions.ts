@@ -11,7 +11,7 @@ export class GameSessions {
   }
 
   public new(game: Game): void {
-    this.games[game.title] = game;
+    this.games[game.id] = game;
     this.startGame(game.id.toString());
   }
 
