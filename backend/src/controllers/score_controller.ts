@@ -46,7 +46,7 @@ export class ScoreController extends Controller {
   }
 
   @put({ path: "/:id" })
-  public async editGame(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async editScore(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const score: Score | undefined = await getRepository(Score).findOne(id);
     if (score === undefined) {
@@ -62,7 +62,7 @@ export class ScoreController extends Controller {
   }
 
   @del({ path: "/:id" })
-  public async deleteGame(req: Request, res: Response): Promise<void> {
+  public async deleteScore(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     await getRepository(Score).delete(id);
     res.status(204).send();
