@@ -131,3 +131,11 @@ button:hover {
 .play-button:hover {
   border-color: white;
 }
+
+.all-playlists {
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  padding-bottom: 4rem;
+  height: 100%;
+}
