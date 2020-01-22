@@ -75,7 +75,8 @@ export class GameController extends Controller {
     game.isPublic = req.body.isPublic || false;
     game.mode = parseInt(req.body.mode, 10) || 0;
     game.idSpotifyPlaylist = req.body.idSpotifyPlaylist || null;
-    await getRepository(Game).save(game);
+    const { id } = await getRepository(Game).save(game);
+    game.id = id;
 
     // todo create websocket room and store it in the game object.
 
@@ -85,7 +86,7 @@ export class GameController extends Controller {
     req.gameSessions.new(game);
 
     // send game without tracks
-    const userGame = JSON.parse(JSON.stringify(game));
+    const userGame = { ...game };
     delete userGame.tracks;
     res.sendJSON(userGame);
   }

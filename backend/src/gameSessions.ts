@@ -12,29 +12,29 @@ export class GameSessions {
 
   public new(game: Game): void {
     this.games[game.title] = game;
-    this.startGame(game.title);
+    this.startGame(game.id.toString());
   }
 
-  public startGame(title: string): void {
-    if (this.games[title] === undefined) {
+  public startGame(id: string): void {
+    if (this.games[id] === undefined) {
       return;
     }
-    const game = this.games[title];
+    const game = this.games[id];
     const now: number = new Date().getTime();
     const remainingTime: number = game.startDate.getTime() - now;
     if (remainingTime > 0) {
       setTimeout(async () => {
-        logger.info(`Game ${game.title} is starting !`);
-        await this.updateGame(title);
+        logger.info(`Game ${game.id} is starting !`);
+        await this.updateGame(id);
       }, remainingTime);
     }
   }
 
-  public async updateGame(title: string): Promise<void> {
-    if (this.games[title] === undefined) {
+  public async updateGame(id: string): Promise<void> {
+    if (this.games[id] === undefined) {
       return;
     }
-    const game = this.games[title];
+    const game = this.games[id];
     if (game.updateTimeout !== undefined) {
       clearTimeout(game.updateTimeout);
     }
@@ -56,7 +56,7 @@ export class GameSessions {
     // todo send game-update websocket to game room
 
     game.updateTimeout = setTimeout(async () => {
-      await this.updateGame(title);
+      await this.updateGame(id);
     }, 30 * 1000);
   }
 }
