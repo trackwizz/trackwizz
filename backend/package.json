@@ -11,7 +11,7 @@
     "start": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "yarn eslint ./src --ext .js,.jsx,.ts,.tsx",
     "start-dev": "yarn lint && yarn build && yarn node-start",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "engines": {
     "node": "12.*"
