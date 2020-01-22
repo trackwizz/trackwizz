@@ -3,6 +3,15 @@
   flex: 1;
   width: 100%;
   flex-direction: column;
+  padding: 0 10%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.playlistContainer h1 {
+  margin: 0.5rem 0 1rem 0;
+  font-weight: 400;
+  font-family: "Roboto", cursive;
 }
 
 .playlists {
@@ -16,18 +25,23 @@
 }
 
 .playlists::-webkit-scrollbar {
-  height: 4px;
-  border: 1px solid #d5d5d5;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.26);
+  border: none;
   border-radius: 10px;
 }
 
 .playlists::-webkit-scrollbar-thumb {
-  background: #d5d5d5;
+  background: white;
   border-radius: 10px;
-  width: 10px;
-  width: 0px;
+  width: 0;
 }
 
-.playlistsTitle {
-  margin: 2rem 1rem;
+@media only screen and (max-width: 768px){
+  .playlistContainer {
+    padding: 0;
+  }
+  .playlistContainer h1 {
+    margin: 0.5rem 1rem 1rem 1rem;
+  }
 }
