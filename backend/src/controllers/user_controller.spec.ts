@@ -69,7 +69,6 @@ describe("Test POST, PUT, GET", () => {
         name: user.name,
       });
     expect(res.status).toEqual(200);
-    console.log(res.body);
     user.id = res.body.id;
   }),
     it("should update the user", async () => {
@@ -79,7 +78,6 @@ describe("Test POST, PUT, GET", () => {
           name: "Donald",
         });
       expect(res.status).toEqual(200);
-      console.log(res.body);
     }),
     it("should get the updated user", async () => {
       const res = await request(server)
