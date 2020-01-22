@@ -44,19 +44,19 @@ describe("Test GET, DELETE, GET user", () => {
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(user.id);
     expect(res.body.name).toBe(user.name);
-  }),
-    it("should delete pre-created user", async () => {
-      const res = await request(server)
-        .delete(`/users/${user.id}`)
-        .send();
-      expect(res.status).toEqual(204);
-    }),
-    it("should not return pre-created user", async () => {
-      const res = await request(server)
-        .get(`/users/${user.id}`)
-        .send();
-      expect(res.status).toEqual(404);
-    });
+  });
+  it("should delete pre-created user", async () => {
+    const res = await request(server)
+      .delete(`/users/${user.id}`)
+      .send();
+    expect(res.status).toEqual(204);
+  });
+  it("should not return pre-created user", async () => {
+    const res = await request(server)
+      .get(`/users/${user.id}`)
+      .send();
+    expect(res.status).toEqual(404);
+  });
 });
 
 describe("Test POST, PUT, GET", () => {
@@ -70,21 +70,21 @@ describe("Test POST, PUT, GET", () => {
       });
     expect(res.status).toEqual(200);
     user.id = res.body.id;
-  }),
-    it("should update the user", async () => {
-      const res = await request(server)
-        .put(`/users/${user.id}`)
-        .send({
-          name: "Donald",
-        });
-      expect(res.status).toEqual(200);
-    }),
-    it("should get the updated user", async () => {
-      const res = await request(server)
-        .get(`/users/${user.id}`)
-        .send();
-      expect(res.status).toEqual(200);
-      expect(res.body.id).toBe(user.id);
-      expect(res.body.name).toBe("Donald");
-    });
+  });
+  it("should update the user", async () => {
+    const res = await request(server)
+      .put(`/users/${user.id}`)
+      .send({
+        name: "Donald",
+      });
+    expect(res.status).toEqual(200);
+  });
+  it("should get the updated user", async () => {
+    const res = await request(server)
+      .get(`/users/${user.id}`)
+      .send();
+    expect(res.status).toEqual(200);
+    expect(res.body.id).toBe(user.id);
+    expect(res.body.name).toBe("Donald");
+  });
 });
