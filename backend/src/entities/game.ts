@@ -1,4 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Track } from "../providers/track";
+import Timeout = NodeJS.Timeout;
 
 @Entity()
 export class Game {
@@ -6,7 +8,7 @@ export class Game {
   id: number;
 
   @Column({ type: "timestamp" })
-  startDate: Date | null;
+  startDate: Date;
 
   @Column()
   isEnded: boolean;
@@ -28,4 +30,10 @@ export class Game {
 
   @Column({ length: 25 })
   idSpotifyPlaylist: string;
+
+  /* local data during game */
+  tracks: Array<Track>;
+  currentTrackIndex: number;
+  otherTracksIndexes: Array<number>;
+  updateTimeout: Timeout;
 }

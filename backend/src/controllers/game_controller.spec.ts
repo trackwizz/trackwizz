@@ -1,7 +1,9 @@
 import request from "supertest";
+import { getConnection, getRepository } from "typeorm";
 import server from "../server";
 import { Game } from "../entities/game";
-import { getConnection, getRepository } from "typeorm";
+
+jest.mock("../providers/spotify/tracks");
 
 let game: Game;
 
@@ -94,6 +96,7 @@ describe("Test POST, PUT, GET", () => {
   it("should create a new game", async () => {
     const res = await request(server)
       .post("/games")
+      .auth("ooooohLookAtThisLovelyLittleAccessTokenHeIsSoooooCuteILoveItAlready!!!", { type: "bearer" })
       .send({
         startDate: 1579622125436,
         isEnded: game.isEnded,

@@ -14,7 +14,7 @@ const DBConfig = {
         }
       : {},
   host: process.env.DB_HOST,
-  logging: true,
+  logging: false,
   migrations: [path.join(__dirname, "../migration/**/*.js")],
   password: process.env.DB_PASS,
   port: parseInt(process.env.DB_PORT || "5432", 10),
