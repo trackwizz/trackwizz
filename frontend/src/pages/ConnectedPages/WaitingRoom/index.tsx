@@ -2,16 +2,14 @@ import React, { useState, useEffect } from "react";
 import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
 
 import "./waitingRoom.css";
+import { IRoom } from "../components/types";
+import { createHeader, axiosRequest } from "../components/axiosRequest";
+import { getToken } from "../../../utils/auth";
+import { Method } from "axios";
 
 interface IPlayers {
   id: string;
   name: string;
-}
-
-interface IRequestRoom {
-  data: string;
-  complete: boolean;
-  error: boolean;
 }
 
 interface IRequestPlayers {
@@ -21,81 +19,21 @@ interface IRequestPlayers {
 }
 
 const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
-  const [roomId, setRoomId] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<number | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
   const [nickName, setNickName] = useState<string>("Player");
 
   useEffect(() => {
     if (location.search !== "") {
-      if (
-        location.search
+      if (location.search.slice(1).includes("roomId=") !== undefined) {
+        const roomId = location.search
           .slice(1)
-          .split("&")
-          .find(el => el.includes("playlist")) !== undefined
-      ) {
-        const idPlaylist = (
-          location.search
-            .slice(1)
-            .split("&")
-            .find(el => el.includes("playlist")) || ""
-        )
-          .split("playlist=")
+          .split("roomId=")
           .filter(el => el !== "")
           .shift();
-        console.log(idPlaylist);
 
-        // TODO: Add persons to game
-        // POST "http://localhost:5000/games/"
-        // const requestRoom = axios({
-        //   method: "POST",
-        //   url: "http://localhost:5000/games"
-        //   data: {
-        //     playlistId: "idPlaylist"
-        //   }
-        // });
-        // data: string;
-
-        const requestRoom: IRequestRoom = {
-          data: "roomId",
-          complete: true,
-          error: false
-        };
-
-        if (requestRoom.complete === true && requestRoom.error === false) {
-          setRoomId(requestRoom.data);
-        }
-
-        if (requestRoom.complete === true && requestRoom.error === true) {
-          setError(true);
-        }
-      }
-
-      if (
-        location.search
-          .slice(1)
-          .split("&")
-          .find(el => el.includes("roomId")) !== undefined
-      ) {
-        // TODO: Request room id to add personne to room
-        // POST "http://localhost:8888/game"
-        // const requestRoom = axios({
-        //   method: "PUT",
-        //   url: "http://localhost:8888/game/:id/newPlayer"
-        //   data: {
-        //     player: "hello"
-        //   }
-        // })
-
-        const requestRoom: IRequestRoom = {
-          data: "roomId",
-          complete: true,
-          error: false
-        };
-
-        if (requestRoom.complete === true && requestRoom.error === false) {
-          setRoomId(requestRoom.data);
-        }
+        requestRoomInfo(roomId || "");
       }
 
       // TODO: Since the other players are going to come, this should be a web socket...
@@ -124,6 +62,21 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
   }, []);
 
+  const requestRoomInfo = async (roomId: string) => {
+    const headers = createHeader(getToken());
+
+    const requestRoom = {
+      headers,
+      method: "GET" as Method,
+      url: `http://localhost:5000/games/${roomId}`
+    };
+    const responseRoom = await axiosRequest(requestRoom);
+
+    if (responseRoom.complete === true && responseRoom.error === false) {
+      setRoomId((responseRoom.data as IRoom).id);
+    }
+  };
+
   const handleChangeNickName = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -132,7 +85,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
   const handleStart = (event: React.MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    history.push("/game?gameId=sidfj");
+    history.push(`/game?gameId=${roomId}`);
   };
 
   if (location.search === "" || error === true) {
