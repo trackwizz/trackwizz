@@ -4,6 +4,9 @@ import { getRepository } from "typeorm";
 import { Game } from "../entities/game";
 import { toDate } from "../utils";
 import { Score } from "../entities/score";
+import * as crypto from "crypto";
+import { Track } from "../providers/track";
+import { requestSpotifyTracks } from "../providers/spotify/tracks";
 
 export class GameController extends Controller {
   constructor() {
@@ -44,17 +47,48 @@ export class GameController extends Controller {
 
   @post()
   public async addGame(req: Request, res: Response): Promise<void> {
+    // needed for spotify
+    const token: string | undefined = req.header("Authorization");
+    if (token === undefined) {
+      throw new Error("Bearer authorization missing !");
+    }
+    const idSpotifyPlaylist: string | null = req.body.idSpotifyPlaylist || null;
+    if (idSpotifyPlaylist === null) {
+      throw new Error("Spotify id missing !");
+    }
+
+    let tracks: Array<Track>;
+    try {
+      tracks = await requestSpotifyTracks(token, idSpotifyPlaylist);
+    } catch (e) {
+      throw new Error("Error getting spotify tracks");
+    }
+
+    // save new game
+    const now: number = new Date().getTime();
     const game: Game = new Game();
-    game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) : null;
+    game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) || new Date(now + 30 * 1000) : new Date(now + 30 * 1000);
     game.isEnded = false;
     game.score = 0;
-    game.title = req.body.title || null;
-    game.questionsNumber = 0;
+    game.title = req.body.title || `game-${crypto.randomBytes(4).toString("hex")}`;
+    game.questionsNumber = tracks.length;
     game.isPublic = req.body.isPublic || false;
     game.mode = parseInt(req.body.mode, 10) || 0;
     game.idSpotifyPlaylist = req.body.idSpotifyPlaylist || null;
-    await getRepository(Game).save(game);
-    res.sendJSON(game);
+    const { id } = await getRepository(Game).save(game);
+    game.id = id;
+
+    // todo create websocket room and store it in the game object.
+
+    // set new game session
+    game.tracks = tracks;
+    game.currentTrackIndex = -1;
+    req.gameSessions.new(game);
+
+    // send game without tracks
+    const userGame = { ...game };
+    delete userGame.tracks;
+    res.sendJSON(userGame);
   }
 
   @put({ path: "/:id" })
@@ -65,7 +99,7 @@ export class GameController extends Controller {
       next();
       return;
     }
-    game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) : game.startDate;
+    game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) || new Date(new Date().getTime() + 30 * 1000) : game.startDate;
     game.isEnded = req.body.isEnded !== undefined ? req.body.isEnded : game.isEnded;
     game.score = parseInt(req.body.score, 10) || game.score;
     game.title = req.body.title || game.title;

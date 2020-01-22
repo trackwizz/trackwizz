@@ -1,7 +1,9 @@
 import request from "supertest";
+import { getConnection, getRepository } from "typeorm";
 import server from "../server";
 import { Game } from "../entities/game";
-import { getConnection, getRepository } from "typeorm";
+
+jest.mock("../providers/spotify/tracks");
 
 let game: Game;
 
@@ -65,19 +67,21 @@ describe("Test GET, DELETE, GET game", () => {
     expect(res.body.isPublic).toBe(game.isPublic);
     expect(res.body.mode).toBe(game.mode);
     expect(res.body.idSpotifyPlaylist).toBe(game.idSpotifyPlaylist);
-  }),
-    it("should delete pre-created game", async () => {
-      const res = await request(server)
-        .delete(`/games/${game.id}`)
-        .send();
-      expect(res.status).toEqual(204);
-    }),
-    it("should not return pre-created game", async () => {
-      const res = await request(server)
-        .get(`/games/${game.id}`)
-        .send();
-      expect(res.status).toEqual(404);
-    });
+  });
+
+  it("should delete pre-created game", async () => {
+    const res = await request(server)
+      .delete(`/games/${game.id}`)
+      .send();
+    expect(res.status).toEqual(204);
+  });
+
+  it("should not return pre-created game", async () => {
+    const res = await request(server)
+      .get(`/games/${game.id}`)
+      .send();
+    expect(res.status).toEqual(404);
+  });
 });
 
 describe("Test POST, PUT, GET", () => {
@@ -94,6 +98,7 @@ describe("Test POST, PUT, GET", () => {
   it("should create a new game", async () => {
     const res = await request(server)
       .post("/games")
+      .auth("ooooohLookAtThisLovelyLittleAccessTokenHeIsSoooooCuteILoveItAlready!!!", { type: "bearer" })
       .send({
         startDate: 1579622125436,
         isEnded: game.isEnded,
@@ -106,29 +111,31 @@ describe("Test POST, PUT, GET", () => {
       });
     expect(res.status).toEqual(200);
     game.id = res.body.id;
-  }),
-    it("should update the game", async () => {
-      const res = await request(server)
-        .put(`/games/${game.id}`)
-        .send({
-          questionsNumber: 54,
-          title: "AnOtHeR nEw TiTlE",
-        });
-      expect(res.status).toEqual(200);
-    }),
-    it("should get the updated game", async () => {
-      const res = await request(server)
-        .put(`/games/${game.id}`)
-        .send();
-      expect(res.status).toEqual(200);
-      expect(res.body.id).toBe(game.id);
-      expect(res.body.startDate).toBe("2020-01-21T15:55:25.436Z");
-      expect(res.body.isEnded).toBe(game.isEnded);
-      expect(res.body.score).toBe(game.score);
-      expect(res.body.title).toBe("AnOtHeR nEw TiTlE");
-      expect(res.body.questionsNumber).toBe(54);
-      expect(res.body.isPublic).toBe(game.isPublic);
-      expect(res.body.mode).toBe(game.mode);
-      expect(res.body.idSpotifyPlaylist).toBe(game.idSpotifyPlaylist);
-    });
+  });
+
+  it("should update the game", async () => {
+    const res = await request(server)
+      .put(`/games/${game.id}`)
+      .send({
+        questionsNumber: 54,
+        title: "AnOtHeR nEw TiTlE",
+      });
+    expect(res.status).toEqual(200);
+  });
+
+  it("should get the updated game", async () => {
+    const res = await request(server)
+      .put(`/games/${game.id}`)
+      .send();
+    expect(res.status).toEqual(200);
+    expect(res.body.id).toBe(game.id);
+    expect(res.body.startDate).toBe("2020-01-21T15:55:25.436Z");
+    expect(res.body.isEnded).toBe(game.isEnded);
+    expect(res.body.score).toBe(game.score);
+    expect(res.body.title).toBe("AnOtHeR nEw TiTlE");
+    expect(res.body.questionsNumber).toBe(54);
+    expect(res.body.isPublic).toBe(game.isPublic);
+    expect(res.body.mode).toBe(game.mode);
+    expect(res.body.idSpotifyPlaylist).toBe(game.idSpotifyPlaylist);
+  });
 });
