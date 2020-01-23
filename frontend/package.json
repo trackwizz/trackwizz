@@ -19,7 +19,7 @@
     "universal-cookie": "^4.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --color",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

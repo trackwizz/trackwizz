@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc",
-    "node-start": "node dist/app.js",
+    "node-start": "node dist/app.js --color",
     "start": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "yarn eslint ./src --ext .js,.jsx,.ts,.tsx",
     "start-dev": "yarn lint && yarn build && yarn node-start",
@@ -41,6 +41,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "asciiart-logo": "^0.2.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
