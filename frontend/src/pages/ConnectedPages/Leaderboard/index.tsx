@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import "./leaderboard.css";
-// import axios from "axios";
 
 interface ILeaderboard {
   id: string;
@@ -24,10 +23,6 @@ const Leaderboard: React.FC = () => {
 
   useEffect(() => {
     // TODO: Request Leaderboard from database
-    // GET "/leaderboard"
-    // const requestLeaderboard: IRequestLeaderboard = await axios.get("http://localhost:8888/leaderboard")
-    // data: ILeaderboard[];
-
     const requestLeaderboard: IRequestLeaderboard = {
       data: [
         {
@@ -117,7 +112,7 @@ const Leaderboard: React.FC = () => {
         <tbody>
           {leaderboardTable.map((p, index) => {
             return (
-              <tr key={p.id} className={setRowClassName(index)}>
+              <tr key={index} className={setRowClassName(index)}>
                 <td className={setColumnClassName(index, 0)}>{p.name}</td>
                 <td className={setColumnClassName(index, 1)}>{p.nbGames}</td>
                 <td className={setColumnClassName(index, 2)}>{p.score}</td>
