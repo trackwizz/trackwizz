@@ -12,58 +12,26 @@ interface ILeaderboard {
   successRate: number;
 }
 
-const requestLeaderboard = async() => {
-  const request = {
-    method : "get" as Method,
-    url : "http://localhost:5000/scores",
-    data : {}
-  }
-
-  const response = await axiosRequest(request);
-  return response;
-}
-
 const Leaderboard: React.FC = () => {
   const [leaderboardTable, setLeaderboardTable] = useState<ILeaderboard[] | null>(null);
 
   useEffect(() => {
-    // TODO: Request Leaderboard from database
-    // GET "/leaderboard"
-    // const requestLeaderboard: IRequestLeaderboard = await axios.get("http://localhost:8888/leaderboard")
-    // data: ILeaderboard[];    
-
-    requestLeaderboard()
-      .then((response) => {
-        if (response.complete && !response.error) {
-          setLeaderboardTable(response.data as ILeaderboard[]);
-        }
-        else {
-          setLeaderboardTable([
-            {
-              id: "difh",
-              name: "isdhsij",
-              nbGames: 27,
-              score: 9584,
-              successRate: 0.7
-            },
-            {
-              id: "weovh",
-              name: "xc ijsd",
-              nbGames: 384,
-              score: 38452,
-              successRate: 0.3
-            },
-            {
-              id: "csoj",
-              name: "svsc oc",
-              nbGames: 4975,
-              score: 12938,
-              successRate: 0.5
-            }
-          ])
-        }
-      })
+    requestLeaderboard();
   }, []);
+
+  const requestLeaderboard = async() => {
+    const request = {
+      method : "get" as Method,
+      url : "/leaderboard",
+      data : {}
+    }
+  
+    const response = await axiosRequest(request);
+  
+    if (response.complete && !response.error) {
+      setLeaderboardTable(response.data as ILeaderboard[]);
+    }
+  }
 
   const setRowClassName = (index: number): string => {
     let className = "";
