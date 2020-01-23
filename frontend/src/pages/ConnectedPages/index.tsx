@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Switch, Route, Redirect } from "react-router";
-import { isTokenValid, getToken } from "../../utils/auth";
+import { isTokenValid } from "../../utils/auth";
 
 import "./connectedPages.css";
 
@@ -12,7 +12,7 @@ import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
 import { UserContext } from "./components/UserContext";
 import { Method } from "axios";
-import { createHeader, axiosRequest } from "./components/axiosRequest";
+import { axiosRequest } from "./components/axiosRequest";
 import { IUser } from "./components/UserContext/types";
 
 const ConnectedPages: React.FC = () => {
@@ -23,9 +23,7 @@ const ConnectedPages: React.FC = () => {
   }, []);
 
   const updateUser = async () => {
-    const headers = createHeader(getToken());
     const requestUser = {
-      headers,
       method: "GET" as Method,
       url: "https://api.spotify.com/v1/me"
     };
