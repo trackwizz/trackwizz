@@ -2,13 +2,15 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  min-width: 300px;
-  height: 200px;
+  min-width: 150px;
+  min-height: 150px;
+  width: 150px;
+  height: 150px;
   text-align: center;
   background-color: white;
   border-radius: 8px;
   margin: 8px;
-  box-shadow: 3px 3px 16px 0px rgb(76, 76, 76);
+  border: 2px solid white;
 }
 
 .playlistCard:hover {
@@ -23,5 +25,20 @@
   margin: 0px;
   padding: 16px 0px 4px 0px;
   border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Roboto", cursive;
   background: linear-gradient(rgba(255, 255, 255, 0), black, black);
+}
+
+@media only screen and (max-width: 768px){
+  .playlistCard {
+    min-width: 100px;
+    min-height: 100px;
+    width: 100px;
+    height: 100px;
+  }
+  .playlistTitle {
+    font-size: 0.8rem;
+  }
 }
