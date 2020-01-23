@@ -5,8 +5,14 @@ import { GameSessions } from "../gameSessions";
 const cache = new NodeCache();
 const gameSessions = new GameSessions();
 
+export type RequestWithCache = Request & {
+  gameSessions: GameSessions;
+  appCache: NodeCache;
+};
+
 export function setAppCache(req: Request, _res: Response, next: NextFunction): void {
   req.appCache = cache;
   req.gameSessions = gameSessions;
+
   next();
 }

@@ -78,7 +78,7 @@ export class GameController extends Controller {
     const { id } = await getRepository(Game).save(game);
     game.id = id;
 
-    // todo create websocket room and store it in the game object.
+    game.room = {};
 
     // set new game session
     game.tracks = tracks;
@@ -88,6 +88,7 @@ export class GameController extends Controller {
     // send game without tracks
     const userGame = { ...game };
     delete userGame.tracks;
+    delete userGame.room;
     res.sendJSON(userGame);
   }
 

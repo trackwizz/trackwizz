@@ -16,6 +16,8 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   };
 
   if (hasToRedirect) {
+    // TODO post to add game in backend, retrieve game id.
+    // TODO connect to game via websocket using game id.
     return <Redirect to={`/waitingRoom?${playlist.id}`} />;
   }
 

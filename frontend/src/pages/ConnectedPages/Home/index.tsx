@@ -4,6 +4,20 @@ import { RouteComponentProps, withRouter } from "react-router";
 import "./home.css";
 import dancers from "../../../utils/dancers";
 
+// TODO remove once websocket connection after game creation is implemented.
+const testWebsocket = (): void => {
+  const ws = new WebSocket("ws://localhost:5000/");
+
+  ws.onopen = (): void => {
+    console.log("opened");
+    ws.send(JSON.stringify({ type: "JOIN_GAME", gameId: "abcd" }));
+  };
+
+  ws.onmessage = ({ data }: MessageEvent): void => {
+    console.log(data);
+  };
+};
+
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
   const [dancer] = useState<string>(
     dancers[Math.floor(Math.random() * dancers.length)]
@@ -16,6 +30,8 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
   const handleJoinGame = (): void => {
     history.push("/joinRoom");
   };
+
+  testWebsocket();
 
   return (
     <React.Fragment>
