@@ -1,13 +1,13 @@
 import WebSocket from "ws";
 
-const PING_TIMEOUT = 10000;
+const PING_TIMEOUT_MS = 10000;
 
 export class GameRoomManager {
   private readonly playersConnections: { [origin: string]: { connection: WebSocket; lastPing: number } };
 
   constructor() {
     this.playersConnections = {};
-    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT);
+    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   }
 
   addPlayer = (origin: string, client: WebSocket): void => {
@@ -24,14 +24,14 @@ export class GameRoomManager {
   private removeDisconnectedPlayers = (): void => {
     const now = new Date().getTime();
     Object.keys(this.playersConnections).map((origin: string) => {
-      if (now - this.playersConnections[origin].lastPing > PING_TIMEOUT) {
+      if (now - this.playersConnections[origin].lastPing > PING_TIMEOUT_MS) {
         delete this.playersConnections[origin];
       } else {
         this.updateLastPing(origin);
       }
     });
 
-    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT);
+    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   };
 
   updateLastPing = (origin: string): void => {

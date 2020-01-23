@@ -59,12 +59,11 @@ const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: st
     const content = JSON.parse(msg);
 
     if (content.type == MessageType.PING) {
-      pingHandler(ws, req, content as PingMessage);
+      pingHandler(ws, req, content);
     }
 
     if (content.type == MessageType.JOIN_GAME) {
-      const { gameId } = content;
-      joinGameHandler(ws, req, gameId);
+      joinGameHandler(ws, req, content);
     }
 
     ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Invalid message type." }));
