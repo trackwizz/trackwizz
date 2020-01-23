@@ -3,8 +3,7 @@ import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
 
 import "./waitingRoom.css";
 import { IRoom } from "../components/types";
-import { createHeader, axiosRequest } from "../components/axiosRequest";
-import { getToken } from "../../../utils/auth";
+import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
 
 interface IPlayers {
@@ -63,12 +62,9 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   }, []);
 
   const requestRoomInfo = async (roomId: string) => {
-    const headers = createHeader(getToken());
-
     const requestRoom = {
-      headers,
       method: "GET" as Method,
-      url: `http://localhost:5000/games/${roomId}`
+      url: `/games/${roomId}`
     };
     const responseRoom = await axiosRequest(requestRoom);
 

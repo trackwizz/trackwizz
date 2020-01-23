@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { getToken } from "../../../utils/auth";
 
-function createHeader(token: string) {
-  return { Authorization: `Bearer ${token}` };
-}
+axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
 
 interface IResponse<T> {
   data: null | T;
@@ -38,4 +38,4 @@ async function axiosRequest<T>(req: AxiosRequestConfig): Promise<IResponse<T>> {
   return response;
 }
 
-export { createHeader, axiosRequest };
+export { axiosRequest };

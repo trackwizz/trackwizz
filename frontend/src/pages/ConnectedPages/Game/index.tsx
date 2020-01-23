@@ -23,10 +23,10 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
       console.log(idGame);
 
       // TODO: Request game tracks
-      // GET "http://localhost:5000/game/:id"
+      // GET "/game/:id"
       // const requestRoom = axios({
       //   method: "GET",
-      //   url: "http://localhost:5000/game/:id"
+      //   url: "/game/:id"
       // });
       // data: ITrack[]
 
