@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { IPlaylist } from "../../types";
 import "./playlistCard.css";
 import { Redirect } from "react-router-dom";
-import { createHeader, axiosRequest } from "../../../components/axiosRequest";
-import { getToken } from "../../../../../utils/auth";
+import { axiosRequest } from "../../../components/axiosRequest";
 import { Method } from "axios";
 import { IRoom } from "../../../components/types";
 
@@ -16,12 +15,9 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   const [newRoom, setNewRoom] = useState<null | IRoom>(null);
 
   const handleRedirection = async () => {
-    const headers = createHeader(getToken());
-
     const requestNewRoom = {
-      headers,
       method: "PUT" as Method,
-      url: `http://localhost:5000/games`,
+      url: `/games`,
       data: {
         idSpotifyPlaylist: playlist.id
       }

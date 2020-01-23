@@ -24,7 +24,7 @@ const Leaderboard: React.FC = () => {
 
   useEffect(() => {
     // TODO: Request Leaderboard from database
-    // GET "http://localhost:5000/leaderboard"
+    // GET "/leaderboard"
     // const requestLeaderboard: IRequestLeaderboard = await axios.get("http://localhost:8888/leaderboard")
     // data: ILeaderboard[];
 
