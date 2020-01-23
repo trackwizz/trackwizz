@@ -7,6 +7,7 @@ import { Score } from "../entities/score";
 import * as crypto from "crypto";
 import { Track } from "../providers/track";
 import { requestSpotifyTracks } from "../providers/spotify/tracks";
+import { GameRoomManager } from "../gameRoomManager";
 
 export class GameController extends Controller {
   constructor() {
@@ -78,7 +79,7 @@ export class GameController extends Controller {
     const { id } = await getRepository(Game).save(game);
     game.id = id;
 
-    game.room = {};
+    game.roomManager = new GameRoomManager();
 
     // set new game session
     game.tracks = tracks;
@@ -88,7 +89,7 @@ export class GameController extends Controller {
     // send game without tracks
     const userGame = { ...game };
     delete userGame.tracks;
-    delete userGame.room;
+    delete userGame.roomManager;
     res.sendJSON(userGame);
   }
 

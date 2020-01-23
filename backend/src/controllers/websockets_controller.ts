@@ -8,14 +8,30 @@ enum MessageType {
   ERROR = "ERROR",
 }
 
+const getOrigin = (req: RequestWithCache): string => {
+  const origin = req.headers.origin;
+  if (!origin) {
+    throw new Error("No origin present on the request");
+  }
+
+  return origin.toString();
+};
+
 /* --- Ping --- */
 type PingMessage = {
   type: MessageType.PING;
+  gameId: string;
 };
 
-const pingHandler = (ws: WebSocket, req: RequestWithCache, ping: PingMessage): void => {
-  // TODO keep connection alive.
-  console.log(ws, req, ping);
+const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessage): void => {
+  const game = req.gameSessions.getGame(gameId);
+
+  if (!game) {
+    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Game not found" }));
+    return;
+  }
+
+  game.roomManager.updateLastPing(getOrigin(req));
 };
 
 /* --- Join game --- */
@@ -28,11 +44,11 @@ const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinG
   const game = req.gameSessions.getGame(gameId);
 
   if (!game) {
-    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Game not found" }));
+    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Game not found." }));
     return;
   }
 
-  game.addPlayer(origin, ws);
+  game.roomManager.addPlayer(getOrigin(req), ws);
 
   ws.send(JSON.stringify({ type: MessageType.SUCCESS }));
 };
@@ -50,8 +66,10 @@ const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: st
       const { gameId } = content;
       joinGameHandler(ws, req, gameId);
     }
+
+    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Invalid message type." }));
   } catch (e) {
-    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Invalid message" }));
+    ws.send(JSON.stringify({ type: MessageType.ERROR, message: "Invalid message." }));
   }
 };
 

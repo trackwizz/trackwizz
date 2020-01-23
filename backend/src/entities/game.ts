@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
-import WebSocket from "ws";
+import { GameRoomManager } from "../gameRoomManager";
 
 @Entity()
 export class Game {
@@ -38,15 +38,5 @@ export class Game {
   otherTracksIndexes: Array<number>;
   updateTimeout: Timeout;
 
-  room: {
-    [origin: string]: WebSocket;
-  };
-
-  addPlayer = (origin: string, client: WebSocket): void => {
-    this.room[origin] = client;
-  };
-
-  getPlayer = (origin: string): WebSocket => this.room[origin];
-
-  // todo remove player on disconnect
+  roomManager: GameRoomManager;
 }
