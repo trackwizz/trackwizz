@@ -16,11 +16,11 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
 
   const handleRedirection = async () => {
     const requestNewRoom = {
-      method: "PUT" as Method,
-      url: `/games`,
       data: {
         idSpotifyPlaylist: playlist.id
-      }
+      },
+      method: "POST" as Method,
+      url: "/games"
     };
     const responseNewRoom = await axiosRequest(requestNewRoom);
     console.log(playlist.id);
