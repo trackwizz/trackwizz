@@ -4,27 +4,6 @@ import { RouteComponentProps, withRouter } from "react-router";
 import "./home.css";
 import dancers from "../../../utils/dancers";
 
-// TODO remove once websocket connection after game creation is implemented.
-const ping = (ws: WebSocket): void => {
-  console.log("ping");
-  ws.send(JSON.stringify({ type: "PING", gameId: "abcd" }));
-  setTimeout(() => ping(ws), 1000);
-};
-
-const testWebsocket = (): void => {
-  const ws = new WebSocket("ws://localhost:5000/");
-
-  ws.onopen = (): void => {
-    console.log("opened");
-    ws.send(JSON.stringify({ type: "JOIN_GAME", gameId: "abcd" }));
-    ping(ws);
-  };
-
-  ws.onmessage = ({ data }: MessageEvent): void => {
-    console.log(data);
-  };
-};
-
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
   const [dancer] = useState<string>(
     dancers[Math.floor(Math.random() * dancers.length)]
@@ -37,8 +16,6 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
   const handleJoinGame = (): void => {
     history.push("/joinRoom");
   };
-
-  testWebsocket();
 
   return (
     <React.Fragment>
