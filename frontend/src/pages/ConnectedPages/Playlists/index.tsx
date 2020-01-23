@@ -51,16 +51,18 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   };
 
   return (
-    <React.Fragment>
+    <div className="all-playlists">
       <PlaylistContainer
         title="Your playlists"
         playlists={yourPlaylists || []}
       />
-      <PlaylistContainer
-        title="Most popular playlists"
-        playlists={mostPopularPlaylists || []}
-      />
-    </React.Fragment>
+      <div style={{ marginBottom: "5rem" }}>
+        <PlaylistContainer
+          title="Most popular playlists"
+          playlists={mostPopularPlaylists || []}
+        />
+      </div>
+    </div>
   );
 };
 
