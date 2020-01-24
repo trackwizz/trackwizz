@@ -31,7 +31,7 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   };
 
   if (!!newRoom) {
-    return <Redirect to={`/waitingRoom?playlist=${newRoom.id}`} />;
+    return <Redirect to={`/waitingRoom?roomId=${newRoom.id}`} />;
   }
 
   return (
