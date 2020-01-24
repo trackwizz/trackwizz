@@ -123,16 +123,6 @@
       "error",
       {
         "rules": {
-          "ban": [
-            true,
-            {
-              "name": [
-                "*",
-                "forEach"
-              ],
-              "message": "Use a regular for loop instead."
-            }
-          ],
           "import-spacing": true,
           "jsdoc-format": true,
           "no-reference-import": true,
