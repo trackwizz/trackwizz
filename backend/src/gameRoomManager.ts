@@ -17,6 +17,8 @@ export class GameRoomManager {
     };
   };
 
+  getPlayers = (): string[] => Object.keys(this.playersConnections);
+
   broadcastMessage = (message: object): void => {
     Object.keys(this.playersConnections).forEach(origin => this.playersConnections[origin].connection.send(JSON.stringify(message)));
   };

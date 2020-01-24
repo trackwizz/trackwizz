@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
 import { IRoom } from "../components/types";
 import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
+import ConnectionManager from "../../../websockets/ConnectionManager";
+import MessageType, {
+  WaitingRoomUpdateMessage
+} from "../../../websockets/MessageType";
 
 interface IPlayers {
   id: string;
   name: string;
-}
-
-interface IRequestPlayers {
-  data: IPlayers[];
-  complete: boolean;
-  error: boolean;
 }
 
 const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
@@ -34,32 +32,20 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
         requestRoomInfo(roomId || "");
       }
-
-      // TODO: Since the other players are going to come, this should be a web socket...
-      const requestPlayers: IRequestPlayers = {
-        data: [
-          {
-            id: "aojs",
-            name: "Player 1"
-          },
-          {
-            id: "dovjsoc",
-            name: "Player 2"
-          }
-        ],
-        complete: true,
-        error: false
-      };
-
-      if (requestPlayers.complete === true && requestPlayers.error === false) {
-        setPlayers(requestPlayers.data);
-      }
-
-      if (requestPlayers.complete === true && requestPlayers.error === true) {
-        setError(true);
-      }
     }
-  }, []);
+  }, [location.search]);
+
+  const onWaitingRoomUpdateReceived = ({
+    players
+  }: WaitingRoomUpdateMessage): void => {
+    setPlayers(players.map((name, index) => ({ id: index.toString(), name })));
+    setError(false);
+  };
+
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.WAITING_ROOM_UPDATE,
+    onWaitingRoomUpdateReceived
+  );
 
   const requestRoomInfo = async (roomId: string) => {
     const requestRoom = {

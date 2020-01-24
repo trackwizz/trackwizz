@@ -1,6 +1,7 @@
 import MessageType from "./MessageType";
 
-type MessageCallback = (message: { type: MessageType } & object) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MessageCallback = (message: any) => void;
 
 /**
  * Singleton class providing the websocket connection during the game.
