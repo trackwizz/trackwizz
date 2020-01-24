@@ -67,4 +67,23 @@ export class ScoreController extends Controller {
     await getRepository(Score).delete(id);
     res.status(204).send();
   }
+
+  @get({ path: "/leaderboard" })
+  public async getLeaderboard(_req: Request, res: Response): Promise<void> {
+    const leaderboard = await getRepository(Score)
+      .createQueryBuilder("score")
+      .select("score.user")
+      .addSelect("COUNT(score.user)", "count")
+      .where("score.isCorrect = :isCorrect", { isCorrect: true })
+      .groupBy("score.user")
+      .orderBy("score.user", "DESC")
+      .getRawMany();
+    res.send(
+      // Change count type to int (it is a string probably because of a typeorm bug)
+      leaderboard.map(score => ({
+        ...score,
+        count: parseInt(score.count),
+      })),
+    );
+  }
 }
