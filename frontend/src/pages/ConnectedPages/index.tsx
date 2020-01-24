@@ -45,7 +45,7 @@ const ConnectedPages: React.FC = () => {
   }
 
   return (
-    <div className="flex-container column">
+    <div className="flex-container column height-100">
       <Switch>
         <Route path="/game" component={Game} />
         <Route path="/playlists" component={Playlists} />

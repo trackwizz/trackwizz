@@ -59,4 +59,8 @@ export class GameSessions {
       await this.updateGame(id);
     }, 30 * 1000);
   }
+
+  public getGame(id: string): Game | undefined {
+    return this.games[id];
+  }
 }

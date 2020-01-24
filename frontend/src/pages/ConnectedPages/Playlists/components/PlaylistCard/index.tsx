@@ -11,19 +11,40 @@ interface IProps {
   playlist: IPlaylist;
 }
 
+// BEGIN TODO place that in a wrapper for components to easily access
+const ping = (ws: WebSocket, gameId: number): void => {
+  console.log("ping");
+  ws.send(JSON.stringify({ type: "PING", gameId }));
+  setTimeout(() => ping(ws, gameId), 1000);
+};
+
+const testWebsocket = (gameId: number): void => {
+  const ws = new WebSocket("ws://localhost:5000/");
+
+  ws.onopen = (): void => {
+    console.log("The websocket connection is opened");
+    ws.send(JSON.stringify({ type: "JOIN_GAME", gameId }));
+    ping(ws, gameId);
+  };
+
+  ws.onmessage = ({ data }: MessageEvent): void => {
+    console.log(data);
+  };
+};
+// END TODO
+
 const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   const [newRoom, setNewRoom] = useState<null | IRoom>(null);
 
   const handleRedirection = async () => {
     const requestNewRoom = {
-      method: "PUT" as Method,
-      url: `/games`,
       data: {
         idSpotifyPlaylist: playlist.id
-      }
+      },
+      method: "POST" as Method,
+      url: "/games"
     };
     const responseNewRoom = await axiosRequest(requestNewRoom);
-    console.log(playlist.id);
 
     if (responseNewRoom.complete && !responseNewRoom.error) {
       setNewRoom(responseNewRoom.data as IRoom);
@@ -31,7 +52,8 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   };
 
   if (!!newRoom) {
-    return <Redirect to={`/waitingRoom?playlist=${newRoom.id}`} />;
+    testWebsocket(newRoom.id);
+    return <Redirect to={`/waitingRoom?roomId=${newRoom.id}`} />;
   }
 
   return (
