@@ -22,14 +22,6 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
         .shift();
       console.log(idGame);
 
-      // TODO: Request game tracks
-      // GET "/game/:id"
-      // const requestRoom = axios({
-      //   method: "GET",
-      //   url: "/game/:id"
-      // });
-      // data: ITrack[]
-
       const request: ITraksRequest = {
         data: [
           {

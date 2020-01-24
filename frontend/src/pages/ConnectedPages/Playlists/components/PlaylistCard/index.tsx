@@ -23,7 +23,6 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
       url: "/games"
     };
     const responseNewRoom = await axiosRequest(requestNewRoom);
-    console.log(playlist.id);
 
     if (responseNewRoom.complete && !responseNewRoom.error) {
       setNewRoom(responseNewRoom.data as IRoom);
