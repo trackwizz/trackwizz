@@ -22,7 +22,7 @@ const testWebsocket = (gameId: number): void => {
   const ws = new WebSocket("ws://localhost:5000/");
 
   ws.onopen = (): void => {
-    console.log("opened");
+    console.log("The websocket connection is opened");
     ws.send(JSON.stringify({ type: "JOIN_GAME", gameId }));
     ping(ws, gameId);
   };
