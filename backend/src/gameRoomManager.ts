@@ -1,6 +1,7 @@
 import WebSocket from "ws";
+import { OutboundMessageType } from "./controllers/websockets_controller";
 
-const PING_TIMEOUT_MS = 10000;
+const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
   private readonly playersConnections: { [origin: string]: { connection: WebSocket; lastPing: number } };
@@ -25,13 +26,22 @@ export class GameRoomManager {
 
   private removeDisconnectedPlayers = (): void => {
     const now = new Date().getTime();
+    let hasRemovedPlayers = false;
     Object.keys(this.playersConnections).map((origin: string) => {
       if (now - this.playersConnections[origin].lastPing > PING_TIMEOUT_MS) {
         delete this.playersConnections[origin];
+        hasRemovedPlayers = true;
       } else {
         this.updateLastPing(origin);
       }
     });
+
+    if (hasRemovedPlayers) {
+      this.broadcastMessage({
+        type: OutboundMessageType.WAITING_ROOM_UPDATE,
+        players: this.getPlayers(),
+      });
+    }
 
     setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   };

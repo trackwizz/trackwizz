@@ -1,12 +1,12 @@
 import WebSocket from "ws";
 import { RequestWithCache } from "../middlewares/app_cache";
 
-enum InboundMessageType {
+export enum InboundMessageType {
   PING = "PING",
   JOIN_GAME = "JOIN_GAME",
 }
 
-enum OutboundMessageType {
+export enum OutboundMessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   SUCCESS = "SUCCESS",
   ERROR = "ERROR",
