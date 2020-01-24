@@ -17,7 +17,7 @@ const Playlists: React.FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     requestPlaylists();
-  }, []);
+  }, [userContext.user]);
 
   const requestPlaylists = async () => {
     if (userContext.user) {
