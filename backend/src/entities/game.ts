@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
+import { GameRoomManager } from "../gameRoomManager";
 
 @Entity()
 export class Game {
@@ -36,4 +37,6 @@ export class Game {
   currentTrackIndex: number;
   otherTracksIndexes: Array<number>;
   updateTimeout: Timeout;
+
+  roomManager: GameRoomManager;
 }
