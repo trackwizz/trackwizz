@@ -5,33 +5,35 @@ import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
 
 interface ILeaderboard {
-  id: string;
-  name: string;
-  nbGames: number;
-  score: number;
-  successRate: number;
+  userId: string;
+  userName: string;
+  gamesNumber: number;
+  answers: number;
+  successes: number;
 }
 
 const Leaderboard: React.FC = () => {
-  const [leaderboardTable, setLeaderboardTable] = useState<ILeaderboard[] | null>(null);
+  const [leaderboardTable, setLeaderboardTable] = useState<
+    ILeaderboard[] | null
+  >(null);
 
   useEffect(() => {
     requestLeaderboard();
   }, []);
 
-  const requestLeaderboard = async() => {
+  const requestLeaderboard = async () => {
     const request = {
-      method : "get" as Method,
-      url : "/leaderboard",
-      data : {}
-    }
-  
+      method: "get" as Method,
+      url: "/scores/leaderboard",
+      data: {}
+    };
+
     const response = await axiosRequest(request);
-  
+
     if (response.complete && !response.error) {
       setLeaderboardTable(response.data as ILeaderboard[]);
     }
-  }
+  };
 
   const setRowClassName = (index: number): string => {
     let className = "";
@@ -86,12 +88,14 @@ const Leaderboard: React.FC = () => {
         <tbody>
           {leaderboardTable.map((p, index) => {
             return (
-              <tr key={p.id} className={setRowClassName(index)}>
-                <td className={setColumnClassName(index, 0)}>{p.name}</td>
-                <td className={setColumnClassName(index, 1)}>{p.nbGames}</td>
-                <td className={setColumnClassName(index, 2)}>{p.score}</td>
+              <tr key={p.userId} className={setRowClassName(index)}>
+                <td className={setColumnClassName(index, 0)}>{p.userName}</td>
+                <td className={setColumnClassName(index, 1)}>
+                  {p.gamesNumber}
+                </td>
+                <td className={setColumnClassName(index, 2)}>{p.successes}</td>
                 <td className={setColumnClassName(index, 3)}>
-                  {p.successRate}
+                  {Math.round((p.successes / p.answers) * 100) / 100}
                 </td>
               </tr>
             );
