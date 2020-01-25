@@ -40,8 +40,6 @@ const ConnectedPages: React.FC = () => {
     }
   };
 
-  console.log(userContext.user);
-
   if (!isTokenValid()) {
     return <Redirect to="/login" />;
   }
