@@ -24,8 +24,7 @@ const Leaderboard: React.FC = () => {
   const requestLeaderboard = async () => {
     const request = {
       method: "get" as Method,
-      url: "/scores/leaderboard",
-      data: {}
+      url: "/scores/leaderboard"
     };
 
     const response = await axiosRequest(request);
