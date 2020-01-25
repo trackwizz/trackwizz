@@ -12,13 +12,17 @@ import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
 import { UserContext } from "./components/UserContext";
 import { Method } from "axios";
-import { axiosRequest } from "./components/axiosRequest";
+import {
+  axiosRequest,
+  setDefaultAuthorization
+} from "./components/axiosRequest";
 import { IUser } from "./components/UserContext/types";
 
 const ConnectedPages: React.FC = () => {
   const userContext = useContext(UserContext);
 
   useEffect(() => {
+    setDefaultAuthorization();
     updateUser();
   }, []);
 
@@ -35,6 +39,8 @@ const ConnectedPages: React.FC = () => {
       }
     }
   };
+
+  console.log(userContext.user);
 
   if (!isTokenValid()) {
     return <Redirect to="/login" />;
