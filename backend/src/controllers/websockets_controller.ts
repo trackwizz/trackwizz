@@ -8,7 +8,6 @@ export enum InboundMessageType {
 
 export enum OutboundMessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
-  SUCCESS = "SUCCESS",
   ERROR = "ERROR",
 }
 
