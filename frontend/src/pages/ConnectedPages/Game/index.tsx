@@ -21,6 +21,7 @@ const Game: React.FC<RouteComponentProps> = () => {
     console.log(`Received question ${question}`);
     setPreviewUrl(question.previewUrl);
     setAnswers(question.answers);
+    setStep(IGameEnum.QUIZZ);
   };
 
   ConnectionManager.getInstance().registerCallbackForMessage(
@@ -28,7 +29,9 @@ const Game: React.FC<RouteComponentProps> = () => {
     onQuestionUpdateReceived
   );
 
-  const handleAnswer = () => (): void => {};
+  const handleAnswer = (idTrack: string): void => {
+    console.log(idTrack);
+  };
 
   return (
     <div className="height-100">

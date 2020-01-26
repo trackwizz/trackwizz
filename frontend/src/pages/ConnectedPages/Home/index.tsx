@@ -18,9 +18,7 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <React.Fragment>
-      <h1>{`Bonjour ${
-        userContext.user ? userContext.user.display_name : ""
-      }`}</h1>
+      <h1>{`Hi ${userContext.user ? userContext.user.display_name : ""}`}</h1>
       <Dancers />
       <div className="homeContainer">
         <button className="homeButton" onClick={handleNewGame}>

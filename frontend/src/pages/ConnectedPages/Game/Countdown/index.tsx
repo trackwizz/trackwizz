@@ -6,7 +6,7 @@ interface ICountdown {
 }
 
 const Countdown: React.FC<ICountdown> = ({ setStep }: ICountdown) => {
-  const [countdown, setCountdown] = useState<number>(3);
+  const [countdown, setCountdown] = useState<number>(30);
 
   useEffect(() => {
     setTimeout(() => {
