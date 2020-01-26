@@ -60,8 +60,16 @@ export class GameSessions {
     otherTracksIndexes.splice(game.currentTrackIndex, 1);
     game.otherTracksIndexes = getNRandom(otherTracksIndexes, 3);
 
+    // Make an array with the indexes of the 4 tracks
     const answersIndexes: number[] = game.otherTracksIndexes.concat([game.currentTrackIndex]);
-    const answers: Answer[] = answersIndexes.map((index: number) => game.tracks[index]).map((track: Track) => ({ id: track.id, name: track.name, artist: track.artist }));
+    // Get the actual answers
+    // Step 1: get the tracks data
+    // Step 2: keep only id, name and artist
+    // Step 3: shuffle the answers
+    const answers: Answer[] = getNRandom(
+      answersIndexes.map((index: number) => game.tracks[index]).map((track: Track) => ({ id: track.id, name: track.name, artist: track.artist })),
+      4,
+    );
 
     logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}!`);
     logger.info(`All guesses: ${JSON.stringify(answers)}`);
