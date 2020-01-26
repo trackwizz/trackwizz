@@ -2,6 +2,14 @@ import { Game } from "./entities/game";
 import { logger } from "./utils/logger";
 import { getRepository } from "typeorm";
 import { getNRandom } from "./utils";
+import { OutboundMessageType } from "./controllers/websockets_controller";
+import { Track } from "./providers/track";
+
+class Answer {
+  public id: string;
+  public name: string;
+  public artist: string;
+}
 
 export class GameSessions {
   private readonly games: { [key: string]: Game };
@@ -51,9 +59,18 @@ export class GameSessions {
     const otherTracksIndexes = Array.from(Array(game.questionsNumber).keys());
     otherTracksIndexes.splice(game.currentTrackIndex, 1);
     game.otherTracksIndexes = getNRandom(otherTracksIndexes, 3);
+
+    const answersIndexes: number[] = game.otherTracksIndexes.concat([game.currentTrackIndex]);
+    const answers: Answer[] = answersIndexes.map((index: number) => game.tracks[index]).map((track: Track) => ({ id: track.id, name: track.name, artist: track.artist }));
+
     logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}!`);
-    logger.info(`Other guess: ${JSON.stringify(game.otherTracksIndexes)}`);
-    // todo send game-update websocket to game room
+    logger.info(`All guesses: ${JSON.stringify(answers)}`);
+
+    game.roomManager.broadcastMessage({
+      type: OutboundMessageType.QUESTION_UPDATE,
+      previewUrl: game.tracks[game.currentTrackIndex].previewUrl,
+      answers,
+    });
 
     game.updateTimeout = setTimeout(async () => {
       await this.updateGame(id);
