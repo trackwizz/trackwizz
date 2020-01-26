@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import { axiosRequest } from "../../../components/axiosRequest";
 import { Method } from "axios";
 import { IRoom } from "../../../components/types";
-import ConnectionManager from "../../../../../websockets/ConnectionManager";
 
 interface IProps {
   playlist: IPlaylist;
@@ -31,7 +30,6 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   };
 
   if (!!newRoom) {
-    ConnectionManager.createInstance(newRoom.id.toString());
     return <Redirect to={`/waitingRoom?roomId=${newRoom.id}`} />;
   }
 
