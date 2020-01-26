@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./joinRoom.css";
+import ConnectionManager from "../../../websockets/ConnectionManager";
 
 const JoinRoom: React.FC = () => {
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -26,6 +27,7 @@ const JoinRoom: React.FC = () => {
   };
 
   if (isRedirected) {
+    ConnectionManager.createInstance(roomId!);
     return <Redirect to={`/waitingRoom?roomId=${roomId}`} />;
   }
 
