@@ -4,7 +4,7 @@ enum MessageType {
   QUESTION_UPDATE = "QUESTION_UPDATE",
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE"
 }
-interface Answer {
+export interface Answer {
   id: string;
   name: string;
   artist: string;
