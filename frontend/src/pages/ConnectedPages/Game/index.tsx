@@ -13,8 +13,8 @@ import Question from "./Question";
 
 const Game: React.FC<RouteComponentProps> = () => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<Answer[] | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [score] = useState<number>(0);
 
   const onQuestionUpdateReceived = (question: QuestionUpdateMessage): void => {
