@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { Switch, Route, Redirect } from "react-router";
 import { isTokenValid } from "../../utils/auth";
 
@@ -10,10 +10,42 @@ import Playlists from "./Playlists";
 import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
+import { UserContext } from "./components/UserContext";
+import { Method } from "axios";
+import {
+  axiosRequest,
+  setDefaultAuthorization
+} from "./components/axiosRequest";
+import { IUser } from "./components/UserContext/types";
 
 const ConnectedPages: React.FC = () => {
+  const userContext = useContext(UserContext);
+
+  useEffect(() => {
+    setDefaultAuthorization();
+    updateUser();
+  }, []);
+
+  const updateUser = async () => {
+    const requestUser = {
+      method: "GET" as Method,
+      url: "https://api.spotify.com/v1/me"
+    };
+    const responseUser = await axiosRequest(requestUser);
+
+    if (responseUser.complete && !responseUser.error) {
+      if (userContext.setUser) {
+        userContext.setUser(responseUser.data as IUser);
+      }
+    }
+  };
+
   if (!isTokenValid()) {
     return <Redirect to="/login" />;
+  }
+
+  if (!userContext.user) {
+    return <div />;
   }
 
   return (

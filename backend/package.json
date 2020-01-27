@@ -11,7 +11,7 @@
     "start": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "yarn eslint ./src --ext .js,.jsx,.ts,.tsx",
     "start-dev": "yarn lint && yarn build && yarn node-start",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "engines": {
     "node": "12.*"
@@ -28,6 +28,7 @@
     "@types/node-cache": "^4.2.5",
     "@types/request": "^2.48.4",
     "@types/supertest": "^2.0.8",
+    "@types/ws": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
@@ -46,6 +47,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "helmet": "^3.21.2",
     "json-stable-stringify": "^1.0.1",
     "morgan": "^1.9.1",

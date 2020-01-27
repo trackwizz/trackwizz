@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import "./home.css";
-import dancers from "../../../utils/dancers";
+import Dancers from "../components/Dancers";
+import { UserContext } from "../components/UserContext";
 
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
-  const [dancer] = useState<string>(
-    dancers[Math.floor(Math.random() * dancers.length)]
-  );
+  const userContext = useContext(UserContext);
 
   const handleNewGame = (): void => {
     history.push("/playlists");
@@ -19,7 +18,10 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <React.Fragment>
-      <img height="180px" src={dancer} alt="dancer" />
+      <h1>{`Bonjour ${
+        userContext.user ? userContext.user.display_name : ""
+      }`}</h1>
+      <Dancers />
       <div className="homeContainer">
         <button className="homeButton" onClick={handleNewGame}>
           Create new game

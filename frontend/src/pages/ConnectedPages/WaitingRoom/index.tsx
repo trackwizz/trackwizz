@@ -1,62 +1,63 @@
-import React, { useState, useEffect } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
+import { IRoom } from "../components/types";
+import { axiosRequest } from "../components/axiosRequest";
+import { Method } from "axios";
+import ConnectionManager from "../../../websockets/ConnectionManager";
+import MessageType, {
+  WaitingRoomUpdateMessage
+} from "../../../websockets/MessageType";
 
 interface IPlayers {
   id: string;
   name: string;
 }
 
-interface IRequestRoom {
-  data: string;
-  complete: boolean;
-  error: boolean;
-}
-
-interface IRequestPlayers {
-  data: IPlayers[];
-  complete: boolean;
-  error: boolean;
-}
-
-const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
-  const [roomId, setRoomId] = useState<string | null>(null);
+const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
+  const [roomId, setRoomId] = useState<number | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
   const [nickName, setNickName] = useState<string>("Player");
 
   useEffect(() => {
-    // TODO: Request room id so others can join
-    const requestRoom: IRequestRoom = {
-      data: "idRoom",
-      complete: true,
-      error: false
-    };
+    if (location.search !== "") {
+      if (location.search.slice(1).includes("roomId=") !== undefined) {
+        const roomId = location.search
+          .slice(1)
+          .split("roomId=")
+          .filter(el => el !== "")
+          .shift();
 
-    // TODO: Since the other players are going to come, this should be a web socket...
-    const requestPlayers: IRequestPlayers = {
-      data: [
-        {
-          id: "aojs",
-          name: "Player 1"
-        },
-        {
-          id: "dovjsoc",
-          name: "Player 2"
-        }
-      ],
-      complete: true,
-      error: false
-    };
-
-    if (requestRoom.complete === true && requestRoom.error === false) {
-      setRoomId(requestRoom.data);
+        requestRoomInfo(roomId || "");
+      }
     }
+  }, [location.search]);
 
-    if (requestPlayers.complete === true && requestPlayers.error === false) {
-      setPlayers(requestPlayers.data);
+  const onWaitingRoomUpdateReceived = ({
+    players
+  }: WaitingRoomUpdateMessage): void => {
+    setPlayers(players.map((name, index) => ({ id: index.toString(), name })));
+    setError(false);
+  };
+
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.WAITING_ROOM_UPDATE,
+    onWaitingRoomUpdateReceived
+  );
+
+  const requestRoomInfo = async (roomId: string) => {
+    const requestRoom = {
+      method: "GET" as Method,
+      url: `/games/${roomId}`
+    };
+    const responseRoom = await axiosRequest(requestRoom);
+
+    if (responseRoom.complete === true && responseRoom.error === false) {
+      setRoomId((responseRoom.data as IRoom).id);
     }
-  }, []);
+  };
 
   const handleChangeNickName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -66,8 +67,12 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history }) => {
 
   const handleStart = (event: React.MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
-    history.push("/game");
+    history.push(`/game?gameId=${roomId}`);
   };
+
+  if (location.search === "" || error === true) {
+    return <Redirect to={"/"} />;
+  }
 
   return (
     <React.Fragment>
