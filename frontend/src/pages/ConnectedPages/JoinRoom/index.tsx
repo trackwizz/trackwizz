@@ -3,8 +3,8 @@ import { Redirect } from "react-router-dom";
 
 import "./joinRoom.css";
 import ConnectionManager from "../../../websockets/ConnectionManager";
-import {Method} from "axios";
-import {axiosRequest} from "../components/axiosRequest";
+import { Method } from "axios";
+import { axiosRequest } from "../components/axiosRequest";
 
 const JoinRoom: React.FC = () => {
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -26,9 +26,9 @@ const JoinRoom: React.FC = () => {
       method: "GET" as Method,
       url: `/games/${roomId}`
     };
-    const game = (await axiosRequest(checkGameExists)).data;
+    const error = (await axiosRequest(checkGameExists)).error;
 
-    if (!game) {
+    if (error) {
       setGameNotFound(true);
       return;
     }
