@@ -36,11 +36,16 @@ export class GameRoomManager {
       }
     });
 
-    if (hasRemovedPlayers) {
-      this.broadcastMessage({
-        type: OutboundMessageType.WAITING_ROOM_UPDATE,
-        players: this.getPlayers(),
-      });
+    try {
+      if (hasRemovedPlayers && Object.keys(this.playersConnections).length > 0) {
+        this.broadcastMessage({
+          type: OutboundMessageType.WAITING_ROOM_UPDATE,
+          players: this.getPlayers(),
+        });
+      }
+    } catch (e) {
+      // pass
+      console.error(e);
     }
 
     setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
