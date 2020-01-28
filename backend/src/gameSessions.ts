@@ -48,6 +48,11 @@ export class GameSessions {
     }
 
     game.currentTrackIndex += 1;
+    while (game.currentTrackIndex < game.tracks.length && game.tracks[game.currentTrackIndex].previewUrl == null) {
+      // Skip tracks that don't have a preview URL
+      game.currentTrackIndex += 1;
+    }
+
     if (game.currentTrackIndex >= game.tracks.length) {
       game.isEnded = true;
       await getRepository(Game).save(game);
@@ -71,7 +76,7 @@ export class GameSessions {
       4,
     );
 
-    logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}!`);
+    logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}. Preview url: ${game.tracks[game.currentTrackIndex].previewUrl}`);
     logger.info(`All guesses: ${JSON.stringify(answers)}`);
 
     game.roomManager.broadcastMessage({
