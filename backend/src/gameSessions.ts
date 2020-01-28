@@ -20,22 +20,13 @@ export class GameSessions {
 
   public new(game: Game): void {
     this.games[game.id] = game;
-    this.startGame(game.id.toString());
   }
 
-  public startGame(id: string): void {
+  public async startGame(id: string): Promise<void> {
     if (this.games[id] === undefined) {
       return;
     }
-    const game = this.games[id];
-    const now: number = new Date().getTime();
-    const remainingTime: number = game.startDate.getTime() - now;
-    if (remainingTime > 0) {
-      setTimeout(async () => {
-        logger.info(`Game ${game.id} is starting !`);
-        await this.updateGame(id);
-      }, remainingTime);
-    }
+    await this.updateGame(id);
   }
 
   public async updateGame(id: string): Promise<void> {

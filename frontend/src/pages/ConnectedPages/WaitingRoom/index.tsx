@@ -47,6 +47,12 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     onWaitingRoomUpdateReceived
   );
 
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.START_GAME,
+    ({ countdownMs }) =>
+      history.push(`/game?gameId=${roomId}&countdownMs=${countdownMs}`)
+  );
+
   const requestRoomInfo = async (roomId: string) => {
     const requestRoom = {
       method: "GET" as Method,
@@ -67,6 +73,10 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
   const handleStart = (event: React.MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
+    ConnectionManager.getInstance().sendMessage({
+      gameId: roomId,
+      type: MessageType.REQUEST_START_GAME
+    });
     history.push(`/game?gameId=${roomId}`);
   };
 

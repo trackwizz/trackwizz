@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
 import { IGameEnum } from "./types";
 import Score from "./Score";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   QuestionUpdateMessage,
   Answer
@@ -11,7 +12,7 @@ import MessageType, {
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 
-const Game: React.FC<RouteComponentProps> = () => {
+const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -24,6 +25,8 @@ const Game: React.FC<RouteComponentProps> = () => {
     setStep(IGameEnum.QUIZZ);
   };
 
+  const countdownMs = querystring.parse(location.search).countdownMs as string;
+
   ConnectionManager.getInstance().registerCallbackForMessage(
     MessageType.QUESTION_UPDATE,
     onQuestionUpdateReceived
@@ -35,7 +38,12 @@ const Game: React.FC<RouteComponentProps> = () => {
 
   return (
     <div className="height-100">
-      {step === IGameEnum.COUNTDOWN && <Countdown setStep={setStep} />}
+      {step === IGameEnum.COUNTDOWN && (
+        <Countdown
+          setStep={setStep}
+          countdownMs={parseInt(countdownMs) || 3000}
+        />
+      )}
       {step === IGameEnum.QUIZZ && (
         <React.Fragment>
           <Question
@@ -50,4 +58,4 @@ const Game: React.FC<RouteComponentProps> = () => {
   );
 };
 
-export default Game;
+export default withRouter(Game);

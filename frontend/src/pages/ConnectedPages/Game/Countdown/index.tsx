@@ -3,10 +3,16 @@ import { IGameEnum } from "../types";
 
 interface ICountdown {
   setStep: React.Dispatch<React.SetStateAction<IGameEnum>>;
+  countdownMs: number;
 }
 
-const Countdown: React.FC<ICountdown> = ({ setStep }: ICountdown) => {
-  const [countdown, setCountdown] = useState<number>(30);
+const Countdown: React.FC<ICountdown> = ({
+  setStep,
+  countdownMs
+}: ICountdown) => {
+  const [countdown, setCountdown] = useState<number>(
+    Math.round(countdownMs / 1000)
+  );
 
   useEffect(() => {
     setTimeout(() => {
@@ -18,7 +24,7 @@ const Countdown: React.FC<ICountdown> = ({ setStep }: ICountdown) => {
         setStep(IGameEnum.QUIZZ);
       }
     }, 1000);
-  }, [countdown]);
+  }, [countdown, setStep]);
 
   return (
     <div className="flex-container">

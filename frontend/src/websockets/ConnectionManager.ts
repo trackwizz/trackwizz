@@ -78,6 +78,10 @@ class ConnectionManager {
     this.messageCallbacks[type] = [...this.messageCallbacks[type], callback];
   };
 
+  public sendMessage = (message: object): void => {
+    this.client.send(JSON.stringify(message));
+  };
+
   private ping = (): void => {
     console.log("ping");
     this.client.send(
