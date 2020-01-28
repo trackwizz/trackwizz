@@ -3,7 +3,7 @@ import axios from "axios";
 import querystring from "query-string";
 import { Redirect, RouteComponentProps, withRouter } from "react-router";
 import Cookies from "universal-cookie";
-import { CookieKey, isTokenValid, isTokenExpired } from "../../utils/auth";
+import { CookieKey, isTokenValid, isTokenExpired } from "../../utils/cookies";
 import useInterval from "../../utils/setInterval";
 
 import "./login.css";
