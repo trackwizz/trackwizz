@@ -21,7 +21,13 @@ export class GameRoomManager {
   getPlayers = (): string[] => Object.keys(this.playersConnections);
 
   broadcastMessage = (message: object): void => {
-    Object.keys(this.playersConnections).forEach(origin => this.playersConnections[origin].connection.send(JSON.stringify(message)));
+    Object.keys(this.playersConnections).forEach(origin => {
+      try {
+        this.playersConnections[origin].connection.send(JSON.stringify(message));
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   private removeDisconnectedPlayers = (): void => {
@@ -36,16 +42,11 @@ export class GameRoomManager {
       }
     });
 
-    try {
-      if (hasRemovedPlayers && Object.keys(this.playersConnections).length > 0) {
-        this.broadcastMessage({
-          type: OutboundMessageType.WAITING_ROOM_UPDATE,
-          players: this.getPlayers(),
-        });
-      }
-    } catch (e) {
-      // pass
-      console.error(e);
+    if (hasRemovedPlayers) {
+      this.broadcastMessage({
+        type: OutboundMessageType.WAITING_ROOM_UPDATE,
+        players: this.getPlayers(),
+      });
     }
 
     setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
