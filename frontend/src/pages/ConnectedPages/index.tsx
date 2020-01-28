@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Switch, Route, Redirect } from "react-router";
-import { isTokenValid } from "../../utils/auth";
+import { isTokenValid } from "../../utils/cookies";
 
 import "./connectedPages.css";
 

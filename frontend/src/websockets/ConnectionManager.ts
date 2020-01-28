@@ -1,4 +1,5 @@
 import MessageType from "./MessageType";
+import { getGameIdFromCookies, setGameIdCookie } from "../utils/cookies";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageCallback = (message: any) => void;
@@ -37,6 +38,7 @@ class ConnectionManager {
       ConnectionManager.instance.gameId !== gameId
     ) {
       ConnectionManager.instance = new ConnectionManager(gameId);
+      setGameIdCookie(gameId);
     }
 
     return ConnectionManager.instance!;
@@ -48,7 +50,11 @@ class ConnectionManager {
    */
   public static getInstance = (): ConnectionManager => {
     if (!ConnectionManager.instance) {
-      throw new Error("There is currently no connection opened.");
+      const gameId = getGameIdFromCookies();
+      if (!gameId) {
+        throw new Error("There is currently no connection opened.");
+      }
+      ConnectionManager.createInstance(gameId);
     }
 
     return ConnectionManager.instance!;

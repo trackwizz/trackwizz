@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { getToken } from "../../../utils/auth";
+import { getToken } from "../../../utils/cookies";
 
 axios.defaults.baseURL = "http://localhost:5000";
 
