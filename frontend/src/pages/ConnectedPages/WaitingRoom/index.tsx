@@ -32,16 +32,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
         if (roomId) {
           ConnectionManager.createInstance(roomId.toString());
-
-          const onWaitingRoomUpdateReceived = ({
-            players
-          }: WaitingRoomUpdateMessage): void => {
-            setPlayers(
-              players.map((name, index) => ({ id: index.toString(), name }))
-            );
-            setError(false);
-          };
-
           ConnectionManager.getInstance().registerCallbackForMessage(
             MessageType.WAITING_ROOM_UPDATE,
             onWaitingRoomUpdateReceived
@@ -53,6 +43,12 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
   }, [location.search]);
 
+  const onWaitingRoomUpdateReceived = ({
+    players
+  }: WaitingRoomUpdateMessage): void => {
+    setPlayers(players.map((name, index) => ({ id: index.toString(), name })));
+  };
+
   const requestRoomInfo = async (roomId: string) => {
     const requestRoom = {
       method: "GET" as Method,
@@ -62,6 +58,10 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
     if (responseRoom.complete === true && responseRoom.error === false) {
       setRoomId((responseRoom.data as IRoom).id);
+    }
+
+    if (responseRoom.complete === true && responseRoom.error === true) {
+      setError(true);
     }
   };
 
