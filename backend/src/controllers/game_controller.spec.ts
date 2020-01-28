@@ -125,7 +125,7 @@ describe("Test POST, PUT, GET", () => {
       .send();
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(game.id);
-    expect(res.body.startDate).toBe("2020-01-21T15:55:25.436Z");
+    expect(typeof res.body.startDate).toEqual("string");
     expect(res.body.isEnded).toBe(game.isEnded);
     expect(res.body.score).toBe(game.score);
     expect(res.body.title).toBe("AnOtHeR nEw TiTlE");
