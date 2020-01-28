@@ -7,11 +7,11 @@
   "private": true,
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc",
-    "node-start": "node dist/app.js",
+    "node-start": "node dist/app.js --color",
     "start": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "yarn eslint ./src --ext .js,.jsx,.ts,.tsx",
     "start-dev": "yarn lint && yarn build && yarn node-start",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "engines": {
     "node": "12.*"
@@ -28,6 +28,7 @@
     "@types/node-cache": "^4.2.5",
     "@types/request": "^2.48.4",
     "@types/supertest": "^2.0.8",
+    "@types/ws": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
@@ -41,7 +42,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@types/ws": "^7.2.0",
+    "asciiart-logo": "^0.2.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

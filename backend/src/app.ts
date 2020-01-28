@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import { Connection } from "typeorm";
+import logo from "asciiart-logo";
 import { logger } from "./utils/logger";
 import { normalizePort, onError } from "./utils/server";
 config(); // Get environment variables
@@ -21,6 +22,23 @@ async function main(): Promise<void> {
     logger.info(`App listening on port ${port}!`);
   });
 }
+
+console.log(
+  logo({
+    name: "T R A C K W I Z Z",
+    font: "Dancing Font",
+    lineChars: 17,
+    padding: 2,
+    margin: 3,
+    borderColor: "blue",
+    logoColor: "bold-green",
+    textColor: "yellow",
+  })
+    .emptyLine()
+    .emptyLine()
+    .right("version 2.0.1")
+    .render(),
+);
 
 main().catch((err: Error) => {
   logger.error(err.message);

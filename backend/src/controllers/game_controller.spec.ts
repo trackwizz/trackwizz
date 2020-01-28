@@ -68,14 +68,12 @@ describe("Test GET, DELETE, GET game", () => {
     expect(res.body.mode).toBe(game.mode);
     expect(res.body.idSpotifyPlaylist).toBe(game.idSpotifyPlaylist);
   });
-
   it("should delete pre-created game", async () => {
     const res = await request(server)
       .delete(`/games/${game.id}`)
       .send();
     expect(res.status).toEqual(204);
   });
-
   it("should not return pre-created game", async () => {
     const res = await request(server)
       .get(`/games/${game.id}`)
@@ -112,7 +110,6 @@ describe("Test POST, PUT, GET", () => {
     expect(res.status).toEqual(200);
     game.id = res.body.id;
   });
-
   it("should update the game", async () => {
     const res = await request(server)
       .put(`/games/${game.id}`)
@@ -122,7 +119,6 @@ describe("Test POST, PUT, GET", () => {
       });
     expect(res.status).toEqual(200);
   });
-
   it("should get the updated game", async () => {
     const res = await request(server)
       .put(`/games/${game.id}`)
