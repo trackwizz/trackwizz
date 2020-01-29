@@ -24,7 +24,7 @@ const getOrigin = (req: RequestWithCache): string => {
 /* --- Ping --- */
 type PingMessage = {
   type: InboundMessageType.PING;
-  gameId: string;
+  gameId: number;
 };
 
 const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessage): void => {
@@ -41,7 +41,7 @@ const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessa
 /* --- Join game --- */
 type JoinGameMessage = {
   type: InboundMessageType.JOIN_GAME;
-  gameId: string;
+  gameId: number;
 };
 
 const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinGameMessage): void => {
