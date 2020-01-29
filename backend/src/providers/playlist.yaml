@@ -1,0 +1,15 @@
+components:
+  schemas:
+    Playlist:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 25
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          nullable: true

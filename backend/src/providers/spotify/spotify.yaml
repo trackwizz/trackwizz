@@ -1,0 +1,108 @@
+/login:
+  get:
+    tags:
+      - Spotify
+    summary: Get login method for spotify.
+    responses:
+      200:
+        description: The params to send to spotify login
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                response_type:
+                  type: string
+                client_id:
+                  type: string
+                scope:
+                  type: string
+                redirect_uri:
+                  type: string
+                state:
+                  type: string
+/callback:
+  get:
+    tags:
+      - Spotify
+    summary: Callback method that should be called by spotify when the user has logged in.
+    parameters:
+      - name: code
+        in: query
+        required: true
+        description: The code type given at /login
+        schema:
+          type: string
+      - name: state
+        in: query
+        required: true
+        description: The state given at /login
+        schema:
+          type: string
+    responses:
+      500:
+        description: Server internal Error
+      302:
+        description: Url to redirect to
+/refreshToken:
+  get:
+    tags:
+      - Spotify
+    summary: Refresh the spotify user token when expired.
+    parameters:
+      - name: refresh_token
+        in: query
+        required: true
+        description: The refresh_token that was given to refresh the user token.
+        schema:
+          type: string
+    responses:
+      200:
+        description: Object containing new user access token and expire date.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                expires_at:
+                  type: number
+      500:
+        description: Server internal Error
+/spotify/playlists:
+  get:
+    tags:
+      - Spotify
+    summary: Get array of spotify playlists.
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: Array of spotify playlists.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Playlist'
+      500:
+        description: Server internal Error
+/spotify/tracks:
+  get:
+    tags:
+      - Spotify
+    summary: Get array of spotify tracks.
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: Array of spotify tracks.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Track'
+      500:
+        description: Server internal Error

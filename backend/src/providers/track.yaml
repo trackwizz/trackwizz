@@ -1,0 +1,18 @@
+components:
+  schemas:
+    Track:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 25
+        name:
+          type: string
+        previewUrl:
+          type: string
+        score:
+          type: number
+        trackNumber:
+          type: number
+        artist:
+          type: string
