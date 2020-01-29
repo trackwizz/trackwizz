@@ -1,0 +1,136 @@
+/scores:
+  get:
+    tags:
+      - Scores
+    summary: Returns a list of scores.
+    parameters:
+      - name: idGame
+        in: query
+        schema:
+          type: integer
+        description: The id of the game wanted scores
+    responses:
+      200:
+        description: A JSON array of scores
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Score'
+  post:
+    tags:
+      - Scores
+    summary: Create a new score.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - idGame
+              - idScore
+            properties:
+              idSpotifyTrack:
+                type: string
+              timestamp:
+                type: number
+              isCorrect:
+                type: boolean
+              reactionTimeMs:
+                type: number
+              idGame:
+                type: number
+              idScore:
+                type: number
+    responses:
+      200:
+        description: The new score.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+      500:
+        description: Internal server error due to problems with the database insert.
+
+/scores/{scoreId}:
+  get:
+    tags:
+      - Scores
+    summary: Return the score with scoreId.
+    parameters:
+      - name: scoreId
+        in: path
+        required: true
+        description: The ID of the score to return.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    responses:
+      200:
+        description: A JSON array of scores
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+      404:
+        description: Score not found
+  put:
+    tags:
+      - Scores
+    summary: Update the score by scoreId.
+    parameters:
+      - name: scoreId
+        in: path
+        required: true
+        description: The ID of the score to update.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              idSpotifyTrack:
+                type: string
+              timestamp:
+                type: number
+              isCorrect:
+                type: boolean
+              reactionTimeMs:
+                type: number
+              idGame:
+                type: number
+              idScore:
+                type: number
+    responses:
+      200:
+        description: The updated score.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+      500:
+        description: Internal server error due to problems with the database update.
+  delete:
+    tags:
+      - Scores
+    summary: Delete the score with scoreId.
+    parameters:
+      - name: scoreId
+        in: path
+        required: true
+        description: The ID of the score to delete.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    responses:
+      204:
+        description: Score succesfully deleted.

@@ -7,8 +7,10 @@ components:
           type: number
         idSpotifyTrack:
           type: string
+          maxLength: 25
         timestamp:
-          type: date
+          type: string
+          format: date-time
         isCorrect:
           type: boolean
         reactionTimeMs:

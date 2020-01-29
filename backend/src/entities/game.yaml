@@ -7,8 +7,10 @@ components:
           type: number
         idSpotifyPlaylist:
           type: string
+          maxLength: 25
         startDate:
-          type: date
+          type: string
+          format: date-time
         isEnded:
           type: boolean
         score:
