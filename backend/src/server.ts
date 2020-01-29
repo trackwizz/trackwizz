@@ -3,12 +3,13 @@ import cors from "cors";
 import express, { Express, Response } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
+import WebSocket from "ws";
+import swaggerUi from "swagger-ui-express";
+import MessageHandlerFactory from "./controllers/websockets_controller";
 import { RequestWithCache, setAppCache } from "./middlewares/app_cache";
 import { removeTrailingSlash } from "./middlewares/trailing_slash";
 import { spotifyRouter } from "./providers/spotify";
 import { routes } from "./routes";
-import WebSocket from "ws";
-import MessageHandlerFactory from "./controllers/websockets_controller";
 
 type ExpressWithWebSockets = Express & { ws: Function };
 
@@ -39,6 +40,16 @@ server.use(spotifyRouter);
 (server as ExpressWithWebSockets).ws("/", (ws: WebSocket, req: RequestWithCache) => {
   ws.on("message", MessageHandlerFactory(ws, req));
 });
+
+/* --- OpenAPI --- */
+const options = {
+  swaggerOptions: {
+    url: "http://petstore.swagger.io/v2/swagger.json",
+  },
+};
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(undefined, options));
 
 /* --- 404 Errors --- */
 server.use((_, res: Response) => {
