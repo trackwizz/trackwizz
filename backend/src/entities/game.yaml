@@ -1,0 +1,23 @@
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        id:
+          type: number
+        idSpotifyPlaylist:
+          type: string
+        startDate:
+          type: date
+        isEnded:
+          type: boolean
+        score:
+          type: number
+        title:
+          type: string
+        questionsNumber:
+          type: number
+        isPublic:
+          type: boolean
+        mode:
+          type: number

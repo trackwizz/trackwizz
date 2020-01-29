@@ -1,0 +1,19 @@
+components:
+  schemas:
+    Score:
+      type: object
+      properties:
+        id:
+          type: number
+        idSpotifyTrack:
+          type: string
+        timestamp:
+          type: date
+        isCorrect:
+          type: boolean
+        reactionTimeMs:
+          type: number
+        idGame:
+          type: number
+        idUser:
+          type: number
