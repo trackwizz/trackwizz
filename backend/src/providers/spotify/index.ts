@@ -5,10 +5,10 @@ import { handleErrors } from "../../middlewares/handle_errors";
 import { getSpotifyTracks } from "./tracks";
 
 const spotifyRouter = Router();
-spotifyRouter.use("/login", login);
-spotifyRouter.use("/callback", callback);
-spotifyRouter.use("/refresh_token", refreshToken);
-spotifyRouter.use("/spotify/playlists", handleErrors(getSpotifyPlaylists));
-spotifyRouter.use("/spotify/tracks", handleErrors(getSpotifyTracks));
+spotifyRouter.get("/login", login);
+spotifyRouter.get("/callback", callback);
+spotifyRouter.get("/refresh_token", refreshToken);
+spotifyRouter.get("/spotify/playlists", handleErrors(getSpotifyPlaylists));
+spotifyRouter.get("/spotify/tracks", handleErrors(getSpotifyTracks));
 
 export { spotifyRouter };

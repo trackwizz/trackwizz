@@ -1,0 +1,137 @@
+/games:
+  get:
+    tags:
+      - Games
+    summary: Returns a list of games.
+    responses:
+      200:
+        description: A JSON array of games
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Game'
+  post:
+    tags:
+      - Games
+    summary: Create a new game.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - idSpotifyPlaylist
+            properties:
+              idSpotifyPlaylist:
+                type: string
+                maxLength: 25
+              startDate:
+                type: string
+                format: date-time
+              title:
+                type: string
+              isPublic:
+                type: boolean
+              mode:
+                type: number
+    responses:
+      200:
+        description: The new game.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      500:
+        description: Internal server error due to problems with the database insert.
+
+/games/{gameId}:
+  get:
+    tags:
+      - Games
+    summary: Return the game with gameId.
+    parameters:
+      - name: gameId
+        in: path
+        required: true
+        description: The ID of the game to return.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    responses:
+      200:
+        description: The JSON object game.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      404:
+        description: Game not found
+  put:
+    tags:
+      - Games
+    summary: Update the game by gameId.
+    parameters:
+      - name: gameId
+        in: path
+        required: true
+        description: The ID of the game to update.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              idSpotifyPlaylist:
+                type: string
+                maxLength: 25
+              startDate:
+                type: string
+                format: date-time
+              isEnded:
+                type: boolean
+              score:
+                type: number
+              title:
+                type: string
+              questionsNumber:
+                type: number
+              isPublic:
+                type: boolean
+              mode:
+                type: number
+    responses:
+      200:
+        description: The updated game.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      500:
+        description: Internal server error due to problems with the database update.
+  delete:
+    tags:
+      - Games
+    summary: Delete the game with gameId.
+    parameters:
+      - name: gameId
+        in: path
+        required: true
+        description: The ID of the game to delete.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+    responses:
+      204:
+        description: Game succesfully deleted.
