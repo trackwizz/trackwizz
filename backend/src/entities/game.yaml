@@ -1,0 +1,25 @@
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        id:
+          type: number
+        idSpotifyPlaylist:
+          type: string
+          maxLength: 25
+        startDate:
+          type: string
+          format: date-time
+        isEnded:
+          type: boolean
+        score:
+          type: number
+        title:
+          type: string
+        questionsNumber:
+          type: number
+        isPublic:
+          type: boolean
+        mode:
+          type: number

@@ -1,3 +1,7 @@
 .fullWidthButton {
   width: 50%;
 }
+
+.errorContainer {
+  padding: 2%;
+}

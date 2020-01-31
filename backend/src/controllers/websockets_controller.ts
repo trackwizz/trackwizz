@@ -26,7 +26,7 @@ const getOrigin = (req: RequestWithCache): string => {
 /* --- Ping --- */
 type PingMessage = {
   type: InboundMessageType.PING;
-  gameId: string;
+  gameId: number;
 };
 
 const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessage): void => {
@@ -43,7 +43,7 @@ const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessa
 /* --- Join game --- */
 type JoinGameMessage = {
   type: InboundMessageType.JOIN_GAME;
-  gameId: string;
+  gameId: number;
 };
 
 const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinGameMessage): void => {
@@ -75,14 +75,14 @@ type StartGameMessage = {
 const START_GAME_COUNTDOWN_MS = 3000;
 
 const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: StartGameMessage): void => {
-  const game = req.gameSessions.getGame(gameId);
+  const game = req.gameSessions.getGame(parseInt(gameId));
 
   if (!game) {
     ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Game not found." }));
     return;
   }
 
-  setTimeout(() => req.gameSessions.startGame(game.id.toString()), START_GAME_COUNTDOWN_MS);
+  setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
 
   game.roomManager.broadcastMessage({
     type: OutboundMessageType.START_GAME,

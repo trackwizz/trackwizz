@@ -12,7 +12,7 @@ class Answer {
 }
 
 export class GameSessions {
-  private readonly games: { [key: string]: Game };
+  private readonly games: { [key: number]: Game };
 
   constructor() {
     this.games = {};
@@ -22,14 +22,14 @@ export class GameSessions {
     this.games[game.id] = game;
   }
 
-  public async startGame(id: string): Promise<void> {
+  public async startGame(id: number): Promise<void> {
     if (this.games[id] === undefined) {
       return;
     }
     await this.updateGame(id);
   }
 
-  public async updateGame(id: string): Promise<void> {
+  public async updateGame(id: number): Promise<void> {
     if (this.games[id] === undefined) {
       return;
     }
@@ -81,7 +81,7 @@ export class GameSessions {
     }, 30 * 1000);
   }
 
-  public getGame(id: string): Game | undefined {
+  public getGame(id: number): Game | undefined {
     return this.games[id];
   }
 }
