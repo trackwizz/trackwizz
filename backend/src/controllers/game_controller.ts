@@ -66,9 +66,8 @@ export class GameController extends Controller {
     }
 
     // save new game
-    const now: number = new Date().getTime();
     const game: Game = new Game();
-    game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) || new Date(now + 30 * 1000) : new Date(now + 30 * 1000);
+    game.startDate = new Date();
     game.isEnded = false;
     game.score = 0;
     game.title = req.body.title || `game-${crypto.randomBytes(4).toString("hex")}`;

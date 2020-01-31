@@ -4,11 +4,13 @@ import { RequestWithCache } from "../middlewares/app_cache";
 export enum InboundMessageType {
   PING = "PING",
   JOIN_GAME = "JOIN_GAME",
+  REQUEST_START_GAME = "REQUEST_START_GAME",
 }
 
 export enum OutboundMessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   QUESTION_UPDATE = "QUESTION_UPDATE",
+  START_GAME = "START_GAME",
   ERROR = "ERROR",
 }
 
@@ -61,6 +63,33 @@ const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinG
   });
 };
 
+/* --- Start game --- */
+type StartGameMessage = {
+  type: InboundMessageType.REQUEST_START_GAME;
+  gameId: string;
+};
+
+/**
+ * Countdown at the start of the game before sending the first track to the frontend.
+ */
+const START_GAME_COUNTDOWN_MS = 3000;
+
+const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: StartGameMessage): void => {
+  const game = req.gameSessions.getGame(parseInt(gameId));
+
+  if (!game) {
+    ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Game not found." }));
+    return;
+  }
+
+  setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
+
+  game.roomManager.broadcastMessage({
+    type: OutboundMessageType.START_GAME,
+    countdownMs: START_GAME_COUNTDOWN_MS,
+  });
+};
+
 /* --- Root handler --- */
 const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: string): void => {
   try {
@@ -73,6 +102,11 @@ const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: st
 
     if (content.type == InboundMessageType.JOIN_GAME) {
       joinGameHandler(ws, req, content);
+      return;
+    }
+
+    if (content.type == InboundMessageType.REQUEST_START_GAME) {
+      startGameHandler(ws, req, content);
       return;
     }
 

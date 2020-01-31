@@ -21,7 +21,13 @@ export class GameRoomManager {
   getPlayers = (): string[] => Object.keys(this.playersConnections);
 
   broadcastMessage = (message: object): void => {
-    Object.keys(this.playersConnections).forEach(origin => this.playersConnections[origin].connection.send(JSON.stringify(message)));
+    Object.keys(this.playersConnections).forEach(origin => {
+      try {
+        this.playersConnections[origin].connection.send(JSON.stringify(message));
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   private removeDisconnectedPlayers = (): void => {
