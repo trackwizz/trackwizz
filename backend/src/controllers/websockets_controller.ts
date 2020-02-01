@@ -95,22 +95,19 @@ const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: st
   try {
     const content = JSON.parse(msg);
 
-    if (content.type == InboundMessageType.PING) {
-      pingHandler(ws, req, content);
-      return;
+    switch (content.type) {
+      case InboundMessageType.PING:
+        pingHandler(ws, req, content);
+        break;
+      case InboundMessageType.JOIN_GAME:
+        joinGameHandler(ws, req, content);
+        break;
+      case InboundMessageType.REQUEST_START_GAME:
+        startGameHandler(ws, req, content);
+        break;
+      default:
+        ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message type." }));
     }
-
-    if (content.type == InboundMessageType.JOIN_GAME) {
-      joinGameHandler(ws, req, content);
-      return;
-    }
-
-    if (content.type == InboundMessageType.REQUEST_START_GAME) {
-      startGameHandler(ws, req, content);
-      return;
-    }
-
-    ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message type." }));
   } catch (e) {
     ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message." }));
   }
