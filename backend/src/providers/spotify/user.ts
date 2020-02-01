@@ -1,7 +1,7 @@
 import request from "request";
 import { logger } from "../../utils/logger";
 
-interface SpotifyUser {
+export interface SpotifyUser {
   display_name: string;
   id: string;
 }
