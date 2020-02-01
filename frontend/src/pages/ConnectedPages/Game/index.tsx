@@ -35,7 +35,8 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const handleAnswer = (answer: Answer): void => {
     ConnectionManager.getInstance().sendMessage({
       type: MessageType.SUBMIT_ANSWER,
-      answer
+      answer,
+      gameId: querystring.parse(location.search).gameId as string
     });
   };
 

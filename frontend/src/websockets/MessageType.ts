@@ -28,6 +28,7 @@ export interface QuestionUpdateMessage {
 export interface SubmitAnswerMessage {
   type: MessageType.SUBMIT_ANSWER;
   answer: Answer;
+  gameId: string;
 }
 
 export interface GameStartMessage {
