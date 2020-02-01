@@ -36,6 +36,11 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             MessageType.WAITING_ROOM_UPDATE,
             onWaitingRoomUpdateReceived
           );
+          ConnectionManager.getInstance().registerCallbackForMessage(
+            MessageType.START_GAME,
+            ({ countdownMs }) =>
+              history.push(`/game?gameId=${roomId}&countdownMs=${countdownMs}`)
+          );
         }
 
         requestRoomInfo(roomId || "");
@@ -48,12 +53,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   }: WaitingRoomUpdateMessage): void => {
     setPlayers(players.map((name, index) => ({ id: index.toString(), name })));
   };
-
-  ConnectionManager.getInstance().registerCallbackForMessage(
-    MessageType.START_GAME,
-    ({ countdownMs }) =>
-      history.push(`/game?gameId=${roomId}&countdownMs=${countdownMs}`)
-  );
 
   const requestRoomInfo = async (roomId: string) => {
     const requestRoom = {
