@@ -6,7 +6,7 @@ enum MessageType {
   START_GAME = "START_GAME",
   REQUEST_START_GAME = "REQUEST_START_GAME",
   SUBMIT_ANSWER = "SUBMIT_ANSWER",
-  RECORDED_ANSWER = "RECORDED_ANSWER"
+  ANSWER_RESULT = "ANSWER_RESULT"
 }
 
 export interface Answer {
@@ -33,8 +33,8 @@ export interface SubmitAnswerMessage {
   accessToken: string;
 }
 
-export interface RecordedAnswerMessage {
-  type: MessageType.RECORDED_ANSWER;
+export interface AnswerResultMessage {
+  type: MessageType.ANSWER_RESULT;
   isCorrect: boolean;
 }
 

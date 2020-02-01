@@ -17,7 +17,7 @@ export enum OutboundMessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   QUESTION_UPDATE = "QUESTION_UPDATE",
   START_GAME = "START_GAME",
-  RECORDED_ANSWER = "RECORDED_ANSWER",
+  ANSWER_RESULT = "ANSWER_RESULT",
   ERROR = "ERROR",
 }
 
@@ -132,7 +132,7 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
 
       getRepository(Score).save(score);
 
-      ws.send(JSON.stringify({ type: OutboundMessageType.RECORDED_ANSWER, isCorrect: score.isCorrect }));
+      ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
     })
     .catch(() => {
       console.error("Can't find Spotify user to add score");
