@@ -11,6 +11,7 @@ import MessageType, {
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
+import { getToken } from "../../../utils/cookies";
 
 const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
@@ -36,7 +37,8 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     ConnectionManager.getInstance().sendMessage({
       type: MessageType.SUBMIT_ANSWER,
       answer,
-      gameId: querystring.parse(location.search).gameId as string
+      gameId: querystring.parse(location.search).gameId as string,
+      accessToken: getToken()
     });
   };
 
