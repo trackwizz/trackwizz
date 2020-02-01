@@ -7,7 +7,8 @@ import Score from "./Score";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   QuestionUpdateMessage,
-  Answer
+  Answer,
+  RecordedAnswerMessage
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
@@ -17,6 +18,7 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [score] = useState<number>(0);
 
   const onQuestionUpdateReceived = (question: QuestionUpdateMessage): void => {
@@ -26,11 +28,21 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     setStep(IGameEnum.QUIZZ);
   };
 
+  const onRecordedAnswerReceived = ({ isCorrect }: RecordedAnswerMessage) => {
+    setIsCorrect(isCorrect);
+    setStep(IGameEnum.ANSWER_SUBMITTED);
+  };
+
   const countdownMs = querystring.parse(location.search).countdownMs as string;
 
   ConnectionManager.getInstance().registerCallbackForMessage(
     MessageType.QUESTION_UPDATE,
     onQuestionUpdateReceived
+  );
+
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.RECORDED_ANSWER,
+    onRecordedAnswerReceived
   );
 
   const handleAnswer = (answer: Answer): void => {
@@ -57,6 +69,12 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
             answers={answers!}
             handleAnswer={handleAnswer}
           />
+        </React.Fragment>
+      )}
+      {step === IGameEnum.ANSWER_SUBMITTED && (
+        <React.Fragment>
+          <div>The answer was {isCorrect ? "correct =)" : "wrong =("}</div>
+          <div>Waiting for next question.</div>
         </React.Fragment>
       )}
       {step === IGameEnum.SCORE && <Score score={score} />}

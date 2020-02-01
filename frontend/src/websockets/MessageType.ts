@@ -5,7 +5,8 @@ enum MessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   START_GAME = "START_GAME",
   REQUEST_START_GAME = "REQUEST_START_GAME",
-  SUBMIT_ANSWER = "SUBMIT_ANSWER"
+  SUBMIT_ANSWER = "SUBMIT_ANSWER",
+  RECORDED_ANSWER = "RECORDED_ANSWER"
 }
 
 export interface Answer {
@@ -30,6 +31,11 @@ export interface SubmitAnswerMessage {
   answer: Answer;
   gameId: string;
   accessToken: string;
+}
+
+export interface RecordedAnswerMessage {
+  type: MessageType.RECORDED_ANSWER;
+  isCorrect: boolean;
 }
 
 export interface GameStartMessage {
