@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
@@ -17,12 +17,24 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [score] = useState<number>(0);
+  const player = useRef<null | HTMLAudioElement>(null);
 
-  const onQuestionUpdateReceived = (question: QuestionUpdateMessage): void => {
-    console.log(`Received question ${question}`);
-    setPreviewUrl(question.previewUrl);
-    setAnswers(question.answers);
+  useEffect(() => {
+    (async function reloadPlayer() {
+      if (player && player.current) {
+        player.current.pause();
+        player.current.src = previewUrl;
+        await player.current.play();
+      }
+    })();
+  }, [previewUrl]);
+
+  const onQuestionUpdateReceived = async (
+    question: QuestionUpdateMessage
+  ): Promise<void> => {
     setStep(IGameEnum.QUIZZ);
+    setAnswers(question.answers);
+    setPreviewUrl(question.previewUrl);
   };
 
   const countdownMs = querystring.parse(location.search).countdownMs as string;
@@ -51,6 +63,7 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
             answers={answers!}
             handleAnswer={handleAnswer}
           />
+          <audio ref={player} data-vscid="obacc5arn" />
         </React.Fragment>
       )}
       {step === IGameEnum.SCORE && <Score score={score} />}

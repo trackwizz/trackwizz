@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import "./question.css";
 import Dancers from "../../components/Dancers";
 import { Answer } from "../../../../websockets/MessageType";
@@ -10,12 +10,9 @@ interface IQuestion {
 }
 
 const Question: React.FC<IQuestion> = ({
-  previewUrl,
   answers,
   handleAnswer
 }: IQuestion) => {
-  const player = useRef<null | HTMLAudioElement>(null);
-
   return (
     <div className="flex-container column">
       <div className="text-center">
@@ -33,14 +30,6 @@ const Question: React.FC<IQuestion> = ({
             ))}
           </div>
         </div>
-      </div>
-
-      <div>
-        {previewUrl && (
-          <audio ref={player} autoPlay={true} data-vscid="obacc5arn">
-            <source src={previewUrl} type="audio/mpeg" />
-          </audio>
-        )}
       </div>
     </div>
   );
