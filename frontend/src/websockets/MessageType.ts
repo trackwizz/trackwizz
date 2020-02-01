@@ -4,8 +4,10 @@ enum MessageType {
   QUESTION_UPDATE = "QUESTION_UPDATE",
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   START_GAME = "START_GAME",
-  REQUEST_START_GAME = "REQUEST_START_GAME"
+  REQUEST_START_GAME = "REQUEST_START_GAME",
+  SUBMIT_ANSWER = "SUBMIT_ANSWER"
 }
+
 export interface Answer {
   id: string;
   name: string;
@@ -21,6 +23,11 @@ export interface QuestionUpdateMessage {
   type: MessageType.QUESTION_UPDATE;
   previewUrl: string;
   answers: Answer[];
+}
+
+export interface SubmitAnswerMessage {
+  type: MessageType.SUBMIT_ANSWER;
+  answer: Answer;
 }
 
 export interface GameStartMessage {

@@ -32,8 +32,11 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     onQuestionUpdateReceived
   );
 
-  const handleAnswer = (idTrack: string): void => {
-    console.log(idTrack);
+  const handleAnswer = (answer: Answer): void => {
+    ConnectionManager.getInstance().sendMessage({
+      type: MessageType.SUBMIT_ANSWER,
+      answer
+    });
   };
 
   return (
