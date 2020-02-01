@@ -11,6 +11,7 @@ let score: Score;
 
 async function createUser(): Promise<User> {
   const user: User = new User();
+  user.id = "john";
   user.name = "John";
   await getRepository(User).save(user);
   return user;
