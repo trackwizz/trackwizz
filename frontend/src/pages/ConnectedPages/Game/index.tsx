@@ -24,14 +24,16 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const player = useRef<null | HTMLAudioElement>(null);
 
   useEffect(() => {
-    (async function reloadPlayer() {
-      if (player && player.current) {
-        player.current.pause();
-        player.current.src = previewUrl;
-        await player.current.play();
-      }
-    })();
+    reloadPlayer();
   }, [previewUrl]);
+
+  const reloadPlayer = async () => {
+    if (player && player.current) {
+      player.current.pause();
+      player.current.src = previewUrl;
+      await player.current.play();
+    }
+  };
 
   const onQuestionUpdateReceived = async (
     question: QuestionUpdateMessage
