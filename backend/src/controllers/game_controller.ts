@@ -83,6 +83,7 @@ export class GameController extends Controller {
     // set new game session
     game.tracks = tracks;
     game.currentTrackIndex = -1;
+    game.currentPossibleAnswers = [];
     game.questionStartTimestamp = -1;
     game.receivedAnswersForCurrentTrack = 0;
     req.gameSessions.new(game);

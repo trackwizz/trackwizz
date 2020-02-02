@@ -1,15 +1,9 @@
-import { Game } from "./entities/game";
+import { Game, Answer } from "./entities/game";
 import { logger } from "./utils/logger";
 import { getRepository } from "typeorm";
 import { getNRandom } from "./utils";
 import { OutboundMessageType } from "./controllers/websockets_controller";
 import { Track } from "./providers/track";
-
-class Answer {
-  public id: string;
-  public name: string;
-  public artist: string;
-}
 
 export class GameSessions {
   private readonly games: { [key: number]: Game };
@@ -54,9 +48,7 @@ export class GameSessions {
       return;
     }
 
-    const otherTracksIndexes = Array.from(Array(game.questionsNumber).keys());
-    otherTracksIndexes.splice(game.currentTrackIndex, 1);
-    game.otherTracksIndexes = getNRandom(otherTracksIndexes, 3);
+    this.computeNewPossibleAnswers(game.id);
 
     logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}. Preview url: ${game.tracks[game.currentTrackIndex].previewUrl}`);
 
@@ -68,12 +60,16 @@ export class GameSessions {
     }, 30 * 1000);
   }
 
-  public getCurrentPossibleAnswers(id: number): Answer[] {
+  public computeNewPossibleAnswers(id: number): Answer[] {
     const game = this.games[id];
 
     if (game === undefined) {
       return [];
     }
+
+    const otherTracksIndexes = Array.from(Array(game.questionsNumber).keys());
+    otherTracksIndexes.splice(game.currentTrackIndex, 1);
+    game.otherTracksIndexes = getNRandom(otherTracksIndexes, 3);
 
     // Make an array with the indexes of the 4 tracks
     const answersIndexes: number[] = game.otherTracksIndexes.concat([game.currentTrackIndex]);
@@ -81,10 +77,12 @@ export class GameSessions {
     // Step 1: get the tracks data
     // Step 2: keep only id, name and artist
     // Step 3: shuffle the answers
-    return getNRandom(
+    game.currentPossibleAnswers = getNRandom(
       answersIndexes.map((index: number) => game.tracks[index]).map((track: Track) => ({ id: track.id, name: track.name, artist: track.artist })),
       4,
     );
+
+    return game.currentPossibleAnswers;
   }
 
   public getQuestionUpdateMessage(id: number): object {
@@ -97,7 +95,7 @@ export class GameSessions {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: game.tracks[game.currentTrackIndex].previewUrl,
-      answers: this.getCurrentPossibleAnswers(game.id),
+      answers: game.currentPossibleAnswers,
     };
   }
 
