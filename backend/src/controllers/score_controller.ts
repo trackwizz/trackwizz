@@ -40,7 +40,7 @@ export class ScoreController extends Controller {
     score.game = new Game();
     score.game.id = parseInt(req.body.idGame, 10) || 0;
     score.user = new User();
-    score.user.id = parseInt(req.body.idUser, 10) || 0;
+    score.user.id = req.body.idUser || "";
     await getRepository(Score).save(score);
     res.sendJSON(score);
   }

@@ -7,15 +7,19 @@ import Score from "./Score";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   QuestionUpdateMessage,
-  Answer
+  Answer,
+  AnswerResultMessage
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
+import { getToken } from "../../../utils/cookies";
+import AnswerResult from "./AnswerResult";
 
 const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
   const [score] = useState<number>(0);
 
   const onQuestionUpdateReceived = (question: QuestionUpdateMessage): void => {
@@ -25,6 +29,11 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     setStep(IGameEnum.QUIZZ);
   };
 
+  const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage) => {
+    setIsAnswerCorrect(isCorrect);
+    setStep(IGameEnum.ANSWER_SUBMITTED);
+  };
+
   const countdownMs = querystring.parse(location.search).countdownMs as string;
 
   ConnectionManager.getInstance().registerCallbackForMessage(
@@ -32,8 +41,18 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     onQuestionUpdateReceived
   );
 
-  const handleAnswer = (idTrack: string): void => {
-    console.log(idTrack);
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.ANSWER_RESULT,
+    onAnswerResultReceived
+  );
+
+  const handleAnswer = (answer: Answer): void => {
+    ConnectionManager.getInstance().sendMessage({
+      type: MessageType.SUBMIT_ANSWER,
+      answer,
+      gameId: querystring.parse(location.search).gameId as string,
+      accessToken: getToken()
+    });
   };
 
   return (
@@ -52,6 +71,9 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
             handleAnswer={handleAnswer}
           />
         </React.Fragment>
+      )}
+      {step === IGameEnum.ANSWER_SUBMITTED && (
+        <AnswerResult isCorrect={isAnswerCorrect} />
       )}
       {step === IGameEnum.SCORE && <Score score={score} />}
     </div>

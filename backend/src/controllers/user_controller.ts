@@ -16,7 +16,7 @@ export class UserController extends Controller {
 
   @get({ path: "/:id" })
   public async getUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
+    const id: string = req.params.id;
     const user: User | undefined = await getRepository(User).findOne(id);
     if (user === undefined) {
       next();
@@ -28,6 +28,7 @@ export class UserController extends Controller {
   @post()
   public async addUser(req: Request, res: Response): Promise<void> {
     const user: User = new User();
+    user.id = req.body.id;
     user.name = req.body.name || null;
     await getRepository(User).save(user);
     res.sendJSON(user);
@@ -35,7 +36,7 @@ export class UserController extends Controller {
 
   @put({ path: "/:id" })
   public async editUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
+    const id: string = req.params.id;
     const name: string = req.body.name || null;
     const user: User | undefined = await getRepository(User).findOne(id);
     if (user === undefined) {
@@ -51,7 +52,7 @@ export class UserController extends Controller {
 
   @del({ path: "/:id" })
   public async deleteTheme(req: Request, res: Response): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
+    const id: string = req.params.id;
     await getRepository(User).delete(id);
     res.status(204).send();
   }
