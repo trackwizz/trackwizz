@@ -43,7 +43,7 @@ export class GameSessions {
       // Skip tracks that don't have a preview URL
       game.currentTrackIndex += 1;
     }
-    game.answersForCurrentTrack = 0;
+    game.receivedAnswersForCurrentTrack = 0;
 
     if (game.currentTrackIndex >= game.tracks.length) {
       game.isEnded = true;
@@ -90,8 +90,8 @@ export class GameSessions {
 
     const game = this.games[id];
 
-    game.answersForCurrentTrack += 1;
-    if (game.answersForCurrentTrack >= game.roomManager.getPlayers().length) {
+    game.receivedAnswersForCurrentTrack += 1;
+    if (game.receivedAnswersForCurrentTrack >= game.roomManager.getPlayers().length) {
       // Wait for 3 seconds before switching to the next track
       if (game.updateTimeout !== undefined) {
         clearTimeout(game.updateTimeout);
