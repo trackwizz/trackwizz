@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
@@ -21,12 +21,26 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
   const [score] = useState<number>(0);
+  const player = useRef<null | HTMLAudioElement>(null);
 
-  const onQuestionUpdateReceived = (question: QuestionUpdateMessage): void => {
-    console.log(`Received question ${question}`);
-    setPreviewUrl(question.previewUrl);
-    setAnswers(question.answers);
+  useEffect(() => {
+    reloadPlayer();
+  }, [previewUrl]);
+
+  const reloadPlayer = async () => {
+    if (player && player.current) {
+      player.current.pause();
+      player.current.src = previewUrl;
+      await player.current.play();
+    }
+  };
+
+  const onQuestionUpdateReceived = async (
+    question: QuestionUpdateMessage
+  ): Promise<void> => {
     setStep(IGameEnum.QUIZZ);
+    setAnswers(question.answers);
+    setPreviewUrl(question.previewUrl);
   };
 
   const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage) => {
@@ -70,6 +84,7 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
             answers={answers!}
             handleAnswer={handleAnswer}
           />
+          <audio ref={player} data-vscid="obacc5arn" />
         </React.Fragment>
       )}
       {step === IGameEnum.ANSWER_SUBMITTED && (
