@@ -133,6 +133,8 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
       getRepository(Score).save(score);
 
       ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
+
+      req.gameSessions.receiveAnswer(game.id);
     })
     .catch(() => {
       console.error("Can't find Spotify user to add score");

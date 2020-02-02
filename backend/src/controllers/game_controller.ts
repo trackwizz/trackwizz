@@ -84,6 +84,7 @@ export class GameController extends Controller {
     game.tracks = tracks;
     game.currentTrackIndex = -1;
     game.questionStartTimestamp = -1;
+    game.answersForCurrentTrack = 0;
     req.gameSessions.new(game);
 
     // send game without tracks

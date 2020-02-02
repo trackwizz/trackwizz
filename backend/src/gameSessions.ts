@@ -43,6 +43,7 @@ export class GameSessions {
       // Skip tracks that don't have a preview URL
       game.currentTrackIndex += 1;
     }
+    game.answersForCurrentTrack = 0;
 
     if (game.currentTrackIndex >= game.tracks.length) {
       game.isEnded = true;
@@ -80,6 +81,25 @@ export class GameSessions {
     game.updateTimeout = setTimeout(async () => {
       await this.updateGame(id);
     }, 30 * 1000);
+  }
+
+  public receiveAnswer(id: number): void {
+    if (this.games[id] === undefined) {
+      return;
+    }
+
+    const game = this.games[id];
+
+    game.answersForCurrentTrack += 1;
+    if (game.answersForCurrentTrack >= game.roomManager.getPlayers.length) {
+      // Wait for 3 seconds before switching to the next track
+      if (game.updateTimeout !== undefined) {
+        clearTimeout(game.updateTimeout);
+      }
+      game.updateTimeout = setTimeout(async () => {
+        await this.updateGame(id);
+      }, 3 * 1000);
+    }
   }
 
   public getGame(id: number): Game | undefined {
