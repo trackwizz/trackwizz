@@ -1,15 +1,9 @@
-import { Game } from "./entities/game";
+import { Game, Answer } from "./entities/game";
 import { logger } from "./utils/logger";
 import { getRepository } from "typeorm";
 import { getNRandom } from "./utils";
 import { OutboundMessageType } from "./controllers/websockets_controller";
 import { Track } from "./providers/track";
-
-class Answer {
-  public id: string;
-  public name: string;
-  public artist: string;
-}
 
 export class GameSessions {
   private readonly games: { [key: number]: Game };
@@ -26,6 +20,7 @@ export class GameSessions {
     if (this.games[id] === undefined) {
       return;
     }
+    this.games[id].startDate = new Date();
     await this.updateGame(id);
   }
 
@@ -43,6 +38,7 @@ export class GameSessions {
       // Skip tracks that don't have a preview URL
       game.currentTrackIndex += 1;
     }
+    game.receivedAnswersForCurrentTrack = 0;
 
     if (game.currentTrackIndex >= game.tracks.length) {
       game.isEnded = true;
@@ -50,6 +46,25 @@ export class GameSessions {
       logger.info(`Game ${game.title} ended!`);
       // todo send game-end websocket to game room
       return;
+    }
+
+    this.computeNewPossibleAnswers(game.id);
+
+    logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}. Preview url: ${game.tracks[game.currentTrackIndex].previewUrl}`);
+
+    game.questionStartTimestamp = Date.now();
+    game.roomManager.broadcastMessage(this.getQuestionUpdateMessage(game.id));
+
+    game.updateTimeout = setTimeout(async () => {
+      await this.updateGame(id);
+    }, 30 * 1000);
+  }
+
+  public computeNewPossibleAnswers(id: number): Answer[] {
+    const game = this.games[id];
+
+    if (game === undefined) {
+      return [];
     }
 
     const otherTracksIndexes = Array.from(Array(game.questionsNumber).keys());
@@ -62,24 +77,45 @@ export class GameSessions {
     // Step 1: get the tracks data
     // Step 2: keep only id, name and artist
     // Step 3: shuffle the answers
-    const answers: Answer[] = getNRandom(
+    game.currentPossibleAnswers = getNRandom(
       answersIndexes.map((index: number) => game.tracks[index]).map((track: Track) => ({ id: track.id, name: track.name, artist: track.artist })),
       4,
     );
 
-    logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}. Preview url: ${game.tracks[game.currentTrackIndex].previewUrl}`);
-    logger.info(`All guesses: ${JSON.stringify(answers)}`);
+    return game.currentPossibleAnswers;
+  }
 
-    game.questionStartTimestamp = Date.now();
-    game.roomManager.broadcastMessage({
+  public getQuestionUpdateMessage(id: number): object {
+    const game = this.games[id];
+
+    if (game === undefined) {
+      return {};
+    }
+
+    return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: game.tracks[game.currentTrackIndex].previewUrl,
-      answers,
-    });
+      answers: game.currentPossibleAnswers,
+    };
+  }
 
-    game.updateTimeout = setTimeout(async () => {
-      await this.updateGame(id);
-    }, 30 * 1000);
+  public receiveAnswer(id: number): void {
+    if (this.games[id] === undefined) {
+      return;
+    }
+
+    const game = this.games[id];
+
+    game.receivedAnswersForCurrentTrack += 1;
+    if (game.receivedAnswersForCurrentTrack >= game.roomManager.getPlayers().length) {
+      // Wait for 3 seconds before switching to the next track
+      if (game.updateTimeout !== undefined) {
+        clearTimeout(game.updateTimeout);
+      }
+      game.updateTimeout = setTimeout(async () => {
+        await this.updateGame(id);
+      }, 3 * 1000);
+    }
   }
 
   public getGame(id: number): Game | undefined {
