@@ -6,7 +6,7 @@ import { Answer } from "../../../../websockets/MessageType";
 interface IQuestion {
   previewUrl: string;
   answers: Answer[];
-  handleAnswer: (test: any) => void;
+  handleAnswer: (answer: Answer) => void;
 }
 
 const Question: React.FC<IQuestion> = ({
@@ -22,10 +22,10 @@ const Question: React.FC<IQuestion> = ({
       <div className="grid-container">
         <div>
           <div className="grid">
-            {answers.map((c, index) => (
-              <button key={index} onClick={() => handleAnswer(c.id)}>
-                <div>{`${c.name}`}</div>
-                <div>{`by ${c.artist}`}</div>
+            {answers.map((answer, index) => (
+              <button key={index} onClick={() => handleAnswer(answer)}>
+                <div>{`${answer.name}`}</div>
+                <div>{`by ${answer.artist}`}</div>
               </button>
             ))}
           </div>

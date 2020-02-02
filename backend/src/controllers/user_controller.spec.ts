@@ -7,6 +7,7 @@ let user: User;
 
 async function createUser(): Promise<User> {
   const user: User = new User();
+  user.id = "john";
   user.name = "John";
   await getRepository(User).save(user);
   return user;
@@ -61,11 +62,13 @@ describe("Test GET, DELETE, GET user", () => {
 
 describe("Test POST, PUT, GET", () => {
   const user: User = new User();
+  user.id = "mickey";
   user.name = "Mickey";
   it("should create a new user", async () => {
     const res = await request(server)
       .post("/users")
       .send({
+        id: user.id,
         name: user.name,
       });
     expect(res.status).toEqual(200);

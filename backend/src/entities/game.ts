@@ -37,6 +37,7 @@ export class Game {
   currentTrackIndex: number;
   otherTracksIndexes: Array<number>;
   updateTimeout: Timeout;
+  questionStartTimestamp: number;
 
   roomManager: GameRoomManager;
 }

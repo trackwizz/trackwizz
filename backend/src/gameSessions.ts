@@ -70,6 +70,7 @@ export class GameSessions {
     logger.info(`Game ${game.title} playing ${game.tracks[game.currentTrackIndex].name} at index ${game.currentTrackIndex}. Preview url: ${game.tracks[game.currentTrackIndex].previewUrl}`);
     logger.info(`All guesses: ${JSON.stringify(answers)}`);
 
+    game.questionStartTimestamp = Date.now();
     game.roomManager.broadcastMessage({
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: game.tracks[game.currentTrackIndex].previewUrl,

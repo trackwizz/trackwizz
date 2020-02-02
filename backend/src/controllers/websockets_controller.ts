@@ -1,16 +1,23 @@
 import WebSocket from "ws";
 import { RequestWithCache } from "../middlewares/app_cache";
+import { Score } from "../entities/score";
+import { getRepository } from "typeorm";
+import { toDate } from "../utils";
+import { getSpotifyUser, SpotifyUser } from "../providers/spotify/user";
+import { User } from "../entities/user";
 
 export enum InboundMessageType {
   PING = "PING",
   JOIN_GAME = "JOIN_GAME",
   REQUEST_START_GAME = "REQUEST_START_GAME",
+  SUBMIT_ANSWER = "SUBMIT_ANSWER",
 }
 
 export enum OutboundMessageType {
   WAITING_ROOM_UPDATE = "WAITING_ROOM_UPDATE",
   QUESTION_UPDATE = "QUESTION_UPDATE",
   START_GAME = "START_GAME",
+  ANSWER_RESULT = "ANSWER_RESULT",
   ERROR = "ERROR",
 }
 
@@ -90,27 +97,69 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
   });
 };
 
+/* --- Submit Answer --- */
+type Answer = {
+  id: string;
+  name: string;
+  artist: string;
+};
+
+type SubmitAnswerMessage = {
+  type: InboundMessageType.SUBMIT_ANSWER;
+  answer: Answer;
+  gameId: string;
+  accessToken: string;
+};
+
+const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gameId, accessToken }: SubmitAnswerMessage): void => {
+  const game = req.gameSessions.getGame(parseInt(gameId));
+
+  if (!game) {
+    ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Game not found." }));
+    return;
+  }
+
+  getSpotifyUser(accessToken)
+    .then((spotifyUser: SpotifyUser) => {
+      const score: Score = new Score();
+      score.idSpotifyTrack = answer.id;
+      score.timestamp = toDate(Date.now());
+      score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
+      score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
+      score.game = game;
+      score.user = new User();
+      score.user.id = spotifyUser.id;
+
+      getRepository(Score).save(score);
+
+      ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
+    })
+    .catch(() => {
+      console.error("Can't find Spotify user to add score");
+    });
+};
+
 /* --- Root handler --- */
 const MessageHandlerFactory = (ws: WebSocket, req: RequestWithCache) => (msg: string): void => {
   try {
     const content = JSON.parse(msg);
 
-    if (content.type == InboundMessageType.PING) {
-      pingHandler(ws, req, content);
-      return;
+    switch (content.type) {
+      case InboundMessageType.PING:
+        pingHandler(ws, req, content);
+        break;
+      case InboundMessageType.JOIN_GAME:
+        joinGameHandler(ws, req, content);
+        break;
+      case InboundMessageType.REQUEST_START_GAME:
+        startGameHandler(ws, req, content);
+        break;
+      case InboundMessageType.SUBMIT_ANSWER:
+        SubmitAnswerHandler(ws, req, content);
+        break;
+      default:
+        ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message type." }));
     }
-
-    if (content.type == InboundMessageType.JOIN_GAME) {
-      joinGameHandler(ws, req, content);
-      return;
-    }
-
-    if (content.type == InboundMessageType.REQUEST_START_GAME) {
-      startGameHandler(ws, req, content);
-      return;
-    }
-
-    ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message type." }));
   } catch (e) {
     ws.send(JSON.stringify({ type: OutboundMessageType.ERROR, message: "Invalid message." }));
   }

@@ -4,12 +4,23 @@ import { Request, Response } from "express";
 import * as querystring from "querystring";
 import request from "request";
 import { logger } from "../../utils/logger";
+import { getSpotifyUser } from "./user";
+import { User } from "../../entities/user";
+import { getRepository } from "typeorm";
 
 const redirect_uri = process.env.BACKEND_REDIRECT_URI || "http://localhost:5000/callback";
 const front_redirect_uri = process.env.FRONTEND_REDIRECT_URI || "http://localhost:3000/login?";
 
 function getExpiresAt(expiresIn: number): number {
   return new Date().getTime() + expiresIn * 1000 - 120 * 1000;
+}
+
+async function createUser(accessToken: string): Promise<void> {
+  const spotifyUser = await getSpotifyUser(accessToken);
+  const user: User = new User();
+  user.id = spotifyUser.id;
+  user.name = spotifyUser.display_name;
+  await getRepository(User).save(user);
 }
 
 export function login(req: Request, res: Response): void {
@@ -64,8 +75,10 @@ export function callback(req: Request, res: Response): void {
       const { access_token: accessToken, refresh_token: refreshToken, expires_in: expiresIn } = body;
       const expiresAt = getExpiresAt(expiresIn);
 
+      // create the user in the database
+      createUser(accessToken);
+
       // pass the token to the front end
-      // TODO: we would like to save the tokens in our db here.
       res.redirect(
         front_redirect_uri +
           querystring.stringify({
