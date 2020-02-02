@@ -14,12 +14,17 @@
 
 .waitingRoomSubContainer {
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
 
 .playersContainer {
   width: 300px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px 0 0 10px;
 }
 
 .playersTitle {
@@ -73,4 +78,9 @@
     -webkit-transform: scale(1);
     transform: scale(1);
   }
+}
+
+.instructions {
+  font-size: 18px;
+  font-weight: bold;
 }
