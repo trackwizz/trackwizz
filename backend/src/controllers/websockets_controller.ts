@@ -89,12 +89,25 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
     return;
   }
 
-  setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
+  if (game.startDate.getTime() === 0) {
+    // Game hasn't started
 
-  game.roomManager.broadcastMessage({
-    type: OutboundMessageType.START_GAME,
-    countdownMs: START_GAME_COUNTDOWN_MS,
-  });
+    setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
+
+    game.roomManager.broadcastMessage({
+      type: OutboundMessageType.START_GAME,
+      countdownMs: START_GAME_COUNTDOWN_MS,
+    });
+  } else {
+    // Game has started, returning the current question to the newcomer, without affecting the other players
+    ws.send(
+      JSON.stringify({
+        type: OutboundMessageType.START_GAME,
+        countdownMs: START_GAME_COUNTDOWN_MS,
+      }),
+    );
+    setTimeout(() => ws.send(JSON.stringify(req.gameSessions.getQuestionUpdateMessage(game.id))), START_GAME_COUNTDOWN_MS);
+  }
 };
 
 /* --- Submit Answer --- */

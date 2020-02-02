@@ -67,7 +67,7 @@ export class GameController extends Controller {
 
     // save new game
     const game: Game = new Game();
-    game.startDate = new Date();
+    game.startDate = new Date(0);
     game.isEnded = false;
     game.score = 0;
     game.title = req.body.title || `game-${crypto.randomBytes(4).toString("hex")}`;
