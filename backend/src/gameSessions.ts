@@ -91,7 +91,7 @@ export class GameSessions {
     const game = this.games[id];
 
     game.answersForCurrentTrack += 1;
-    if (game.answersForCurrentTrack >= game.roomManager.getPlayers.length) {
+    if (game.answersForCurrentTrack >= game.roomManager.getPlayers().length) {
       // Wait for 3 seconds before switching to the next track
       if (game.updateTimeout !== undefined) {
         clearTimeout(game.updateTimeout);
