@@ -44,7 +44,10 @@ export class GameSessions {
       game.isEnded = true;
       await getRepository(Game).save(game);
       logger.info(`Game ${game.title} ended!`);
-      // todo send game-end websocket to game room
+      game.roomManager.broadcastMessage({
+        type: OutboundMessageType.GAME_END,
+        gameId: game.id,
+      });
       return;
     }
 

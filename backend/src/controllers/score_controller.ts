@@ -69,10 +69,16 @@ export class ScoreController extends Controller {
   }
 
   @get({ path: "/leaderboard" })
-  public async getLeaderboard(_req: Request, res: Response): Promise<void> {
-    const leaderboard = await getRepository(Score)
+  public async getLeaderboard(req: Request, res: Response): Promise<void> {
+    let queryBuilder = getRepository(Score)
       .createQueryBuilder("score")
-      .leftJoinAndSelect("score.user", "user")
+      .leftJoinAndSelect("score.user", "user");
+
+    if (req.query.gameId) {
+      queryBuilder = queryBuilder.innerJoin("score.game", "game", "game.id = :gameId", { gameId: req.query.gameId });
+    }
+
+    const leaderboard = await queryBuilder
       .select("user.id", "userId")
       .addSelect("user.name", "userName")
       .addSelect("COUNT(DISTINCT score.game)", "gamesNumber")
@@ -82,6 +88,7 @@ export class ScoreController extends Controller {
       .addGroupBy("user.name")
       .orderBy("successes", "DESC")
       .getRawMany();
+
     res.send(
       // Change count type to int (it is a string probably because of a typeorm bug)
       leaderboard.map(playerStats => ({
