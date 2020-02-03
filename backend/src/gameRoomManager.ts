@@ -6,7 +6,7 @@ const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
   private readonly playersConnections: { [origin: string]: { connection: WebSocket; lastPing: number } };
-  public pingTimeout: Timeout;
+  private pingTimeout: Timeout;
 
   constructor() {
     this.playersConnections = {};
@@ -60,4 +60,10 @@ export class GameRoomManager {
       lastPing: new Date().getTime(),
     };
   };
+
+  public clearPingTimeout(): void {
+    if (this.pingTimeout !== undefined) {
+      clearTimeout(this.pingTimeout);
+    }
+  }
 }
