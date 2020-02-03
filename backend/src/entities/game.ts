@@ -48,4 +48,8 @@ export class Game {
   receivedAnswersForCurrentTrack: number;
 
   roomManager: GameRoomManager;
+
+  public isEmpty(): boolean {
+    return this.roomManager.getPlayers().length === 0;
+  }
 }
