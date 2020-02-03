@@ -84,13 +84,7 @@ export class Game {
     this.receivedAnswersForCurrentTrack = 0;
 
     if (this.currentTrackIndex >= this.tracks.length) {
-      this.isEnded = true;
-      await getRepository(Game).save(this);
-      logger.info(`Game ${this.title} ended!`);
-      this.roomManager.broadcastMessage({
-        type: OutboundMessageType.GAME_END,
-        gameId: this.id,
-      });
+      await this.end();
       return;
     }
 
@@ -158,5 +152,24 @@ export class Game {
         await this.update();
       }, 3 * 1000);
     }
+  }
+
+  public async end(): Promise<void> {
+    this.isEnded = true;
+    await getRepository(Game).save(this);
+    // Stop update events
+    if (this.updateTimeout !== undefined) {
+      clearTimeout(this.updateTimeout);
+    }
+    // Send end game message to users
+    this.roomManager.broadcastMessage({
+      type: OutboundMessageType.GAME_END,
+      gameId: this.id,
+    });
+    // Remove ping timeout events
+    this.roomManager.clearPingTimeout();
+    // Disconnect all users
+    this.roomManager.disconnectAllPlayers();
+    logger.info(`Game ${this.title} ended!`);
   }
 }

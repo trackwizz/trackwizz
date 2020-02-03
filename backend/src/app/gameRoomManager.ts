@@ -39,6 +39,7 @@ export class GameRoomManager {
     let hasRemovedPlayers = false;
     Object.keys(this.playersConnections).map((origin: string) => {
       if (now - this.playersConnections[origin].lastPing > PING_TIMEOUT_MS) {
+        this.playersConnections[origin].connection.close();
         delete this.playersConnections[origin];
         hasRemovedPlayers = true;
       } else {
@@ -55,6 +56,13 @@ export class GameRoomManager {
 
     this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   };
+
+  public disconnectAllPlayers(): void {
+    for (const origin of Object.keys(this.playersConnections)) {
+      this.playersConnections[origin].connection.close();
+      delete this.playersConnections[origin];
+    }
+  }
 
   public updateLastPing(origin: string): void {
     this.playersConnections[origin] = {

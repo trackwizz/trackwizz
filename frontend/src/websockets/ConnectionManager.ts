@@ -14,6 +14,8 @@ class ConnectionManager {
   private readonly gameId: string;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
 
+  private connectionErrors = 0;
+
   private constructor(gameId: string) {
     this.client = new WebSocket("ws://localhost:5000/");
     this.gameId = gameId;
@@ -25,6 +27,8 @@ class ConnectionManager {
 
     this.client.onopen = this.onClientOpen;
     this.client.onmessage = this.onMessageReceived;
+    this.client.onerror = this.onError;
+    this.client.onclose = this.onClose;
   }
 
   /**
@@ -89,15 +93,15 @@ class ConnectionManager {
   };
 
   private ping = (): void => {
-    console.log("ping");
     this.client.send(
       JSON.stringify({ type: MessageType.PING, gameId: this.gameId })
     );
     setTimeout(() => {
-      if (ConnectionManager.instance) {
+      if (ConnectionManager.instance && this.connectionErrors < 10) {
         this.ping();
+      } else {
+        ConnectionManager.clearConnection();
       }
-      // Stop ping if the instance is cleared (i.e. game ended).
     }, 1000);
   };
 
@@ -121,6 +125,19 @@ class ConnectionManager {
     } catch (e) {
       console.error("Received invalid message from server: ", msg.data);
     }
+  };
+
+  private onError = (msg: Event): void => {
+    console.log(msg);
+    this.connectionErrors += 1;
+    if (this.connectionErrors === 10) {
+      ConnectionManager.clearConnection();
+    }
+  };
+
+  private onClose = (_: CloseEvent): void => {
+    console.log("Websocket connection closed.");
+    ConnectionManager.clearConnection();
   };
 }
 
