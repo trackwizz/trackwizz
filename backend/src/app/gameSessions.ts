@@ -1,5 +1,5 @@
-import { Game } from "./entities/game";
-import { logger } from "./utils/logger";
+import { Game } from "../entities/game";
+import { logger } from "../utils/logger";
 import { getRepository } from "typeorm";
 
 export class GameSessions {

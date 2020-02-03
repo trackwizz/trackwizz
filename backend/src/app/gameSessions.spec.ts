@@ -1,5 +1,5 @@
 import { getConnection, getRepository } from "typeorm";
-import { Game } from "./entities/game";
+import { Game } from "../entities/game";
 import { GameSessions } from "./gameSessions";
 import { GameRoomManager } from "./gameRoomManager";
 

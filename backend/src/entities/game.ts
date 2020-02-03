@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, getRepository } from "typeorm";
 import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
-import { GameRoomManager } from "../gameRoomManager";
+import { GameRoomManager } from "../app/gameRoomManager";
 import { logger } from "../utils/logger";
 import { getNRandom } from "../utils";
 import { OutboundMessageType } from "../controllers/websockets_controller";
-import gameSessions from "../gameSessions";
+import gameSessions from "../app/gameSessions";
 
 export class Answer {
   public id: string;

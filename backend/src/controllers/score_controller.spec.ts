@@ -1,5 +1,5 @@
 import request from "supertest";
-import server from "../server";
+import server from "../app/server";
 import { Game } from "../entities/game";
 import { Score } from "../entities/score";
 import { getConnection, getRepository } from "typeorm";

@@ -1,6 +1,6 @@
 import NodeCache from "node-cache";
 import { NextFunction, Request, Response } from "express";
-import gameSessions, { GameSessions } from "../gameSessions";
+import gameSessions, { GameSessions } from "../app/gameSessions";
 
 const cache = new NodeCache();
 
