@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Controller, del, get, post, put } from "./controller";
 import { getRepository } from "typeorm";
 import { Game } from "../entities/game";
-import { toDate } from "../utils";
+import { shuffleArray, toDate } from "../utils";
 import { Score } from "../entities/score";
 import * as crypto from "crypto";
 import { Track } from "../providers/track";
@@ -81,7 +81,7 @@ export class GameController extends Controller {
     game.roomManager = new GameRoomManager();
 
     // set new game session
-    game.tracks = tracks;
+    game.tracks = shuffleArray(tracks);
     game.currentTrackIndex = -1;
     game.currentPossibleAnswers = [];
     game.questionStartTimestamp = -1;
