@@ -26,24 +26,15 @@ stages:
 - name: release
 jobs:
   include:
-  - stage: test
-    name: Test
-    before_script:
-    - docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-    script:
-    - docker-compose -f docker-compose.yml -f docker-compose.test.yml run backend
   - stage: deploy
     name: Deploy
-    deploy:
-      provider: script
-      script: bash scripts/deploy.sh
+    script:
+      - bash scripts/deploy.sh
   - stage: release
     name: Release backend
-    deploy:
-      provider: script
-      script: bash scripts/heroku_release.sh $HEROKU_APP_BACK
+    script:
+      - bash scripts/heroku_release.sh $HEROKU_APP_BACK
   - stage: release
     name: Release frontend
-    deploy:
-      provider: script
-      script: bash scripts/heroku_release.sh $HEROKU_APP_FRONT
+    script:
+      - bash scripts/heroku_release.sh $HEROKU_APP_FRONT
