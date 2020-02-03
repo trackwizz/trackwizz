@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./joinRoom.css";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import { Method } from "axios";
 import { axiosRequest } from "../components/axiosRequest";
+import { UserContext } from "../components/UserContext";
 
 const JoinRoom: React.FC = () => {
+  const userContext = useContext(UserContext);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isRedirected, setIsRedirected] = useState<boolean>(false);
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);
@@ -42,8 +44,11 @@ const JoinRoom: React.FC = () => {
     }
   };
 
-  if (isRedirected) {
-    ConnectionManager.createInstance(roomId!);
+  if (isRedirected && userContext.user) {
+    ConnectionManager.createInstance(roomId!, {
+      id: userContext.user.id,
+      name: userContext.user.display_name
+    });
     return <Redirect to={`/waitingRoom?roomId=${roomId}`} />;
   }
 
@@ -58,7 +63,11 @@ const JoinRoom: React.FC = () => {
           onChange={handleRoomIdChange}
         />
       </div>
-      {gameNotFound && <div className="errorContainer">Game not found, please check you entered the correct value :)</div>}
+      {gameNotFound && (
+        <div className="errorContainer">
+          Game not found, please check you entered the correct value :)
+        </div>
+      )}
       <button className="fullWidthButton" onClick={handleJoinGame}>
         Join game
       </button>

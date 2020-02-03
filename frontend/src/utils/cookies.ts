@@ -1,4 +1,5 @@
 import Cookies from "universal-cookie";
+import { Player } from "../websockets/MessageType";
 
 const cookies = new Cookies();
 
@@ -6,7 +7,8 @@ export enum CookieKey {
   ACCESS_TOKEN = "access_token",
   REFRESH_TOKEN = "refresh_token",
   EXPIRES_AT = "expires_at",
-  GAME_ID = "game_id"
+  GAME_ID = "game_id",
+  PLAYER = "player"
 }
 
 export const isTokenExpired = (): boolean => {
@@ -33,4 +35,8 @@ export const getGameIdFromCookies = (): string | undefined => {
 
 export const setGameIdCookie = (gameId: string): void => {
   cookies.set(CookieKey.GAME_ID, gameId, { path: "/" });
+};
+
+export const getPlayerCookie = (): Player | undefined => {
+  return cookies.get(CookieKey.PLAYER);
 };
