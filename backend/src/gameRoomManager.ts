@@ -1,14 +1,16 @@
 import WebSocket from "ws";
 import { OutboundMessageType } from "./controllers/websockets_controller";
+import Timeout = NodeJS.Timeout;
 
 const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
   private readonly playersConnections: { [origin: string]: { connection: WebSocket; lastPing: number } };
+  public pingTimeout: Timeout;
 
   constructor() {
     this.playersConnections = {};
-    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
+    this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   }
 
   addPlayer = (origin: string, client: WebSocket): void => {
@@ -49,7 +51,7 @@ export class GameRoomManager {
       });
     }
 
-    setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
+    this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   };
 
   updateLastPing = (origin: string): void => {

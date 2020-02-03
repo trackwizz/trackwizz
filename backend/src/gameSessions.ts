@@ -144,6 +144,9 @@ export class GameSessions {
     if (game.updateTimeout !== undefined) {
       clearTimeout(game.updateTimeout);
     }
+    if (game.roomManager.pingTimeout !== undefined) {
+      clearTimeout(game.roomManager.pingTimeout);
+    }
     delete this.games[id];
   }
 }
