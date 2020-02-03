@@ -29,6 +29,14 @@ export class GameSessions {
       return;
     }
     const game = this.games[id];
+
+    // Delete game after 10s without users.
+    if (game.isEmpty()) {
+      setTimeout(() => {
+        this.deleteGame(id).catch();
+      }, 10 * 1000);
+    }
+
     if (game.updateTimeout !== undefined) {
       clearTimeout(game.updateTimeout);
     }
@@ -120,5 +128,23 @@ export class GameSessions {
 
   public getGame(id: number): Game | undefined {
     return this.games[id];
+  }
+
+  public async deleteGame(id: number): Promise<void> {
+    const game: Game | undefined = this.games[id];
+    if (game === undefined) {
+      return;
+    }
+    if (!game.isEmpty()) {
+      return;
+    }
+    game.isEnded = true;
+    await getRepository(Game).save(game);
+    logger.info(`Game ${game.title} ended!`);
+    if (game.updateTimeout !== undefined) {
+      clearTimeout(game.updateTimeout);
+    }
+    game.roomManager.clearPingTimeout();
+    delete this.games[id];
   }
 }
