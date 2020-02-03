@@ -22,6 +22,11 @@ export enum OutboundMessageType {
   ERROR = "ERROR",
 }
 
+export interface Player {
+  id: string;
+  name: string;
+}
+
 const getOrigin = (req: RequestWithCache): string => {
   const origin = req.headers.origin;
   if (!origin) {
@@ -52,9 +57,10 @@ const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessa
 type JoinGameMessage = {
   type: InboundMessageType.JOIN_GAME;
   gameId: number;
+  player: Player;
 };
 
-const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinGameMessage): void => {
+const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player }: JoinGameMessage): void => {
   const game = req.gameSessions.getGame(gameId);
 
   if (!game) {
@@ -63,7 +69,7 @@ const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinG
   }
 
   const origin = getOrigin(req);
-  game.roomManager.addPlayer(origin, ws);
+  game.roomManager.addPlayer(origin, ws, player);
 
   game.roomManager.broadcastMessage({
     type: OutboundMessageType.WAITING_ROOM_UPDATE,

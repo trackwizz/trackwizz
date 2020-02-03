@@ -60,6 +60,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const onWaitingRoomUpdateReceived = ({
     players
   }: WaitingRoomUpdateMessage): void => {
+    console.log(players);
     setPlayers(players.map(player => ({ id: player.id, name: player.name })));
   };
 
@@ -101,9 +102,9 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             <h1 className="playersTitle">Players</h1>
             <ul>
               {players &&
-                players.map(p => {
+                players.map((p, index) => {
                   return (
-                    <li key={p.id} className="player">
+                    <li key={index} className="player">
                       {p.name}
                     </li>
                   );
