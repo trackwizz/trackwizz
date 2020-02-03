@@ -6,7 +6,8 @@ enum MessageType {
   START_GAME = "START_GAME",
   REQUEST_START_GAME = "REQUEST_START_GAME",
   SUBMIT_ANSWER = "SUBMIT_ANSWER",
-  ANSWER_RESULT = "ANSWER_RESULT"
+  ANSWER_RESULT = "ANSWER_RESULT",
+  GAME_END = "GAME_END",
 }
 
 export interface Answer {
@@ -41,6 +42,11 @@ export interface AnswerResultMessage {
 export interface GameStartMessage {
   type: MessageType.START_GAME;
   countdownMs: number;
+}
+
+export interface GameEndMessage {
+  type: MessageType.GAME_END;
+  gameId: string;
 }
 
 export default MessageType;
