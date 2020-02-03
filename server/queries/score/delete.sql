@@ -1,1 +1,0 @@
-DELETE FROM Score WHERE id=$1;

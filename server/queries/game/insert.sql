@@ -1,1 +1,0 @@
-INSERT INTO Game (start_date, is_ended, score, title, questions_number, is_public, mode) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;

@@ -1,1 +1,0 @@
-DELETE FROM Genre WHERE id=$1;
