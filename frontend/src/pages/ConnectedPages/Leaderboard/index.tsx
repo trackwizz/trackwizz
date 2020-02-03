@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import "./leaderboard.css";
 import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
+import { RouteComponentProps, withRouter } from "react-router";
+import querystring from "query-string";
 
 interface ILeaderboard {
   userId: string;
@@ -12,7 +14,9 @@ interface ILeaderboard {
   successes: number;
 }
 
-const Leaderboard: React.FC = () => {
+const Leaderboard: React.FC<RouteComponentProps> = ({
+  location: { search }
+}) => {
   const [leaderboardTable, setLeaderboardTable] = useState<
     ILeaderboard[] | null
   >(null);
@@ -21,10 +25,13 @@ const Leaderboard: React.FC = () => {
     requestLeaderboard();
   }, []);
 
+  const { gameId } = querystring.parse(search);
+  const isForSpecificGame = !!gameId;
+
   const requestLeaderboard = async () => {
     const request = {
       method: "get" as Method,
-      url: "/scores/leaderboard"
+      url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
     };
 
     const response = await axiosRequest(request);
@@ -72,12 +79,16 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="leaderboardContainer">
-      <h1 className="leaderboardTitle">Leaderboard</h1>
+      <h1 className="leaderboardTitle">
+        {isForSpecificGame ? "Game finished!" : "Leaderboard"}
+      </h1>
       <table className="leaderboardTable">
         <thead className="leaderboardTitleRow">
           <tr>
             <td className="leaderboardTitleColumn firstTitleColumn">Name</td>
-            <td className="leaderboardTitleColumn">Number Games</td>
+            {!isForSpecificGame && (
+              <td className="leaderboardTitleColumn">Number Games</td>
+            )}
             <td className="leaderboardTitleColumn">Total Score</td>
             <td className="leaderboardTitleColumn lastTitleColumn">
               Success Rate
@@ -89,9 +100,11 @@ const Leaderboard: React.FC = () => {
             return (
               <tr key={p.userId} className={setRowClassName(index)}>
                 <td className={setColumnClassName(index, 0)}>{p.userName}</td>
-                <td className={setColumnClassName(index, 1)}>
-                  {p.gamesNumber}
-                </td>
+                {!isForSpecificGame && (
+                  <td className={setColumnClassName(index, 1)}>
+                    {p.gamesNumber}
+                  </td>
+                )}
                 <td className={setColumnClassName(index, 2)}>{p.successes}</td>
                 <td className={setColumnClassName(index, 3)}>
                   {Math.round((p.successes / p.answers) * 100) / 100}
@@ -105,4 +118,4 @@ const Leaderboard: React.FC = () => {
   );
 };
 
-export default Leaderboard;
+export default withRouter(Leaderboard);

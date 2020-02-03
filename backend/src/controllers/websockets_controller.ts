@@ -18,6 +18,7 @@ export enum OutboundMessageType {
   QUESTION_UPDATE = "QUESTION_UPDATE",
   START_GAME = "START_GAME",
   ANSWER_RESULT = "ANSWER_RESULT",
+  GAME_END = "GAME_END",
   ERROR = "ERROR",
 }
 

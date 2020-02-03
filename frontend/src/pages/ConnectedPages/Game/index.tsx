@@ -8,14 +8,15 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   QuestionUpdateMessage,
   Answer,
-  AnswerResultMessage
+  AnswerResultMessage,
+  GameEndMessage
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 import { getToken } from "../../../utils/cookies";
 import AnswerResult from "./AnswerResult";
 
-const Game: React.FC<RouteComponentProps> = ({ location }) => {
+const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -43,9 +44,13 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     setPreviewUrl(question.previewUrl);
   };
 
-  const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage) => {
+  const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage): void => {
     setIsAnswerCorrect(isCorrect);
     setStep(IGameEnum.ANSWER_SUBMITTED);
+  };
+
+  const onGameEndReceived = ({ gameId }: GameEndMessage): void => {
+    history.push(`/leaderboard?gameId=${gameId}`);
   };
 
   const countdownMs = querystring.parse(location.search).countdownMs as string;
@@ -60,12 +65,17 @@ const Game: React.FC<RouteComponentProps> = ({ location }) => {
     onAnswerResultReceived
   );
 
+  ConnectionManager.getInstance().registerCallbackForMessage(
+    MessageType.GAME_END,
+    onGameEndReceived
+  );
+
   const handleAnswer = (answer: Answer): void => {
     ConnectionManager.getInstance().sendMessage({
-      type: MessageType.SUBMIT_ANSWER,
+      accessToken: getToken(),
       answer,
       gameId: querystring.parse(location.search).gameId as string,
-      accessToken: getToken()
+      type: MessageType.SUBMIT_ANSWER,
     });
   };
 

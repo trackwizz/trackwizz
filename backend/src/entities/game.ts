@@ -87,6 +87,10 @@ export class Game {
       this.isEnded = true;
       await getRepository(Game).save(this);
       logger.info(`Game ${this.title} ended!`);
+      this.roomManager.broadcastMessage({
+        type: OutboundMessageType.GAME_END,
+        gameId: this.id,
+      });
       return;
     }
 
