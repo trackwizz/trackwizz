@@ -1,4 +1,5 @@
-// Example
+import { config } from "dotenv";
+config(); // Get environment variables
 import { Connection, getConnection } from "typeorm";
 import { logger } from "../src/utils/logger";
 import { connectToDatabase } from "../src/utils/database";

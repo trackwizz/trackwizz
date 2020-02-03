@@ -2,4 +2,6 @@ version: '3.7'
 services:
     backend:
         restart: "no"
+        volumes:
+            - ./backend/badges:/usr/app/badges
         command: ["yarn", "test"]
