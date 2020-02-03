@@ -139,3 +139,17 @@ button:hover {
   padding-bottom: 4rem;
   height: 100%;
 }
+
+.muted-button {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.31);
+  width: 50px;
+  height: 50px;
+  padding-right: 0.2rem;
+  margin: 0 0 0 2rem;
+}
+
+.muted-button > svg {
+  width: 20px;
+  fill: white;
+}

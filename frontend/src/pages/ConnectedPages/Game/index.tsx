@@ -3,7 +3,6 @@ import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
 import { IGameEnum } from "./types";
-import Score from "./Score";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   QuestionUpdateMessage,
@@ -15,24 +14,29 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 import { getToken } from "../../../utils/cookies";
 import AnswerResult from "./AnswerResult";
+import { adjustVolume } from "../../../utils/audio";
 
 const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
-  const [score] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  // const [score] = useState<number>(0);
   const player = useRef<null | HTMLAudioElement>(null);
 
   useEffect(() => {
-    reloadPlayer();
+    reloadPlayer().catch();
   }, [previewUrl]);
 
-  const reloadPlayer = async () => {
+  const reloadPlayer = async (): Promise<void> => {
     if (player && player.current) {
+      await adjustVolume(player.current, 0, { duration: 200 });
       player.current.pause();
+      // eslint-disable-next-line require-atomic-updates
       player.current.src = previewUrl;
       await player.current.play();
+      await adjustVolume(player.current, 1, { duration: 200 });
     }
   };
 
@@ -88,19 +92,18 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
         />
       )}
       {step === IGameEnum.QUIZZ && (
-        <React.Fragment>
-          <Question
-            previewUrl={previewUrl!}
-            answers={answers!}
-            handleAnswer={handleAnswer}
-          />
-          <audio ref={player} data-vscid="obacc5arn" />
-        </React.Fragment>
+        <Question
+          previewUrl={previewUrl!}
+          answers={answers!}
+          handleAnswer={handleAnswer}
+          isMuted={isMuted}
+          setIsMuted={setIsMuted}
+        />
       )}
       {step === IGameEnum.ANSWER_SUBMITTED && (
         <AnswerResult isCorrect={isAnswerCorrect} />
       )}
-      {step === IGameEnum.SCORE && <Score score={score} />}
+      <audio ref={player} data-vscid="obacc5arn" muted={isMuted} />
     </div>
   );
 };
