@@ -9,6 +9,7 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import MessageType, {
   WaitingRoomUpdateMessage
 } from "../../../websockets/MessageType";
+import Dancers from "../components/Dancers";
 
 interface IPlayers {
   id: string;
@@ -19,7 +20,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [roomId, setRoomId] = useState<number | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
-  const [nickName, setNickName] = useState<string>("Player");
 
   useEffect(() => {
     if (location.search !== "") {
@@ -70,12 +70,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
   };
 
-  const handleChangeNickName = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setNickName(event.target.value);
-  };
-
   const handleStart = (event: React.MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
     ConnectionManager.getInstance().sendMessage({
@@ -108,18 +102,11 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             </ul>
           </div>
           <div className="startGameContainer">
+            <Dancers />
             <button className="play-button pulsate-fwd" onClick={handleStart}>
               &#9658;
             </button>
-            <div>
-              <label className="inputLabel">Username:</label>
-              <input
-                type="text"
-                value={nickName}
-                className="input"
-                onChange={handleChangeNickName}
-              />
-            </div>
+            <span className="instructions">Press play to start game</span>
           </div>
         </div>
       </div>

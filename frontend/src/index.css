@@ -119,7 +119,7 @@ button:hover {
 }
 
 .play-button {
-  margin: 2rem 0 5rem;
+  margin: 2rem 0;
   width: 4rem;
   height: 4rem;
   border: 2px solid rgb(76, 76, 76);
