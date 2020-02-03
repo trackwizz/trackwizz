@@ -3,7 +3,6 @@ import { RequestWithCache } from "../middlewares/app_cache";
 import { Score } from "../entities/score";
 import { getRepository } from "typeorm";
 import { toDate } from "../utils";
-import { getSpotifyUser, SpotifyUser } from "../providers/spotify/user";
 import { User } from "../entities/user";
 
 export enum InboundMessageType {
@@ -128,10 +127,10 @@ type SubmitAnswerMessage = {
   type: InboundMessageType.SUBMIT_ANSWER;
   answer: Answer;
   gameId: string;
-  accessToken: string;
+  player: Player;
 };
 
-const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gameId, accessToken }: SubmitAnswerMessage): void => {
+const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gameId, player }: SubmitAnswerMessage): void => {
   const game = req.gameSessions.getGame(parseInt(gameId));
 
   if (!game) {
@@ -139,26 +138,20 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
     return;
   }
 
-  getSpotifyUser(accessToken)
-    .then((spotifyUser: SpotifyUser) => {
-      const score: Score = new Score();
-      score.idSpotifyTrack = answer.id;
-      score.timestamp = toDate(Date.now());
-      score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
-      score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
-      score.game = game;
-      score.user = new User();
-      score.user.id = spotifyUser.id;
+  const score: Score = new Score();
+  score.idSpotifyTrack = answer.id;
+  score.timestamp = toDate(Date.now());
+  score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
+  score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
+  score.game = game;
+  score.user = new User();
+  score.user.id = player.id;
 
-      getRepository(Score).save(score);
+  getRepository(Score).save(score);
 
-      ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
+  ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
 
-      game.receiveAnswer();
-    })
-    .catch(() => {
-      console.error("Can't find Spotify user to add score");
-    });
+  game.receiveAnswer(player);
 };
 
 /* --- Root handler --- */

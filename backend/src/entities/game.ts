@@ -3,9 +3,11 @@ import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
 import { GameRoomManager } from "../app/gameRoomManager";
 import { logger } from "../utils/logger";
-import { getNRandom } from "../utils";
-import { OutboundMessageType } from "../controllers/websockets_controller";
+import { getNRandom, toDate } from "../utils";
+import { OutboundMessageType, Player } from "../controllers/websockets_controller";
 import gameSessions from "../app/gameSessions";
+import { Score } from "./score";
+import { User } from "./user";
 
 export class Answer {
   public id: string;
@@ -49,7 +51,7 @@ export class Game {
   currentPossibleAnswers: Array<Answer>;
   updateTimeout: Timeout;
   questionStartTimestamp: number;
-  receivedAnswersForCurrentTrack: number;
+  receivedAnswersForCurrentTrack: Array<Player>;
   roomManager: GameRoomManager;
 
   /**
@@ -81,7 +83,7 @@ export class Game {
       // Skip tracks that don't have a preview URL
       this.currentTrackIndex += 1;
     }
-    this.receivedAnswersForCurrentTrack = 0;
+    this.receivedAnswersForCurrentTrack = [];
 
     if (this.currentTrackIndex >= this.tracks.length) {
       await this.end();
@@ -96,6 +98,7 @@ export class Game {
     this.roomManager.broadcastMessage(this.getQuestionUpdateMessage());
 
     this.updateTimeout = setTimeout(async () => {
+      this.setPlayersMissingScores();
       await this.update();
     }, 30 * 1000);
   }
@@ -132,6 +135,27 @@ export class Game {
   }
 
   /**
+   * Update the score for the people who have not answer the question
+   */
+  public setPlayersMissingScores(): void {
+    const players = this.roomManager.getPlayers();
+    for (let i = 0; i < players.length; i++) {
+      if (this.receivedAnswersForCurrentTrack.includes(players[i]) === false) {
+        const score: Score = new Score();
+        score.idSpotifyTrack = this.tracks[this.currentTrackIndex].id;
+        score.timestamp = toDate(Date.now());
+        score.isCorrect = false;
+        score.reactionTimeMs = 30 * 1000;
+        score.game = this;
+        score.user = new User();
+        score.user.id = players[i].id;
+
+        getRepository(Score).save(score);
+      }
+    }
+  }
+
+  /**
    * Returns true if there are no more users in the game room.
    */
   public isEmpty(): boolean {
@@ -141,9 +165,9 @@ export class Game {
   /**
    * Get an answer from one user, check it and save it.
    */
-  public receiveAnswer(): void {
-    this.receivedAnswersForCurrentTrack += 1;
-    if (this.receivedAnswersForCurrentTrack >= this.roomManager.getPlayers().length) {
+  public receiveAnswer(player: Player): void {
+    this.receivedAnswersForCurrentTrack.push(player);
+    if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getPlayers().length) {
       // Wait for 3 seconds before switching to the next track
       if (this.updateTimeout !== undefined) {
         clearTimeout(this.updateTimeout);
