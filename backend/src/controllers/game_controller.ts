@@ -7,7 +7,7 @@ import { Score } from "../entities/score";
 import * as crypto from "crypto";
 import { Track } from "../providers/track";
 import { requestSpotifyTracks } from "../providers/spotify/tracks";
-import { GameRoomManager } from "../gameRoomManager";
+import { GameRoomManager } from "../app/gameRoomManager";
 
 export class GameController extends Controller {
   constructor() {

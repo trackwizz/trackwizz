@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { OutboundMessageType } from "./controllers/websockets_controller";
+import { OutboundMessageType } from "../controllers/websockets_controller";
 import Timeout = NodeJS.Timeout;
 
 const PING_TIMEOUT_MS = 3000;
@@ -13,16 +13,18 @@ export class GameRoomManager {
     this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   }
 
-  addPlayer = (origin: string, client: WebSocket): void => {
+  public addPlayer(origin: string, client: WebSocket): void {
     this.playersConnections[origin] = {
       connection: client,
       lastPing: new Date().getTime(),
     };
-  };
+  }
 
-  getPlayers = (): string[] => Object.keys(this.playersConnections);
+  public getPlayers(): string[] {
+    return Object.keys(this.playersConnections);
+  }
 
-  broadcastMessage = (message: object): void => {
+  public broadcastMessage(message: object): void {
     Object.keys(this.playersConnections).forEach(origin => {
       try {
         this.playersConnections[origin].connection.send(JSON.stringify(message));
@@ -30,7 +32,7 @@ export class GameRoomManager {
         console.error(e);
       }
     });
-  };
+  }
 
   private removeDisconnectedPlayers = (): void => {
     const now = new Date().getTime();
@@ -54,12 +56,12 @@ export class GameRoomManager {
     this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   };
 
-  updateLastPing = (origin: string): void => {
+  public updateLastPing(origin: string): void {
     this.playersConnections[origin] = {
       ...this.playersConnections[origin],
       lastPing: new Date().getTime(),
     };
-  };
+  }
 
   public clearPingTimeout(): void {
     if (this.pingTimeout !== undefined) {

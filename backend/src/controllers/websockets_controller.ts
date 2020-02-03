@@ -93,7 +93,7 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
   if (game.startDate.getTime() === 0) {
     // Game hasn't started
 
-    setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
+    setTimeout(() => game.start(), START_GAME_COUNTDOWN_MS);
 
     game.roomManager.broadcastMessage({
       type: OutboundMessageType.START_GAME,
@@ -107,7 +107,7 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
         countdownMs: START_GAME_COUNTDOWN_MS,
       }),
     );
-    setTimeout(() => ws.send(JSON.stringify(req.gameSessions.getQuestionUpdateMessage(game.id))), START_GAME_COUNTDOWN_MS);
+    setTimeout(() => ws.send(JSON.stringify(game.getQuestionUpdateMessage())), START_GAME_COUNTDOWN_MS);
   }
 };
 
@@ -148,7 +148,7 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
 
       ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
 
-      req.gameSessions.receiveAnswer(game.id);
+      game.receiveAnswer();
     })
     .catch(() => {
       console.error("Can't find Spotify user to add score");

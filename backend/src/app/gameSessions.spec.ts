@@ -1,5 +1,5 @@
 import { getConnection, getRepository } from "typeorm";
-import { Game } from "./entities/game";
+import { Game } from "../entities/game";
 import { GameSessions } from "./gameSessions";
 import { GameRoomManager } from "./gameRoomManager";
 
@@ -49,7 +49,7 @@ describe("Test game in game session", () => {
     expect(gameSessions.getGame(game.id)).toBeDefined();
   });
   it("Should update the game", async () => {
-    await gameSessions.updateGame(game.id);
+    await game.update();
     const updatedGame = gameSessions.getGame(game.id);
     expect(updatedGame).toBeDefined();
     if (updatedGame === undefined) {
@@ -61,15 +61,19 @@ describe("Test game in game session", () => {
     expect(updatedGame.isEnded).toBeFalsy();
   });
   it("Should end the game", async () => {
-    await gameSessions.updateGame(game.id);
-    await gameSessions.updateGame(game.id);
-    await gameSessions.updateGame(game.id);
-    await gameSessions.updateGame(game.id);
+    await game.update();
+    await game.update();
+    await game.update();
+    await game.update();
     const endedGame = gameSessions.getGame(game.id);
     expect(endedGame).toBeDefined();
     if (endedGame === undefined) {
       return;
     }
     expect(endedGame.isEnded).toBeTruthy();
+  });
+  it("Should delete the game in the game sessions", async () => {
+    await gameSessions.deleteGame(game.id);
+    expect(gameSessions.getGame(game.id)).toBeUndefined();
   });
 });

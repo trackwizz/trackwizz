@@ -39,6 +39,11 @@ export function shuffleArray<T>(array: Array<T>): Array<T> {
   return array;
 }
 
+/**
+ * Returns n random elements from an array
+ * @param array
+ * @param n
+ */
 export function getNRandom<T>(array: Array<T>, n: number): Array<T> {
   return shuffleArray(array).slice(0, n);
 }
