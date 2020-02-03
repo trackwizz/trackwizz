@@ -27,11 +27,6 @@ export function toDate(input: number | string): Date | null {
   return new Date(input) || null;
 }
 
-export function getNRandom<T>(array: Array<T>, n: number): Array<T> {
-  const shuffled = array.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, n);
-}
-
 /**
  * Randomize array element order in-place.
  * Using Durstenfeld shuffle algorithm.
@@ -42,4 +37,8 @@ export function shuffleArray<T>(array: Array<T>): Array<T> {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+export function getNRandom<T>(array: Array<T>, n: number): Array<T> {
+  return shuffleArray(array).slice(0, n);
 }
