@@ -1,1 +1,0 @@
-DELETE FROM Game WHERE id=$1;

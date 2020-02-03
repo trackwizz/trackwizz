@@ -1,1 +1,0 @@
-INSERT INTO Person (name) VALUES ($1) RETURNING id;
