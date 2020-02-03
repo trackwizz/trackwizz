@@ -45,7 +45,7 @@ afterAll(async () => {
 
 describe("Test game in game session", () => {
   it("Should insert a new game in the game sessions", () => {
-    gameSessions.new(game);
+    gameSessions.addGame(game);
     expect(gameSessions.getGame(game.id)).toBeDefined();
   });
   it("Should update the game", async () => {

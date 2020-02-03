@@ -1,6 +1,4 @@
 import { Game } from "../entities/game";
-import { logger } from "../utils/logger";
-import { getRepository } from "typeorm";
 
 export class GameSessions {
   private readonly games: { [key: number]: Game };
@@ -9,7 +7,7 @@ export class GameSessions {
     this.games = {};
   }
 
-  public new(game: Game): void {
+  public addGame(game: Game): void {
     this.games[game.id] = game;
   }
 
@@ -25,13 +23,7 @@ export class GameSessions {
     if (!game.isEmpty()) {
       return;
     }
-    game.isEnded = true;
-    await getRepository(Game).save(game);
-    logger.info(`Game ${game.title} ended!`);
-    if (game.updateTimeout !== undefined) {
-      clearTimeout(game.updateTimeout);
-    }
-    game.roomManager.clearPingTimeout();
+    await game.end();
     delete this.games[id];
   }
 }
