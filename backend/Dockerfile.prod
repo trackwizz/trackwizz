@@ -1,6 +1,9 @@
 # DEV Dockerfile
 FROM node:12.13-alpine
 
+ARG FRONTEND_NAME
+ENV FRONTEND_NAME=${FRONTEND_NAME}
+
 # Create app directory
 WORKDIR /usr/app
 
