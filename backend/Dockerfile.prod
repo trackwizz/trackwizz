@@ -11,7 +11,7 @@ ENV FRONTEND_NAME=${FRONTEND_NAME}
 WORKDIR /usr/app
 
 RUN yarn global add pm2
-FRONTEND_NAME=${BUILD_FRONTEND}
+
 # Install app dependencies
 COPY package.json .
 COPY yarn.lock .
