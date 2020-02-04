@@ -1,5 +1,6 @@
 .waitingRoomTitle {
-  width: 90%;
+  width: 80%;
+  margin-bottom: 0.5rem;
   display: flex;
   justify-content: flex-end;
 }
@@ -15,8 +16,8 @@
 
 .waitingRoomSubContainer {
   display: flex;
-  width: 95%;
-  height: 95%;
+  width: 80%;
+  height: 100%;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   max-height: 100%;
@@ -92,6 +93,7 @@
 @media only screen and (max-width: 768px){
   .waitingRoomSubContainer {
     flex-direction: column;
+    width: CALC(100% - 2rem);
   }
   .playersContainer {
     width: 100%;
@@ -100,5 +102,8 @@
   }
   .startGameContainer {
     padding-bottom: 4rem;
+  }
+  .waitingRoomTitle {
+    width: CALC(100% - 2rem);
   }
 }

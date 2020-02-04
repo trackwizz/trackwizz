@@ -1,6 +1,6 @@
 .leaderboardContainer {
   margin: 32px;
-  height: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -8,7 +8,8 @@
   color: white;
   border-radius: 10px;
   box-sizing: border-box;
-  width: 90%;
+  width: 80%;
+  overflow: auto;
 }
 
 .leaderboardTitle {
@@ -16,8 +17,8 @@
 }
 
 .leaderboardTable {
-  margin: 0 3rem;
-  border-spacing: 0px;
+  margin: 0 2rem;
+  border-spacing: 0;
 }
 
 .leaderboardTitleRow {
@@ -64,4 +65,19 @@
 
 .leaderboardLastRowLastColumn {
   border-radius: 0 0 10px 0;
+}
+
+@media only screen and (max-width: 768px){
+  .leaderboardContainer {
+    width: CALC(100% - 2rem);
+  }
+  .leaderboardTitle {
+    margin: 1rem 0;
+  }
+  .leaderboardTable {
+    margin: 0;
+  }
+  .leaderboardTitleRow {
+    font-size: 1rem;
+  }
 }
