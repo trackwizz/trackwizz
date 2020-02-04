@@ -27,7 +27,7 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }) => {
   }
 
   return (
-    <React.Fragment>
+    <div className="mobileBottomMargin">
       <div className="navbarContainer">
         <Link className="navbarLink" to="/">
           <button
@@ -47,7 +47,7 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }) => {
           </button>
         </Link>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import "./home.css";
-import Dancers from "../components/Dancers";
 import { UserContext } from "../components/UserContext";
 
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
@@ -19,7 +18,6 @@ const Home: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <React.Fragment>
       <h1>{`Hi ${userContext.user ? userContext.user.display_name : ""}`}</h1>
-      <Dancers />
       <div className="homeContainer">
         <button className="homeButton" onClick={handleNewGame}>
           Create new game

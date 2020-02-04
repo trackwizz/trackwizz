@@ -9,7 +9,6 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import MessageType, {
   WaitingRoomUpdateMessage
 } from "../../../websockets/MessageType";
-import Dancers from "../components/Dancers";
 
 interface IPlayers {
   id: string;
@@ -102,7 +101,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             </ul>
           </div>
           <div className="startGameContainer">
-            <Dancers />
             <button className="play-button pulsate-fwd" onClick={handleStart}>
               &#9658;
             </button>

@@ -5,3 +5,23 @@
 .errorContainer {
   padding: 2%;
 }
+
+@media only screen and (max-width: 768px){
+  .inputContainer {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  .fullWidthButton {
+    width: 300px;
+  }
+  input {
+    width: 300px;
+  }
+  .errorContainer {
+    padding: 1rem 0;
+    width: 300px;
+  }
+}

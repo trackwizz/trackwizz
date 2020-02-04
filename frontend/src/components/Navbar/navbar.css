@@ -25,3 +25,15 @@
   border-bottom: 1px solid #fffdfd;
   background: rgba(255, 255, 255, 0.31);
 }
+
+@media only screen and (max-width: 768px){
+  .navbarLink {
+    width: 50%;
+  }
+  .navbarContainer {
+    height: 60px;
+  }
+  .mobileBottomMargin {
+    margin-bottom: 60px;
+  }
+}

@@ -9,20 +9,21 @@ import { UserProvider } from "./pages/ConnectedPages/components/UserContext";
 const App: React.FC = () => {
   return (
     <div className="main-container">
-      <div className="brand text-center">
-        <h1 className="brand-name">Trackwizz</h1>
-      </div>
-      <div className="flex-1 height-100">
-        <UserProvider>
-          <Router>
-            <Navbar />
+      <UserProvider>
+        <Router>
+          <Navbar />
+          <div className="brand text-center">
+            <h1 className="brand-name">Trackwizz</h1>
+          </div>
+          <div className="flex-1 height-100">
             <Switch>
               <Route path="/login" component={Login} />
               <Route path="/" component={ConnectedPages} />
             </Switch>
-          </Router>
-        </UserProvider>
-      </div>
+          </div>
+        </Router>
+      </UserProvider>
+      <div className="bottomPadding" />
     </div>
   );
 };
