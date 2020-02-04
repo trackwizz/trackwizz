@@ -15,7 +15,7 @@ const App: React.FC = () => {
           <div className="brand text-center">
             <h1 className="brand-name">Trackwizz</h1>
           </div>
-          <div className="flex-1 height-100">
+          <div className="flex-1">
             <Switch>
               <Route path="/login" component={Login} />
               <Route path="/" component={ConnectedPages} />
