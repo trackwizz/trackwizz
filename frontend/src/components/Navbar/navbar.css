@@ -26,6 +26,36 @@
   background: rgba(255, 255, 255, 0.31);
 }
 
+.back-button-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.back-button-container > a {
+  cursor: pointer;
+  text-decoration: none;
+  width: 160px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background: none;
+  color: white;
+}
+
+.back-button-container > a:hover {
+  background: rgba(255, 255, 255, 0.31);
+}
+
+.back-button-container > a > svg {
+  height: 1rem;
+  fill: white;
+  margin-right: 0.5rem;
+}
+
+
 @media only screen and (max-width: 768px){
   .navbarLink {
     width: 50%;
@@ -35,5 +65,10 @@
   }
   .mobileBottomMargin {
     margin-bottom: 60px;
+  }
+  .back-button-container > a {
+    height: 40px;
+    width: unset;
+    padding: 0 0.5rem;
   }
 }

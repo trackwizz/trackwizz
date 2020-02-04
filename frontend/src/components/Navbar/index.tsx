@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
-import "./navbar.css";
 import { withRouter, RouteComponentProps, Link } from "react-router-dom";
+import { useLastLocation } from "react-router-last-location";
+import { ReactComponent as Back } from "../../images/back.svg";
+import "./navbar.css";
 
-const Navbar: React.FC<RouteComponentProps> = ({ location }) => {
+const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [isHome, setIsHome] = useState<boolean>(false);
   const [isLeaderboard, setIsLeaderboard] = useState<boolean>(false);
+  const [isGame, setIsGame] = useState<boolean>(false);
 
   useEffect(() => {
     let isHomeLocation = false;
     let isLeaderboardLocation = false;
+    let isGame = false;
 
     if (location.pathname === "/") {
       isHomeLocation = true;
@@ -18,12 +22,36 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }) => {
       isLeaderboardLocation = true;
     }
 
+    if (location.pathname === "/game") {
+      isGame = true;
+    }
+
     setIsHome(isHomeLocation);
     setIsLeaderboard(isLeaderboardLocation);
+    setIsGame(isGame);
   }, [location]);
 
+  const lastLocation = useLastLocation();
+
   if (!isHome && !isLeaderboard) {
-    return <React.Fragment />;
+    return (
+      <div className="back-button-container">
+        <a
+          onClick={(event): void => {
+            event.preventDefault();
+            if (isGame) {
+              history.push("/");
+            } else {
+              history.goBack();
+            }
+          }}
+          href={isGame ? "/" : (lastLocation || { pathname: "/" }).pathname}
+        >
+          <Back />
+          Back
+        </a>
+      </div>
+    );
   }
 
   return (
