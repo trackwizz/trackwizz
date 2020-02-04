@@ -2,7 +2,8 @@ import MessageType, { Player } from "./MessageType";
 import {
   getGameIdFromCookies,
   setGameIdCookie,
-  getPlayerCookie
+  getPlayerCookie,
+  setPlayerCookie
 } from "../utils/cookies";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +53,7 @@ class ConnectionManager {
     ) {
       ConnectionManager.instance = new ConnectionManager(gameId, player);
       setGameIdCookie(gameId);
+      setPlayerCookie(player);
     }
 
     return ConnectionManager.instance!;

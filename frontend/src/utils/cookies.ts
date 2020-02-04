@@ -40,3 +40,7 @@ export const setGameIdCookie = (gameId: string): void => {
 export const getPlayerCookie = (): Player | undefined => {
   return cookies.get(CookieKey.PLAYER);
 };
+
+export const setPlayerCookie = (player: Player): void => {
+  cookies.set(CookieKey.PLAYER, player, { path: "/" });
+};
