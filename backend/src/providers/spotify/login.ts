@@ -10,13 +10,13 @@ import { getRepository } from "typeorm";
 
 let redirect_uri: string = "http://localhost:5000/callback";
 // prod
-if (process.env.BACKEND_NAME) {
-  redirect_uri = "http://" + process.env.BACKEND_NAME + "/callback";
+if (process.env.BACKEND_NAME_FULL) {
+  redirect_uri = process.env.BACKEND_NAME_FULL + "/callback";
 }
 let front_redirect_uri: string = "http://localhost:3000/login?";
 // prod
-if (process.env.FRONTEND_NAME) {
-  front_redirect_uri = "http://" + process.env.FRONTEND_NAME + "/login?";
+if (process.env.FRONTEND_NAME_FULL) {
+  front_redirect_uri = process.env.FRONTEND_NAME_FULL + "/login?";
 }
 
 function getExpiresAt(expiresIn: number): number {

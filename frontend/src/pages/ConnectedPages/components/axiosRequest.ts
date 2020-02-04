@@ -1,11 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { getToken } from "../../../utils/cookies";
+import { BACKEND_API } from "../../../constants";
 
-axios.defaults.baseURL = "http://localhost:5000";
-// prod
-if (process.env.BACKEND_NAME) {
-  axios.defaults.baseURL = "http://" + process.env.BACKEND_NAME;
-}
+axios.defaults.baseURL = BACKEND_API;
 
 function setDefaultAuthorization() {
   axios.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;

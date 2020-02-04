@@ -13,6 +13,12 @@ RUN yarn install
 # Copy the main application
 COPY . ./
 
+ARG REACT_APP_API_NAME
+ENV REACT_APP_API_NAME=${REACT_APP_API_NAME}
+
+ARG REACT_APP_WS_NAME
+ENV REACT_APP_WS_NAME=${REACT_APP_WS_NAME}
+
 # Build the application
 RUN yarn run build
 

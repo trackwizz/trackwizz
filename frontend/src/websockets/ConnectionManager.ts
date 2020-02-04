@@ -1,5 +1,6 @@
 import MessageType from "./MessageType";
 import { getGameIdFromCookies, setGameIdCookie } from "../utils/cookies";
+import { BACKEND_WS } from "../constants";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageCallback = (message: any) => void;
@@ -15,12 +16,7 @@ class ConnectionManager {
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
 
   private constructor(gameId: string) {
-    let url: string = "ws://localhost:5000/";
-    // prod
-    if (process.env.BACKEND_NAME) {
-      url = "ws://" + process.env.BACKEND_NAME;
-    }
-    this.client = new WebSocket(url);
+    this.client = new WebSocket(BACKEND_WS);
     this.gameId = gameId;
 
     this.messageCallbacks = {};

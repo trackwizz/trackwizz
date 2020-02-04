@@ -2,8 +2,8 @@ import swaggerJSDoc from "swagger-jsdoc";
 
 let url: string = "http://localhost:5000";
 // prod
-if (process.env.BACKEND_NAME) {
-  url = "http://" + process.env.BACKEND_NAME;
+if (process.env.BACKEND_NAME_FULL) {
+  url = process.env.BACKEND_NAME_FULL;
 }
 
 const apiOptions: swaggerJSDoc.Options = {
