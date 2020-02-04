@@ -15,7 +15,12 @@ class ConnectionManager {
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
 
   private constructor(gameId: string) {
-    this.client = new WebSocket("ws://localhost:5000/");
+    let url: string = "ws://localhost:5000/";
+    // prod
+    if (process.env.BACKEND_NAME) {
+      url = "ws://" + process.env.BACKEND_NAME;
+    }
+    this.client = new WebSocket(url);
     this.gameId = gameId;
 
     this.messageCallbacks = {};

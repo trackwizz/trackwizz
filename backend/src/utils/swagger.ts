@@ -1,5 +1,11 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
+let url: string = "http://localhost:5000";
+// prod
+if (process.env.BACKEND_NAME) {
+  url = "http://" + process.env.BACKEND_NAME;
+}
+
 const apiOptions: swaggerJSDoc.Options = {
   apis: ["./src/utils/*.yaml", "./src/providers/*.yaml", "./src/providers/*/**.yaml", "./src/controllers/*.yaml", "./src/entities/*.yaml"],
   swaggerDefinition: {
@@ -12,7 +18,7 @@ const apiOptions: swaggerJSDoc.Options = {
     servers: [
       {
         description: "",
-        url: "http://localhost:5000",
+        url: url,
       },
     ],
   },
