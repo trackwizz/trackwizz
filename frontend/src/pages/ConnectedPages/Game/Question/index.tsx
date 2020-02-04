@@ -21,6 +21,14 @@ const Question: React.FC<IQuestion> = ({
 }: IQuestion) => {
   return (
     <div className="flex-container column">
+      <button
+        className="play-button muted-button mobile-only fixedTop"
+        onClick={(): void => {
+          setIsMuted(!isMuted);
+        }}
+      >
+        {isMuted ? <Mute /> : <Volume />}
+      </button>
       <div className="text-center">
         <div
           className="flex-container"
@@ -28,7 +36,7 @@ const Question: React.FC<IQuestion> = ({
         >
           <h2 className="fancy-text">Which song is currently playing?</h2>
           <button
-            className="play-button muted-button"
+            className="play-button muted-button mobile-hidden"
             onClick={(): void => {
               setIsMuted(!isMuted);
             }}

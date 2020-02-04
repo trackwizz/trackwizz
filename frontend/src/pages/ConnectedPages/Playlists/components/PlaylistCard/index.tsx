@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-
+import React from "react";
+import { RouteComponentProps, withRouter } from "react-router";
 import { IPlaylist } from "../../types";
 import "./playlistCard.css";
-import { Redirect } from "react-router-dom";
 import { axiosRequest } from "../../../components/axiosRequest";
 import { Method } from "axios";
 import { IRoom } from "../../../components/types";
@@ -11,8 +10,9 @@ interface IProps {
   playlist: IPlaylist;
 }
 
-const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
-  const [newRoom, setNewRoom] = useState<null | IRoom>(null);
+type PlaylistCardProp = IProps & RouteComponentProps;
+
+const PlaylistCard: React.FC<PlaylistCardProp> = ({ playlist, history }: PlaylistCardProp) => {
 
   const handleRedirection = async () => {
     const requestNewRoom = {
@@ -25,13 +25,10 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
     const responseNewRoom = await axiosRequest(requestNewRoom);
 
     if (responseNewRoom.complete && !responseNewRoom.error) {
-      setNewRoom(responseNewRoom.data as IRoom);
+      const room = responseNewRoom.data as IRoom;
+      history.push(`/waitingRoom?roomId=${room.id}`);
     }
   };
-
-  if (!!newRoom) {
-    return <Redirect to={`/waitingRoom?roomId=${newRoom.id}`} />;
-  }
 
   return (
     <div
@@ -49,4 +46,4 @@ const PlaylistCard: React.FC<IProps> = ({ playlist }: IProps) => {
   );
 };
 
-export default PlaylistCard;
+export default withRouter(PlaylistCard);
