@@ -22,7 +22,6 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  // const [score] = useState<number>(0);
   const player = useRef<null | HTMLAudioElement>(null);
 
   useEffect(() => {
