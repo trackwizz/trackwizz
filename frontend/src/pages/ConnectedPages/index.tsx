@@ -11,12 +11,9 @@ import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
 import { UserContext } from "./components/UserContext";
-import { Method } from "axios";
-import {
-  axiosRequest,
-  setDefaultAuthorization
-} from "./components/axiosRequest";
+import { setDefaultAuthorization } from "./components/axiosRequest";
 import { IUser } from "./components/UserContext/types";
+import { getUserInfoResponse } from "../../utils/getUserInfoResponse";
 
 const ConnectedPages: React.FC = () => {
   const userContext = useContext(UserContext);
@@ -27,11 +24,7 @@ const ConnectedPages: React.FC = () => {
   }, []);
 
   const updateUser = async () => {
-    const requestUser = {
-      method: "GET" as Method,
-      url: "https://api.spotify.com/v1/me"
-    };
-    const responseUser = await axiosRequest(requestUser);
+    const responseUser = await getUserInfoResponse();
 
     if (responseUser.complete && !responseUser.error) {
       if (userContext.setUser) {

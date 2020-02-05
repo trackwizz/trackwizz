@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
@@ -9,6 +9,7 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import MessageType, {
   WaitingRoomUpdateMessage
 } from "../../../websockets/MessageType";
+import { UserContext } from "../components/UserContext";
 
 interface IPlayers {
   id: string;
@@ -16,33 +17,42 @@ interface IPlayers {
 }
 
 const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
+  const userContext = useContext(UserContext);
+
   const [roomId, setRoomId] = useState<number | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
 
   useEffect(() => {
-    if (location.search !== "") {
-      if (location.search.slice(1).includes("roomId=") !== undefined) {
-        const roomId = location.search
-          .slice(1)
-          .split("roomId=")
-          .filter(el => el !== "")
-          .shift();
+    if (userContext.user) {
+      if (location.search !== "") {
+        if (location.search.slice(1).includes("roomId=") !== undefined) {
+          const roomId = location.search
+            .slice(1)
+            .split("roomId=")
+            .filter(el => el !== "")
+            .shift();
 
-        if (roomId) {
-          ConnectionManager.createInstance(roomId.toString());
-          ConnectionManager.getInstance().registerCallbackForMessage(
-            MessageType.WAITING_ROOM_UPDATE,
-            onWaitingRoomUpdateReceived
-          );
-          ConnectionManager.getInstance().registerCallbackForMessage(
-            MessageType.START_GAME,
-            ({ countdownMs }) =>
-              history.push(`/game?gameId=${roomId}&countdownMs=${countdownMs}`)
-          );
+          if (roomId) {
+            ConnectionManager.createInstance(roomId.toString(), {
+              id: userContext.user.id,
+              name: userContext.user.display_name
+            });
+            ConnectionManager.getInstance().registerCallbackForMessage(
+              MessageType.WAITING_ROOM_UPDATE,
+              onWaitingRoomUpdateReceived
+            );
+            ConnectionManager.getInstance().registerCallbackForMessage(
+              MessageType.START_GAME,
+              ({ countdownMs }) =>
+                history.push(
+                  `/game?gameId=${roomId}&countdownMs=${countdownMs}`
+                )
+            );
+          }
+
+          requestRoomInfo(roomId || "");
         }
-
-        requestRoomInfo(roomId || "");
       }
     }
   }, [location.search]);
@@ -50,7 +60,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const onWaitingRoomUpdateReceived = ({
     players
   }: WaitingRoomUpdateMessage): void => {
-    setPlayers(players.map((name, index) => ({ id: index.toString(), name })));
+    setPlayers(players.map(player => ({ id: player.id, name: player.name })));
   };
 
   const requestRoomInfo = async (roomId: string) => {
@@ -91,9 +101,9 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             <h1 className="playersTitle">Players</h1>
             <ul>
               {players &&
-                players.map(p => {
+                players.map((p, index) => {
                   return (
-                    <li key={p.id} className="player">
+                    <li key={index} className="player">
                       {p.name}
                     </li>
                   );

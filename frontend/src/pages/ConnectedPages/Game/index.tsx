@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
@@ -12,11 +12,12 @@ import MessageType, {
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
-import { getToken } from "../../../utils/cookies";
 import AnswerResult from "./AnswerResult";
 import { adjustVolume } from "../../../utils/audio";
+import { UserContext } from "../components/UserContext";
 
 const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
+  const userContext = useContext(UserContext);
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -74,12 +75,17 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   );
 
   const handleAnswer = (answer: Answer): void => {
-    ConnectionManager.getInstance().sendMessage({
-      accessToken: getToken(),
-      answer,
-      gameId: querystring.parse(location.search).gameId as string,
-      type: MessageType.SUBMIT_ANSWER,
-    });
+    if (userContext.user) {
+      ConnectionManager.getInstance().sendMessage({
+        player: {
+          id: userContext.user.id,
+          name: userContext.user.display_name
+        },
+        answer,
+        gameId: querystring.parse(location.search).gameId as string,
+        type: MessageType.SUBMIT_ANSWER
+      });
+    }
   };
 
   return (

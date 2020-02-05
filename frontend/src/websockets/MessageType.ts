@@ -10,6 +10,11 @@ enum MessageType {
   GAME_END = "GAME_END",
 }
 
+export interface Player {
+  id: string;
+  name: string;
+}
+
 export interface Answer {
   id: string;
   name: string;
@@ -18,7 +23,7 @@ export interface Answer {
 
 export interface WaitingRoomUpdateMessage {
   type: MessageType.WAITING_ROOM_UPDATE;
-  players: string[];
+  players: Player[];
 }
 
 export interface QuestionUpdateMessage {

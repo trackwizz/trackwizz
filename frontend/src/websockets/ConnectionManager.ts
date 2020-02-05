@@ -1,5 +1,10 @@
-import MessageType from "./MessageType";
-import { getGameIdFromCookies, setGameIdCookie } from "../utils/cookies";
+import MessageType, { Player } from "./MessageType";
+import {
+  getGameIdFromCookies,
+  setGameIdCookie,
+  getPlayerCookie,
+  setPlayerCookie
+} from "../utils/cookies";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageCallback = (message: any) => void;
@@ -12,13 +17,15 @@ class ConnectionManager {
 
   private readonly client: WebSocket;
   private readonly gameId: string;
+  private readonly player: Player;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
 
   private connectionErrors = 0;
 
-  private constructor(gameId: string) {
+  private constructor(gameId: string, player: Player) {
     this.client = new WebSocket("ws://localhost:5000/");
     this.gameId = gameId;
+    this.player = player;
 
     this.messageCallbacks = {};
     Object.keys(MessageType).forEach(
@@ -36,13 +43,17 @@ class ConnectionManager {
    * This erases the previous game connection if any.
    * @param gameId - the new game id.
    */
-  public static createInstance = (gameId: string): ConnectionManager => {
+  public static createInstance = (
+    gameId: string,
+    player: Player
+  ): ConnectionManager => {
     if (
       !ConnectionManager.instance ||
       ConnectionManager.instance.gameId !== gameId
     ) {
-      ConnectionManager.instance = new ConnectionManager(gameId);
+      ConnectionManager.instance = new ConnectionManager(gameId, player);
       setGameIdCookie(gameId);
+      setPlayerCookie(player);
     }
 
     return ConnectionManager.instance!;
@@ -55,10 +66,12 @@ class ConnectionManager {
   public static getInstance = (): ConnectionManager => {
     if (!ConnectionManager.instance) {
       const gameId = getGameIdFromCookies();
-      if (!gameId) {
+      const player = getPlayerCookie();
+
+      if (!gameId || !player) {
         throw new Error("There is currently no connection opened.");
       }
-      ConnectionManager.createInstance(gameId);
+      ConnectionManager.createInstance(gameId, player);
     }
 
     return ConnectionManager.instance!;
@@ -108,7 +121,11 @@ class ConnectionManager {
   private onClientOpen = (): void => {
     console.log("The websocket connection is opened");
     this.client.send(
-      JSON.stringify({ type: MessageType.JOIN_GAME, gameId: this.gameId })
+      JSON.stringify({
+        type: MessageType.JOIN_GAME,
+        gameId: this.gameId,
+        player: this.player
+      })
     );
     // launch ping loop
     this.ping();
