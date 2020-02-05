@@ -20,7 +20,7 @@ const Question: React.FC<IQuestion> = ({
   setIsMuted,
 }: IQuestion) => {
   return (
-    <div className="flex-container column">
+    <div className="flex-container column" style={{ overflow: "auto" }}>
       <button
         className="play-button muted-button mobile-only fixedTop"
         onClick={(): void => {
