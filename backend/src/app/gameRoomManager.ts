@@ -5,7 +5,7 @@ import Timeout = NodeJS.Timeout;
 const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
-  private readonly playersConnections: { [origin: string]: { connection: WebSocket; lastPing: number; player: Player } };
+  private readonly playersConnections: { [id: string]: { connection: WebSocket; lastPing: number; player: Player } };
   private pingTimeout: Timeout;
 
   constructor() {
@@ -13,8 +13,8 @@ export class GameRoomManager {
     this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   }
 
-  public addPlayer(origin: string, client: WebSocket, player: Player): void {
-    this.playersConnections[origin] = {
+  public addPlayer(client: WebSocket, player: Player): void {
+    this.playersConnections[player.id] = {
       connection: client,
       lastPing: new Date().getTime(),
       player,
@@ -22,13 +22,13 @@ export class GameRoomManager {
   }
 
   public getPlayers(): Player[] {
-    return Object.keys(this.playersConnections).map(origin => this.playersConnections[origin].player);
+    return Object.keys(this.playersConnections).map(id => this.playersConnections[id].player);
   }
 
   public broadcastMessage(message: object): void {
-    Object.keys(this.playersConnections).forEach(origin => {
+    Object.keys(this.playersConnections).forEach(id => {
       try {
-        this.playersConnections[origin].connection.send(JSON.stringify(message));
+        this.playersConnections[id].connection.send(JSON.stringify(message));
       } catch (e) {
         console.error(e);
       }
@@ -38,13 +38,13 @@ export class GameRoomManager {
   private removeDisconnectedPlayers = (): void => {
     const now = new Date().getTime();
     let hasRemovedPlayers = false;
-    Object.keys(this.playersConnections).map((origin: string) => {
-      if (now - this.playersConnections[origin].lastPing > PING_TIMEOUT_MS) {
-        this.playersConnections[origin].connection.close();
-        delete this.playersConnections[origin];
+    Object.keys(this.playersConnections).map((id: string) => {
+      if (now - this.playersConnections[id].lastPing > PING_TIMEOUT_MS) {
+        this.playersConnections[id].connection.close();
+        delete this.playersConnections[id];
         hasRemovedPlayers = true;
       } else {
-        this.updateLastPing(origin);
+        this.updateLastPing(id);
       }
     });
 
@@ -59,15 +59,15 @@ export class GameRoomManager {
   };
 
   public disconnectAllPlayers(): void {
-    for (const origin of Object.keys(this.playersConnections)) {
-      this.playersConnections[origin].connection.close();
-      delete this.playersConnections[origin];
+    for (const id of Object.keys(this.playersConnections)) {
+      this.playersConnections[id].connection.close();
+      delete this.playersConnections[id];
     }
   }
 
-  public updateLastPing(origin: string): void {
-    this.playersConnections[origin] = {
-      ...this.playersConnections[origin],
+  public updateLastPing(id: string): void {
+    this.playersConnections[id] = {
+      ...this.playersConnections[id],
       lastPing: new Date().getTime(),
     };
   }

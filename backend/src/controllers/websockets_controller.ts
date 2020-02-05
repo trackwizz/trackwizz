@@ -26,15 +26,6 @@ export interface Player {
   name: string;
 }
 
-const getOrigin = (req: RequestWithCache): string => {
-  const origin = req.headers.origin;
-  if (!origin) {
-    throw new Error("No origin present on the request");
-  }
-
-  return origin.toString();
-};
-
 /* --- Ping --- */
 type PingMessage = {
   type: InboundMessageType.PING;
@@ -50,7 +41,7 @@ const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player }: P
     return;
   }
 
-  game.roomManager.updateLastPing(getOrigin(req));
+  game.roomManager.updateLastPing(player.id);
 };
 
 /* --- Join game --- */
@@ -68,8 +59,7 @@ const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player 
     return;
   }
 
-  const origin = getOrigin(req);
-  game.roomManager.addPlayer(origin, ws, player);
+  game.roomManager.addPlayer(ws, player);
 
   game.roomManager.broadcastMessage({
     type: OutboundMessageType.WAITING_ROOM_UPDATE,
