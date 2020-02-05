@@ -19,6 +19,8 @@ export enum OutboundMessageType {
   ANSWER_RESULT = "ANSWER_RESULT",
   GAME_END = "GAME_END",
   ERROR = "ERROR",
+  BATTLE_LOSE = "BATTLE_LOSE",
+  BATTLE_WIN = "BATTLE_WIN",
 }
 
 export interface Player {
