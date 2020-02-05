@@ -100,6 +100,15 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
   const onGameModeButtonPressed = (mode: 0 | 1): void => {
     setGameMode(mode);
+
+    const changeGameMode = {
+      data: {
+        mode: gameMode
+      },
+      method: "PUT" as Method,
+      url: `/games/${roomId}`
+    };
+    axiosRequest(changeGameMode);
   };
 
   return (
