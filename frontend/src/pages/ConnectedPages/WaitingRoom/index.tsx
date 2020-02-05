@@ -64,9 +64,11 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   }, [location.search]);
 
   const onWaitingRoomUpdateReceived = ({
-    players
+    players,
+    gameMode
   }: WaitingRoomUpdateMessage): void => {
     setPlayers(players.map(player => ({ id: player.id, name: player.name })));
+    setGameMode(gameMode);
   };
 
   const requestRoomInfo = async (roomId: string) => {

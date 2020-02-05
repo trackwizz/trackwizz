@@ -8,6 +8,7 @@ import * as crypto from "crypto";
 import { Track } from "../providers/track";
 import { requestSpotifyTracks } from "../providers/spotify/tracks";
 import { GameRoomManager } from "../app/gameRoomManager";
+import { OutboundMessageType } from "./websockets_controller";
 
 export class GameController extends Controller {
   constructor() {
@@ -95,23 +96,45 @@ export class GameController extends Controller {
     res.sendJSON(userGame);
   }
 
-  @put({ path: "/:id" })
-  public async editGame(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
-    const game: Game | undefined = await getRepository(Game).findOne(id);
-    if (game === undefined) {
-      next();
-      return;
-    }
+  private updateGameFields(req: Request, game: Game): Game {
     game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) || new Date(new Date().getTime() + 30 * 1000) : game.startDate;
     game.isEnded = req.body.isEnded !== undefined ? req.body.isEnded : game.isEnded;
     game.score = parseInt(req.body.score, 10) || game.score;
     game.title = req.body.title || game.title;
     game.questionsNumber = parseInt(req.body.questionsNumber, 10) || game.questionsNumber;
     game.isPublic = req.body.isPublic !== undefined ? req.body.isPublic : game.isPublic;
-    game.mode = parseInt(req.body.mode, 10) || game.mode;
+    game.mode = req.body.mode !== undefined ? parseInt(req.body.mode, 10) : game.mode;
     game.idSpotifyPlaylist = req.body.idSpotify || game.idSpotifyPlaylist;
+
+    return game;
+  }
+
+  @put({ path: "/:id" })
+  public async editGame(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const id: number = parseInt(req.params.id, 10) || 0;
+    let game: Game | undefined = await getRepository(Game).findOne(id);
+    if (game === undefined) {
+      next();
+      return;
+    }
+
+    game = this.updateGameFields(req, game);
+
     await getRepository(Game).save(game);
+
+    let gameInSession = req.gameSessions.getGame(game.id);
+
+    if (gameInSession) {
+      gameInSession = this.updateGameFields(req, gameInSession);
+      req.gameSessions.updateGame(game);
+
+      gameInSession.roomManager.broadcastMessage({
+        type: OutboundMessageType.WAITING_ROOM_UPDATE,
+        players: game.roomManager.getPlayers(),
+        gameMode: game.mode,
+      });
+    }
+
     res.sendJSON(game);
   }
 

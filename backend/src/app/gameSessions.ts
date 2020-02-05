@@ -15,6 +15,10 @@ export class GameSessions {
     return this.games[id];
   }
 
+  public updateGame(game: Game): void {
+    this.games[game.id] = game;
+  }
+
   public async deleteGame(id: number): Promise<void> {
     const game: Game | undefined = this.games[id];
     if (game === undefined) {

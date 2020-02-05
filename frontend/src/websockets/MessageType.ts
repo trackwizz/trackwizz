@@ -26,6 +26,7 @@ export interface Answer {
 export interface WaitingRoomUpdateMessage {
   type: MessageType.WAITING_ROOM_UPDATE;
   players: Player[];
+  gameMode: 0 | 1;
 }
 
 export interface QuestionUpdateMessage {
