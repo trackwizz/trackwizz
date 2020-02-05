@@ -96,7 +96,7 @@ export class GameController extends Controller {
     res.sendJSON(userGame);
   }
 
-  private updateGameFields(req: Request, game: Game): Game {
+  private static updateGameFields(req: Request, game: Game): Game {
     game.startDate = req.body.startDate !== undefined ? toDate(req.body.startDate) || new Date(new Date().getTime() + 30 * 1000) : game.startDate;
     game.isEnded = req.body.isEnded !== undefined ? req.body.isEnded : game.isEnded;
     game.score = parseInt(req.body.score, 10) || game.score;
@@ -118,20 +118,20 @@ export class GameController extends Controller {
       return;
     }
 
-    game = this.updateGameFields(req, game);
+    game = GameController.updateGameFields(req, game);
 
     await getRepository(Game).save(game);
 
     let gameInSession = req.gameSessions.getGame(game.id);
 
     if (gameInSession) {
-      gameInSession = this.updateGameFields(req, gameInSession);
-      req.gameSessions.updateGame(game);
+      gameInSession = GameController.updateGameFields(req, gameInSession);
+      req.gameSessions.updateGame(gameInSession);
 
       gameInSession.roomManager.broadcastMessage({
         type: OutboundMessageType.WAITING_ROOM_UPDATE,
-        players: game.roomManager.getPlayers(),
-        gameMode: game.mode,
+        players: gameInSession.roomManager.getPlayers(),
+        gameMode: gameInSession.mode,
       });
     }
 

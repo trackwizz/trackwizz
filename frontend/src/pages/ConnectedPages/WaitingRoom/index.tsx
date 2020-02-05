@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, {useEffect, useState, useContext } from "react";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
@@ -26,7 +26,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     0: normal,
     1: battle royal
   */
-  const [gameMode, setGameMode] = useState<0 | 1>(0);
+  const [gameMode, setGameMode] = useState<-1 | 0 | 1>(-1);
 
   useEffect(() => {
     if (userContext.user) {
@@ -62,6 +62,21 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
     // eslint-disable-next-line
   }, [location.search]);
+
+  useEffect(() => {
+    // prevents unnecessary call of the effect on component initialisation.
+    if (gameMode !== -1 && gameMode !== undefined) {
+      const changeGameMode = {
+        data: {
+          mode: gameMode
+        },
+        method: "PUT" as Method,
+        url: `/games/${roomId}`
+      };
+      axiosRequest(changeGameMode);
+    }
+    // eslint-disable-next-line
+  }, [gameMode]);
 
   const onWaitingRoomUpdateReceived = ({
     players,
@@ -102,15 +117,6 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
 
   const onGameModeButtonPressed = (mode: 0 | 1): void => {
     setGameMode(mode);
-
-    const changeGameMode = {
-      data: {
-        mode: gameMode
-      },
-      method: "PUT" as Method,
-      url: `/games/${roomId}`
-    };
-    axiosRequest(changeGameMode);
   };
 
   return (
