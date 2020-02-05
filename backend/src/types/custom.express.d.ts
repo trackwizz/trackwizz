@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Express } from "express-serve-static-core";
 import NodeCache from "node-cache";
-import { GameSessions } from "../gameSessions";
+import { GameSessions } from "../app/gameSessions";
 
 declare module "express-serve-static-core" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -1,6 +1,11 @@
-import MessageType from "./MessageType";
-import { getGameIdFromCookies, setGameIdCookie } from "../utils/cookies";
 import { BACKEND_WS } from "../constants";
+import MessageType, { Player } from "./MessageType";
+import {
+  getGameIdFromCookies,
+  setGameIdCookie,
+  getPlayerCookie,
+  setPlayerCookie
+} from "../utils/cookies";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageCallback = (message: any) => void;
@@ -13,11 +18,15 @@ class ConnectionManager {
 
   private readonly client: WebSocket;
   private readonly gameId: string;
+  private readonly player: Player;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
+  
+  private connectionErrors = 0;
 
-  private constructor(gameId: string) {
+  private constructor(gameId: string, player: Player) {
     this.client = new WebSocket(BACKEND_WS);
     this.gameId = gameId;
+    this.player = player;
 
     this.messageCallbacks = {};
     Object.keys(MessageType).forEach(
@@ -26,6 +35,8 @@ class ConnectionManager {
 
     this.client.onopen = this.onClientOpen;
     this.client.onmessage = this.onMessageReceived;
+    this.client.onerror = this.onError;
+    this.client.onclose = this.onClose;
   }
 
   /**
@@ -33,13 +44,17 @@ class ConnectionManager {
    * This erases the previous game connection if any.
    * @param gameId - the new game id.
    */
-  public static createInstance = (gameId: string): ConnectionManager => {
+  public static createInstance = (
+    gameId: string,
+    player: Player
+  ): ConnectionManager => {
     if (
       !ConnectionManager.instance ||
       ConnectionManager.instance.gameId !== gameId
     ) {
-      ConnectionManager.instance = new ConnectionManager(gameId);
+      ConnectionManager.instance = new ConnectionManager(gameId, player);
       setGameIdCookie(gameId);
+      setPlayerCookie(player);
     }
 
     return ConnectionManager.instance!;
@@ -52,10 +67,12 @@ class ConnectionManager {
   public static getInstance = (): ConnectionManager => {
     if (!ConnectionManager.instance) {
       const gameId = getGameIdFromCookies();
-      if (!gameId) {
+      const player = getPlayerCookie();
+
+      if (!gameId || !player) {
         throw new Error("There is currently no connection opened.");
       }
-      ConnectionManager.createInstance(gameId);
+      ConnectionManager.createInstance(gameId, player);
     }
 
     return ConnectionManager.instance!;
@@ -90,22 +107,30 @@ class ConnectionManager {
   };
 
   private ping = (): void => {
-    console.log("ping");
     this.client.send(
-      JSON.stringify({ type: MessageType.PING, gameId: this.gameId })
+      JSON.stringify({
+        type: MessageType.PING,
+        gameId: this.gameId,
+        player: this.player
+      })
     );
     setTimeout(() => {
-      if (ConnectionManager.instance) {
+      if (ConnectionManager.instance && this.connectionErrors < 10) {
         this.ping();
+      } else {
+        ConnectionManager.clearConnection();
       }
-      // Stop ping if the instance is cleared (i.e. game ended).
     }, 1000);
   };
 
   private onClientOpen = (): void => {
     console.log("The websocket connection is opened");
     this.client.send(
-      JSON.stringify({ type: MessageType.JOIN_GAME, gameId: this.gameId })
+      JSON.stringify({
+        type: MessageType.JOIN_GAME,
+        gameId: this.gameId,
+        player: this.player
+      })
     );
     // launch ping loop
     this.ping();
@@ -122,6 +147,19 @@ class ConnectionManager {
     } catch (e) {
       console.error("Received invalid message from server: ", msg.data);
     }
+  };
+
+  private onError = (msg: Event): void => {
+    console.log(msg);
+    this.connectionErrors += 1;
+    if (this.connectionErrors === 10) {
+      ConnectionManager.clearConnection();
+    }
+  };
+
+  private onClose = (_: CloseEvent): void => {
+    console.log("Websocket connection closed.");
+    ConnectionManager.clearConnection();
   };
 }
 

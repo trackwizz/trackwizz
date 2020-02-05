@@ -2,9 +2,9 @@ import { config } from "dotenv";
 import { Connection } from "typeorm";
 import logo from "asciiart-logo";
 import { logger } from "./utils/logger";
-import { normalizePort, onError } from "./utils/server";
+import { normalizePort, onError } from "./utils/server-utils";
 config(); // Get environment variables
-import server from "./server";
+import server from "./app/server";
 import { connectToDatabase } from "./utils/database";
 
 async function main(): Promise<void> {

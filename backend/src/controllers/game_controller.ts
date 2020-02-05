@@ -7,7 +7,7 @@ import { Score } from "../entities/score";
 import * as crypto from "crypto";
 import { Track } from "../providers/track";
 import { requestSpotifyTracks } from "../providers/spotify/tracks";
-import { GameRoomManager } from "../gameRoomManager";
+import { GameRoomManager } from "../app/gameRoomManager";
 
 export class GameController extends Controller {
   constructor() {
@@ -85,8 +85,8 @@ export class GameController extends Controller {
     game.currentTrackIndex = -1;
     game.currentPossibleAnswers = [];
     game.questionStartTimestamp = -1;
-    game.receivedAnswersForCurrentTrack = 0;
-    req.gameSessions.new(game);
+    game.receivedAnswersForCurrentTrack = [];
+    req.gameSessions.addGame(game);
 
     // send game without tracks
     const userGame = { ...game };

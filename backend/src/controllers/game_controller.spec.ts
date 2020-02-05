@@ -1,6 +1,6 @@
 import request from "supertest";
 import { getConnection, getRepository } from "typeorm";
-import server from "../server";
+import server from "../app/server";
 import { Game } from "../entities/game";
 
 jest.mock("../providers/spotify/tracks");

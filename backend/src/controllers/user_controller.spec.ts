@@ -1,5 +1,5 @@
 import request from "supertest";
-import server from "../server";
+import server from "../app/server";
 import { User } from "../entities/user";
 import { getConnection, getRepository } from "typeorm";
 

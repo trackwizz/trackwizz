@@ -11,3 +11,9 @@
   padding: 2rem;
   margin: 1rem;
 }
+
+@media only screen and (max-width: 768px){
+  .homeButton {
+    width: 300px;
+  }
+}

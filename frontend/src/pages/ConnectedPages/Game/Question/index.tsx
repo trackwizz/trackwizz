@@ -1,22 +1,49 @@
 import React from "react";
 import "./question.css";
 import Dancers from "../../components/Dancers";
+import { ReactComponent as Mute } from "../../../../images/mute.svg";
+import { ReactComponent as Volume } from "../../../../images/volume.svg";
 import { Answer } from "../../../../websockets/MessageType";
 
 interface IQuestion {
   previewUrl: string;
   answers: Answer[];
   handleAnswer: (answer: Answer) => void;
+  setIsMuted: (value: boolean) => void;
+  isMuted: boolean;
 }
 
 const Question: React.FC<IQuestion> = ({
   answers,
-  handleAnswer
+  handleAnswer,
+  isMuted,
+  setIsMuted,
 }: IQuestion) => {
   return (
     <div className="flex-container column">
+      <button
+        className="play-button muted-button mobile-only fixedTop"
+        onClick={(): void => {
+          setIsMuted(!isMuted);
+        }}
+      >
+        {isMuted ? <Mute /> : <Volume />}
+      </button>
       <div className="text-center">
-        <h2 className="fancy-text">Which song is currently playing?</h2>
+        <div
+          className="flex-container"
+          style={{ height: "unset", marginBottom: "2rem" }}
+        >
+          <h2 className="fancy-text">Which song is currently playing?</h2>
+          <button
+            className="play-button muted-button mobile-hidden"
+            onClick={(): void => {
+              setIsMuted(!isMuted);
+            }}
+          >
+            {isMuted ? <Mute /> : <Volume />}
+          </button>
+        </div>
         <Dancers />
       </div>
       <div className="grid-container">

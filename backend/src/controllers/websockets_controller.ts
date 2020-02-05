@@ -3,7 +3,6 @@ import { RequestWithCache } from "../middlewares/app_cache";
 import { Score } from "../entities/score";
 import { getRepository } from "typeorm";
 import { toDate } from "../utils";
-import { getSpotifyUser, SpotifyUser } from "../providers/spotify/user";
 import { User } from "../entities/user";
 
 export enum InboundMessageType {
@@ -18,25 +17,23 @@ export enum OutboundMessageType {
   QUESTION_UPDATE = "QUESTION_UPDATE",
   START_GAME = "START_GAME",
   ANSWER_RESULT = "ANSWER_RESULT",
+  GAME_END = "GAME_END",
   ERROR = "ERROR",
 }
 
-const getOrigin = (req: RequestWithCache): string => {
-  const origin = req.headers.origin;
-  if (!origin) {
-    throw new Error("No origin present on the request");
-  }
-
-  return origin.toString();
-};
+export interface Player {
+  id: string;
+  name: string;
+}
 
 /* --- Ping --- */
 type PingMessage = {
   type: InboundMessageType.PING;
   gameId: number;
+  player: Player;
 };
 
-const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessage): void => {
+const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player }: PingMessage): void => {
   const game = req.gameSessions.getGame(gameId);
 
   if (!game) {
@@ -44,16 +41,17 @@ const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessa
     return;
   }
 
-  game.roomManager.updateLastPing(getOrigin(req));
+  game.roomManager.updateLastPing(player.id);
 };
 
 /* --- Join game --- */
 type JoinGameMessage = {
   type: InboundMessageType.JOIN_GAME;
   gameId: number;
+  player: Player;
 };
 
-const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinGameMessage): void => {
+const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player }: JoinGameMessage): void => {
   const game = req.gameSessions.getGame(gameId);
 
   if (!game) {
@@ -61,8 +59,7 @@ const joinGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: JoinG
     return;
   }
 
-  const origin = getOrigin(req);
-  game.roomManager.addPlayer(origin, ws);
+  game.roomManager.addPlayer(ws, player);
 
   game.roomManager.broadcastMessage({
     type: OutboundMessageType.WAITING_ROOM_UPDATE,
@@ -92,7 +89,7 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
   if (game.startDate.getTime() === 0) {
     // Game hasn't started
 
-    setTimeout(() => req.gameSessions.startGame(game.id), START_GAME_COUNTDOWN_MS);
+    setTimeout(() => game.start(), START_GAME_COUNTDOWN_MS);
 
     game.roomManager.broadcastMessage({
       type: OutboundMessageType.START_GAME,
@@ -106,7 +103,7 @@ const startGameHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: Star
         countdownMs: START_GAME_COUNTDOWN_MS,
       }),
     );
-    setTimeout(() => ws.send(JSON.stringify(req.gameSessions.getQuestionUpdateMessage(game.id))), START_GAME_COUNTDOWN_MS);
+    setTimeout(() => ws.send(JSON.stringify(game.getQuestionUpdateMessage())), START_GAME_COUNTDOWN_MS);
   }
 };
 
@@ -121,10 +118,10 @@ type SubmitAnswerMessage = {
   type: InboundMessageType.SUBMIT_ANSWER;
   answer: Answer;
   gameId: string;
-  accessToken: string;
+  player: Player;
 };
 
-const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gameId, accessToken }: SubmitAnswerMessage): void => {
+const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gameId, player }: SubmitAnswerMessage): void => {
   const game = req.gameSessions.getGame(parseInt(gameId));
 
   if (!game) {
@@ -132,26 +129,20 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
     return;
   }
 
-  getSpotifyUser(accessToken)
-    .then((spotifyUser: SpotifyUser) => {
-      const score: Score = new Score();
-      score.idSpotifyTrack = answer.id;
-      score.timestamp = toDate(Date.now());
-      score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
-      score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
-      score.game = game;
-      score.user = new User();
-      score.user.id = spotifyUser.id;
+  const score: Score = new Score();
+  score.idSpotifyTrack = answer.id;
+  score.timestamp = toDate(Date.now());
+  score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
+  score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
+  score.game = game;
+  score.user = new User();
+  score.user.id = player.id;
 
-      getRepository(Score).save(score);
+  getRepository(Score).save(score);
 
-      ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
+  ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
 
-      req.gameSessions.receiveAnswer(game.id);
-    })
-    .catch(() => {
-      console.error("Can't find Spotify user to add score");
-    });
+  game.receiveAnswer(player);
 };
 
 /* --- Root handler --- */

@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh; /* Fallback for browsers that do not support Custom Properties */
   height: calc(var(--vh, 1vh) * 100);
   overflow: hidden;
@@ -17,8 +17,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 #root {
-  height: 100%;
-  width: 100%;
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100vw;
 }
 @-webkit-keyframes gradientBG {
   0% {
@@ -74,9 +75,11 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .flex-1 {
-  flex: 1;
+  flex: 1 1 0;
+  overflow: hidden;
 }
 .height-100 {
   height: 100%;
@@ -90,12 +93,12 @@ h1 {
   padding: 0;
 }
 
-@media only screen and (max-width: 600px) {
-  h1 {
-    margin: 0.6rem 0;
-    padding: 0;
-  }
-}
+/*@media only screen and (max-width: 600px) {*/
+/*  h1 {*/
+/*    margin: 0.6rem 0;*/
+/*    padding: 0;*/
+/*  }*/
+/*}*/
 
 h2 {
   margin: 0;
@@ -136,6 +139,52 @@ button:hover {
   flex: 1;
   width: 100%;
   overflow: auto;
-  padding-bottom: 4rem;
   height: 100%;
+}
+
+.muted-button {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.31);
+  width: 50px;
+  height: 50px;
+  padding-right: 0.2rem;
+  margin: 0 0 0 2rem;
+}
+
+.muted-button > svg {
+  width: 20px;
+  fill: white;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.bottomPadding {
+  height: 2rem;
+  min-height: 2rem;
+}
+
+.fixedTop {
+  position: fixed;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+@media only screen and (max-width: 768px){
+  .mobile-hidden {
+    display: none!important;
+  }
+  .mobile-only {
+    display: block!important;
+  }
+  h2.fancy-text {
+    font-size: 1.8rem;
+  }
+  img {
+    height: 120px;
+  }
+  .columnForMobile {
+    flex-direction: column;
+  }
 }
