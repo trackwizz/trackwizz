@@ -8,30 +8,20 @@ const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [isHome, setIsHome] = useState<boolean>(false);
   const [isLeaderboard, setIsLeaderboard] = useState<boolean>(false);
   const [isGame, setIsGame] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   useEffect(() => {
-    let isHomeLocation = false;
-    let isLeaderboardLocation = false;
-    let isGame = false;
-
-    if (location.pathname === "/") {
-      isHomeLocation = true;
-    }
-
-    if (location.pathname === "/leaderboard") {
-      isLeaderboardLocation = true;
-    }
-
-    if (location.pathname === "/game") {
-      isGame = true;
-    }
-
-    setIsHome(isHomeLocation);
-    setIsLeaderboard(isLeaderboardLocation);
-    setIsGame(isGame);
+    setIsHome(location.pathname === "/");
+    setIsLeaderboard(location.pathname === "/leaderboard");
+    setIsGame(location.pathname === "/game");
+    setIsLogin(location.pathname === "/login");
   }, [location]);
 
   const lastLocation = useLastLocation();
+
+  if (isLogin) {
+    return <div></div>;
+  }
 
   if (!isHome && !isLeaderboard) {
     return (
@@ -48,7 +38,7 @@ const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
           href={isGame ? "/" : (lastLocation || { pathname: "/" }).pathname}
         >
           <Back />
-          Back
+          {isGame ? "Home" : "Back"}
         </a>
       </div>
     );
