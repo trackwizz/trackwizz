@@ -4,6 +4,7 @@ import Dancers from "../../components/Dancers";
 import { ReactComponent as Mute } from "../../../../images/mute.svg";
 import { ReactComponent as Volume } from "../../../../images/volume.svg";
 import { Answer } from "../../../../websockets/MessageType";
+import RemainingPlayTime from "../RemainingPlayTime";
 
 interface IQuestion {
   previewUrl: string;
@@ -11,6 +12,7 @@ interface IQuestion {
   handleAnswer: (answer: Answer) => void;
   setIsMuted: (value: boolean) => void;
   isMuted: boolean;
+  remainingPlayTimeSeconds: number;
 }
 
 const Question: React.FC<IQuestion> = ({
@@ -18,6 +20,7 @@ const Question: React.FC<IQuestion> = ({
   handleAnswer,
   isMuted,
   setIsMuted,
+  remainingPlayTimeSeconds
 }: IQuestion) => {
   return (
     <div className="flex-container column" style={{ overflow: "auto" }}>
@@ -32,7 +35,7 @@ const Question: React.FC<IQuestion> = ({
       <div className="text-center">
         <div
           className="flex-container"
-          style={{ height: "unset", marginBottom: "2rem" }}
+          style={{ height: "unset", marginBottom: "1rem" }}
         >
           <h2 className="fancy-text">Which song is currently playing?</h2>
           <button
@@ -44,6 +47,9 @@ const Question: React.FC<IQuestion> = ({
             {isMuted ? <Mute /> : <Volume />}
           </button>
         </div>
+        <RemainingPlayTime
+          remainingPlayTimeSeconds={remainingPlayTimeSeconds}
+        />
         <Dancers />
       </div>
       <div className="grid-container">

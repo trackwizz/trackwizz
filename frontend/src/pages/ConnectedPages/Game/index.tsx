@@ -27,6 +27,12 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [position, setPosition] = useState<number>(-1);
   const [royalGameId, setRoyalGameId] = useState<string>("");
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [remainingPlayTimeSeconds, setRemainingPlayTimeSeconds] = useState<
+    number
+  >(30);
+  const [remainingPlayTimeoutId, setRemainingPlayTimeoutId] = useState<
+    NodeJS.Timeout
+  >();
   const player = useRef<null | HTMLAudioElement>(null);
 
   const reloadPlayer = async (): Promise<void> => {
@@ -36,6 +42,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
       // eslint-disable-next-line require-atomic-updates
       player.current.src = previewUrl;
       await player.current.play();
+      updateRemaingPlayTime(player.current.duration);
       await adjustVolume(player.current, 1, { duration: 200 });
     }
   };
@@ -51,6 +58,21 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     reloadPlayer().catch();
     // eslint-disable-next-line
   }, [previewUrl]);
+
+  const updateRemaingPlayTime = (time: number) => {
+    if (remainingPlayTimeoutId) {
+      clearTimeout(remainingPlayTimeoutId);
+    }
+    const remainingPlayTime = Math.round(time);
+    setRemainingPlayTimeSeconds(remainingPlayTime);
+    if (remainingPlayTime >= 1) {
+      const timeoutId = setTimeout(
+        () => updateRemaingPlayTime(remainingPlayTime - 1),
+        1000
+      );
+      setRemainingPlayTimeoutId(timeoutId);
+    }
+  };
 
   const onQuestionUpdateReceived = async (
     question: QuestionUpdateMessage
@@ -145,6 +167,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
           handleAnswer={handleAnswer}
           isMuted={isMuted}
           setIsMuted={setIsMuted}
+          remainingPlayTimeSeconds={remainingPlayTimeSeconds}
         />
       )}
       {step === IGameEnum.ANSWER_SUBMITTED && (
