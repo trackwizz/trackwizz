@@ -30,6 +30,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [remainingPlayTimeSeconds, setRemainingPlayTimeSeconds] = useState<
     number
   >(30);
+  const [remainingPlayers, setRemainingPlayers] = useState<number>(-1);
   const [remainingPlayTimeoutId, setRemainingPlayTimeoutId] = useState<
     NodeJS.Timeout
   >();
@@ -80,6 +81,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     setStep(IGameEnum.QUIZZ);
     setAnswers(question.answers);
     setPreviewUrl(question.previewUrl);
+    setRemainingPlayers(question.playersNumber);
   };
 
   const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage): void => {
@@ -167,6 +169,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
           handleAnswer={handleAnswer}
           isMuted={isMuted}
           setIsMuted={setIsMuted}
+          remainingPlayers={remainingPlayers}
           remainingPlayTimeSeconds={remainingPlayTimeSeconds}
         />
       )}

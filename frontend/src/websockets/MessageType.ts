@@ -33,6 +33,7 @@ export interface QuestionUpdateMessage {
   type: MessageType.QUESTION_UPDATE;
   previewUrl: string;
   answers: Answer[];
+  playersNumber: number;
 }
 
 export interface SubmitAnswerMessage {

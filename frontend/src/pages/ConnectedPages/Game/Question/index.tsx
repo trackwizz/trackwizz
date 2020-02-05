@@ -13,6 +13,7 @@ interface IQuestion {
   setIsMuted: (value: boolean) => void;
   isMuted: boolean;
   remainingPlayTimeSeconds: number;
+  remainingPlayers: number;
 }
 
 const Question: React.FC<IQuestion> = ({
@@ -20,7 +21,8 @@ const Question: React.FC<IQuestion> = ({
   handleAnswer,
   isMuted,
   setIsMuted,
-  remainingPlayTimeSeconds
+  remainingPlayTimeSeconds,
+  remainingPlayers
 }: IQuestion) => {
   return (
     <div className="flex-container column" style={{ overflow: "auto" }}>
@@ -49,6 +51,7 @@ const Question: React.FC<IQuestion> = ({
         </div>
         <RemainingPlayTime
           remainingPlayTimeSeconds={remainingPlayTimeSeconds}
+          remainingPlayers={remainingPlayers}
         />
         <Dancers />
       </div>

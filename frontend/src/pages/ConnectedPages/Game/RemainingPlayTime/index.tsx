@@ -2,14 +2,23 @@ import React from "react";
 
 interface IRemainingPlayTime {
   remainingPlayTimeSeconds: number;
+  remainingPlayers: number;
 }
 
 const RemainingPlayTime: React.FC<IRemainingPlayTime> = ({
-  remainingPlayTimeSeconds
+  remainingPlayTimeSeconds,
+  remainingPlayers
 }: IRemainingPlayTime) => {
   return (
     <div>
-      <h2 className="fancy-text">{remainingPlayTimeSeconds}</h2>
+      <h2 className="fancy-text">
+        {remainingPlayTimeSeconds}
+        {remainingPlayers !== -1
+          ? ` - ${remainingPlayers} player${
+              remainingPlayers > 1 ? "s" : ""
+            } in game`
+          : ""}
+      </h2>
     </div>
   );
 };

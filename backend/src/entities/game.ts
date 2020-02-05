@@ -136,11 +136,12 @@ export class Game {
   /**
    * Returns the data for the frontend: 4 possible answers and one preview url (audio to play).
    */
-  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[] } {
+  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[]; playersNumber: number } {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
+      playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
     };
   }
 
