@@ -23,6 +23,12 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [remainingPlayTimeSeconds, setRemainingPlayTimeSeconds] = useState<
+    number
+  >(30);
+  const [remainingPlayTimeoutId, setRemainingPlayTimeoutId] = useState<
+    NodeJS.Timeout
+  >();
   const player = useRef<null | HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -36,7 +42,23 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
       // eslint-disable-next-line require-atomic-updates
       player.current.src = previewUrl;
       await player.current.play();
+      updateRemaingPlayTime(player.current.duration);
       await adjustVolume(player.current, 1, { duration: 200 });
+    }
+  };
+
+  const updateRemaingPlayTime = (time: number) => {
+    if (remainingPlayTimeoutId) {
+      clearTimeout(remainingPlayTimeoutId);
+    }
+    const remainingPlayTime = Math.round(time);
+    setRemainingPlayTimeSeconds(remainingPlayTime);
+    if (remainingPlayTime >= 1) {
+      const timeoutId = setTimeout(
+        () => updateRemaingPlayTime(remainingPlayTime - 1),
+        1000
+      );
+      setRemainingPlayTimeoutId(timeoutId);
     }
   };
 
@@ -103,6 +125,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
           handleAnswer={handleAnswer}
           isMuted={isMuted}
           setIsMuted={setIsMuted}
+          remainingPlayTimeSeconds={remainingPlayTimeSeconds}
         />
       )}
       {step === IGameEnum.ANSWER_SUBMITTED && (
