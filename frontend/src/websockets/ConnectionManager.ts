@@ -107,7 +107,11 @@ class ConnectionManager {
 
   private ping = (): void => {
     this.client.send(
-      JSON.stringify({ type: MessageType.PING, gameId: this.gameId })
+      JSON.stringify({
+        type: MessageType.PING,
+        gameId: this.gameId,
+        player: this.player
+      })
     );
     setTimeout(() => {
       if (ConnectionManager.instance && this.connectionErrors < 10) {

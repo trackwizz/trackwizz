@@ -39,9 +39,10 @@ const getOrigin = (req: RequestWithCache): string => {
 type PingMessage = {
   type: InboundMessageType.PING;
   gameId: number;
+  player: Player;
 };
 
-const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId }: PingMessage): void => {
+const pingHandler = (ws: WebSocket, req: RequestWithCache, { gameId, player }: PingMessage): void => {
   const game = req.gameSessions.getGame(gameId);
 
   if (!game) {
