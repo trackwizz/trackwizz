@@ -25,6 +25,14 @@ export class GameRoomManager {
     return Object.keys(this.playersConnections).map(id => this.playersConnections[id].player);
   }
 
+  public sendMessage(message: object, id: string): void {
+    try {
+      this.playersConnections[id].connection.send(JSON.stringify(message));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   public broadcastMessage(message: object): void {
     Object.keys(this.playersConnections).forEach(id => {
       try {
@@ -63,6 +71,11 @@ export class GameRoomManager {
       this.playersConnections[id].connection.close();
       delete this.playersConnections[id];
     }
+  }
+
+  public disconnectUser(id: string): void {
+    this.playersConnections[id].connection.close();
+    delete this.playersConnections[id];
   }
 
   public updateLastPing(id: string): void {

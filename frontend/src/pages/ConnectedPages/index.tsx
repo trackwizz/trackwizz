@@ -21,6 +21,7 @@ const ConnectedPages: React.FC = () => {
   useEffect(() => {
     setDefaultAuthorization();
     updateUser();
+    // eslint-disable-next-line
   }, []);
 
   const updateUser = async () => {

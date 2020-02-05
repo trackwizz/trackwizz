@@ -70,12 +70,22 @@ export class Game {
     // Delete game after 10s without users.
     if (this.isEmpty()) {
       setTimeout(() => {
-        gameSessions.deleteGame(this.id).catch();
+        if (!this.isEmpty()) {
+          return;
+        }
+        this.end();
       }, 10 * 1000);
     }
 
     if (this.updateTimeout !== undefined) {
       clearTimeout(this.updateTimeout);
+    }
+
+    // Mode battle royale
+    if (this.mode === 1 && this.currentTrackIndex >= 0) {
+      if (await this.kickBadPlayers()) {
+        return;
+      }
     }
 
     this.currentTrackIndex += 1;
@@ -126,11 +136,12 @@ export class Game {
   /**
    * Returns the data for the frontend: 4 possible answers and one preview url (audio to play).
    */
-  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[] } {
+  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[]; playersNumber: number } {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
+      playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
     };
   }
 
@@ -140,7 +151,7 @@ export class Game {
   public setPlayersMissingScores(): void {
     const players = this.roomManager.getPlayers();
     for (let i = 0; i < players.length; i++) {
-      if (this.receivedAnswersForCurrentTrack.includes(players[i]) === false) {
+      if (!this.receivedAnswersForCurrentTrack.map(p => p.id).includes(players[i].id)) {
         const score: Score = new Score();
         score.idSpotifyTrack = this.tracks[this.currentTrackIndex].id;
         score.timestamp = toDate(Date.now());
@@ -194,6 +205,75 @@ export class Game {
     this.roomManager.clearPingTimeout();
     // Disconnect all users
     this.roomManager.disconnectAllPlayers();
+    gameSessions.deleteGame(this.id).catch();
     logger.info(`Game ${this.title} ended!`);
+  }
+
+  public getKickedNumber(): number {
+    const n: number = this.questionsNumber - this.currentTrackIndex;
+    const p: number = this.roomManager.getPlayers().length;
+    if (n >= p) {
+      return 1;
+    }
+    return Math.min(Math.ceil(p / n), n - 1);
+  }
+
+  public async kickBadPlayers(): Promise<boolean> {
+    const players = this.roomManager.getPlayers();
+    // In case someone left during game and there is only 1 player left.
+    if (await this.sendWinMessage()) {
+      return true; // end game
+    }
+    const kickedNumber: number = this.getKickedNumber();
+    const scores: Score[] = await getRepository(Score).find({
+      where: {
+        game: { id: this.id },
+        idSpotifyTrack: this.tracks[this.currentTrackIndex].id,
+      },
+      order: {
+        isCorrect: "ASC",
+        reactionTimeMs: "DESC",
+      },
+      relations: ["user"],
+    });
+
+    let kicked = 0;
+    let i = 0;
+    while (kicked < kickedNumber && i < scores.length) {
+      const player: Player | null = players.reduce((p1: Player | null, p2: Player) => (p2.id === scores[i].user.id ? p2 : p1), null);
+      if (player !== null) {
+        this.roomManager.sendMessage(
+          {
+            type: OutboundMessageType.BATTLE_LOSE,
+            gameId: this.id,
+            position: this.roomManager.getPlayers().length,
+          },
+          player.id,
+        );
+        this.roomManager.disconnectUser(player.id);
+        kicked += 1;
+      }
+      i += 1;
+    }
+
+    // If there is only 1 player left after kicks, send him win message.
+    return await this.sendWinMessage();
+  }
+
+  public async sendWinMessage(): Promise<boolean> {
+    const players = this.roomManager.getPlayers();
+    if (players.length === 1) {
+      this.roomManager.sendMessage(
+        {
+          type: OutboundMessageType.BATTLE_WIN,
+          gameId: this.id,
+        },
+        players[0].id,
+      );
+      this.roomManager.disconnectUser(players[0].id);
+      await this.end();
+      return true;
+    }
+    return false;
   }
 }

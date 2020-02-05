@@ -20,7 +20,7 @@ class ConnectionManager {
   private readonly gameId: string;
   private readonly player: Player;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
-  
+
   private connectionErrors = 0;
 
   private constructor(gameId: string, player: Player) {

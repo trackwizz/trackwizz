@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, {useEffect, useState, useContext } from "react";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
@@ -22,6 +22,11 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [roomId, setRoomId] = useState<number | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
+  /*
+    0: normal,
+    1: battle royal
+  */
+  const [gameMode, setGameMode] = useState<-1 | 0 | 1>(-1);
 
   useEffect(() => {
     if (userContext.user) {
@@ -55,12 +60,30 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
         }
       }
     }
+    // eslint-disable-next-line
   }, [location.search]);
 
+  useEffect(() => {
+    // prevents unnecessary call of the effect on component initialisation.
+    if (gameMode !== -1 && gameMode !== undefined) {
+      const changeGameMode = {
+        data: {
+          mode: gameMode
+        },
+        method: "PUT" as Method,
+        url: `/games/${roomId}`
+      };
+      axiosRequest(changeGameMode);
+    }
+    // eslint-disable-next-line
+  }, [gameMode]);
+
   const onWaitingRoomUpdateReceived = ({
-    players
+    players,
+    gameMode
   }: WaitingRoomUpdateMessage): void => {
     setPlayers(players.map(player => ({ id: player.id, name: player.name })));
+    setGameMode(gameMode);
   };
 
   const requestRoomInfo = async (roomId: string) => {
@@ -92,6 +115,10 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     return <Redirect to={"/"} />;
   }
 
+  const onGameModeButtonPressed = (mode: 0 | 1): void => {
+    setGameMode(mode);
+  };
+
   return (
     <React.Fragment>
       <h2 className="waitingRoomTitle">Room Name : {roomId}</h2>
@@ -111,10 +138,31 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
             </ul>
           </div>
           <div className="startGameContainer">
-            <button className="play-button pulsate-fwd" onClick={handleStart}>
-              &#9658;
-            </button>
-            <span className="instructions">Press play to start game</span>
+            <div className="gameModeContainer">
+              <p>Choose your game mode</p>
+              <div className="gameModeButtonContainer">
+                <button
+                  className={`gameModeButton ${gameMode === 1 &&
+                    "gameModeButtonToggled"}`}
+                  onClick={(): void => onGameModeButtonPressed(1)}
+                >
+                  Battle Royale
+                </button>
+                <button
+                  className={`gameModeButton ${gameMode === 0 &&
+                    "gameModeButtonToggled"}`}
+                  onClick={(): void => onGameModeButtonPressed(0)}
+                >
+                  Normal
+                </button>
+              </div>
+            </div>
+            <div className="startGameButtonContainer">
+              <button className="play-button pulsate-fwd" onClick={handleStart}>
+                &#9658;
+              </button>
+              <span className="instructions">Press play to start game</span>
+            </div>
           </div>
         </div>
       </div>

@@ -97,9 +97,6 @@
     "@typescript-eslint/no-this-alias": [
       "error"
     ],
-    "@typescript-eslint/no-use-before-define": [
-      "error"
-    ],
     "@typescript-eslint/no-var-requires": "error",
     "@typescript-eslint/prefer-namespace-keyword": "error",
     "@typescript-eslint/triple-slash-reference": "error",
@@ -115,7 +112,6 @@
     ],
     "@typescript-eslint/member-ordering": "error",
     "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-use-before-declare": "off",
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/unified-signatures": "error",

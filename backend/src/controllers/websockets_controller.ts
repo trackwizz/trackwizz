@@ -19,6 +19,8 @@ export enum OutboundMessageType {
   ANSWER_RESULT = "ANSWER_RESULT",
   GAME_END = "GAME_END",
   ERROR = "ERROR",
+  BATTLE_LOSE = "BATTLE_LOSE",
+  BATTLE_WIN = "BATTLE_WIN",
 }
 
 export interface Player {
@@ -130,7 +132,7 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
   }
 
   const score: Score = new Score();
-  score.idSpotifyTrack = answer.id;
+  score.idSpotifyTrack = game.tracks[game.currentTrackIndex].id;
   score.timestamp = toDate(Date.now());
   score.isCorrect = answer.id == game.tracks[game.currentTrackIndex].id;
   score.reactionTimeMs = Date.now() - game.questionStartTimestamp;
@@ -138,11 +140,16 @@ const SubmitAnswerHandler = (ws: WebSocket, req: RequestWithCache, { answer, gam
   score.user = new User();
   score.user.id = player.id;
 
-  getRepository(Score).save(score);
+  getRepository(Score)
+    .save(score)
+    .then((): void => {
+      game.receiveAnswer(player);
+    })
+    .catch((e): void => {
+      console.log(e);
+    });
 
   ws.send(JSON.stringify({ type: OutboundMessageType.ANSWER_RESULT, isCorrect: score.isCorrect }));
-
-  game.receiveAnswer(player);
 };
 
 /* --- Root handler --- */

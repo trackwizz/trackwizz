@@ -23,6 +23,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
 
   useEffect(() => {
     requestLeaderboard();
+    // eslint-disable-next-line
   }, []);
 
   const { gameId } = querystring.parse(search);
