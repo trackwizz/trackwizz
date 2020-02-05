@@ -214,7 +214,7 @@ export class Game {
     if (n >= p) {
       return 1;
     }
-    return Math.ceil(p / n);
+    return Math.min(Math.ceil(p / n), n - 1);
   }
 
   public async kickBadPlayers(): Promise<boolean> {
