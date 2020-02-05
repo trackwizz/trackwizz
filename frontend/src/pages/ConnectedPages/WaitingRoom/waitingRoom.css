@@ -44,9 +44,41 @@
 .startGameContainer {
   display: flex;
   flex: 1 1 0%;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-direction: column;
   align-items: center;
+}
+
+.startGameButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.gameModeButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+}
+
+.gameModeContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+}
+
+.gameModeButton {
+  min-width: 10em;
+  border-radius: 100%;
+}
+
+.gameModeButtonToggled {
+  background: rgba(255, 255, 255, 0.31);
+  color: white;
 }
 
 .pulsate-fwd {
