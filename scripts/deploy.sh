@@ -7,9 +7,9 @@ IMAGE_BACK="${REGISTRY_URL}/${DOCKER_REPO_BACK}"
 
 cd "$(dirname "$0")"
 cd ../frontend
-docker build -f Dockerfile.prod -t ${IMAGE_FRONT} --build-arg BACKEND_NAME=${BUILD_BACKEND} .
+docker build -f Dockerfile.prod -t ${IMAGE_FRONT} --build-arg REACT_APP_API_NAME=${BUILD_BACKEND_FULL} --build-arg REACT_APP_WS_NAME=${BUILD_BACKEND_WS_FULL} --build-arg BACKEND_NAME=${BUILD_BACKEND} --build-arg FRONTEND_NAME=${BUILD_FRONTEND} .
 cd ../backend
-docker build -f Dockerfile.prod -t ${IMAGE_BACK} .
+docker build -f Dockerfile.prod -t ${IMAGE_BACK} --build-arg BACKEND_NAME_FULL=${BUILD_BACKEND_FULL} --build-arg FRONTEND_NAME_FULL=${BUILD_FRONTEND_FULL} .
 cd ..
 
 # PUSH

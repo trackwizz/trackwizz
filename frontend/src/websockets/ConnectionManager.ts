@@ -1,3 +1,4 @@
+import { BACKEND_WS } from "../constants";
 import MessageType, { Player } from "./MessageType";
 import {
   getGameIdFromCookies,
@@ -19,11 +20,11 @@ class ConnectionManager {
   private readonly gameId: string;
   private readonly player: Player;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
-
+  
   private connectionErrors = 0;
 
   private constructor(gameId: string, player: Player) {
-    this.client = new WebSocket("ws://localhost:5000/");
+    this.client = new WebSocket(BACKEND_WS);
     this.gameId = gameId;
     this.player = player;
 

@@ -8,8 +8,16 @@ import { getSpotifyUser } from "./user";
 import { User } from "../../entities/user";
 import { getRepository } from "typeorm";
 
-const redirect_uri = process.env.BACKEND_REDIRECT_URI || "http://localhost:5000/callback";
-const front_redirect_uri = process.env.FRONTEND_REDIRECT_URI || "http://localhost:3000/login?";
+let redirect_uri: string = "http://localhost:5000/callback";
+// prod
+if (process.env.BACKEND_NAME_FULL) {
+  redirect_uri = process.env.BACKEND_NAME_FULL + "/callback";
+}
+let front_redirect_uri: string = "http://localhost:3000/login?";
+// prod
+if (process.env.FRONTEND_NAME_FULL) {
+  front_redirect_uri = process.env.FRONTEND_NAME_FULL + "/login?";
+}
 
 function getExpiresAt(expiresIn: number): number {
   return new Date().getTime() + expiresIn * 1000 - 120 * 1000;
