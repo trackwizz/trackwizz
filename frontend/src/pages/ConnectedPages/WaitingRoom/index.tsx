@@ -55,6 +55,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
         }
       }
     }
+    // eslint-disable-next-line
   }, [location.search]);
 
   const onWaitingRoomUpdateReceived = ({

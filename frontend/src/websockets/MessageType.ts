@@ -8,6 +8,8 @@ enum MessageType {
   SUBMIT_ANSWER = "SUBMIT_ANSWER",
   ANSWER_RESULT = "ANSWER_RESULT",
   GAME_END = "GAME_END",
+  BATTLE_LOSE = "BATTLE_LOSE",
+  BATTLE_WIN = "BATTLE_WIN"
 }
 
 export interface Player {
@@ -51,6 +53,17 @@ export interface GameStartMessage {
 
 export interface GameEndMessage {
   type: MessageType.GAME_END;
+  gameId: string;
+}
+
+export interface GameBattleLoseMessage {
+  type: MessageType.BATTLE_LOSE;
+  gameId: string;
+  position: number;
+}
+
+export interface GameBattleWinMessage {
+  type: MessageType.BATTLE_WIN;
   gameId: string;
 }
 

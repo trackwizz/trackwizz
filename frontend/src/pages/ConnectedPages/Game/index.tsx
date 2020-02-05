@@ -1,20 +1,22 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import querystring from "query-string";
 import "./game.css";
 import Countdown from "./Countdown";
 import { IGameEnum } from "./types";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
-  QuestionUpdateMessage,
   Answer,
   AnswerResultMessage,
-  GameEndMessage
-} from "../../../websockets/MessageType";
+  GameBattleLoseMessage, GameBattleWinMessage,
+  GameEndMessage,
+  QuestionUpdateMessage
+} from '../../../websockets/MessageType';
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 import AnswerResult from "./AnswerResult";
 import { adjustVolume } from "../../../utils/audio";
 import { UserContext } from "../components/UserContext";
+import BattleRoyaleResult from "./BattleRoyaleResult";
 
 const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const userContext = useContext(UserContext);
@@ -22,12 +24,10 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
+  const [position, setPosition] = useState<number>(-1);
+  const [royalGameId, setRoyalGameId] = useState<string>("");
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const player = useRef<null | HTMLAudioElement>(null);
-
-  useEffect(() => {
-    reloadPlayer().catch();
-  }, [previewUrl]);
 
   const reloadPlayer = async (): Promise<void> => {
     if (player && player.current) {
@@ -39,6 +39,18 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
       await adjustVolume(player.current, 1, { duration: 200 });
     }
   };
+
+  const stopAudio = async (): Promise<void> => {
+    if (player && player.current) {
+      await adjustVolume(player.current, 0, { duration: 1000 });
+      player.current.pause();
+    }
+  };
+
+  useEffect(() => {
+    reloadPlayer().catch();
+    // eslint-disable-next-line
+  }, [previewUrl]);
 
   const onQuestionUpdateReceived = async (
     question: QuestionUpdateMessage
@@ -57,22 +69,52 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     history.push(`/leaderboard?gameId=${gameId}`);
   };
 
+  const onGameBattleLoseReceived = ({
+    position,
+    gameId
+  }: GameBattleLoseMessage): void => {
+    setStep(IGameEnum.BATTLE_END);
+    setRoyalGameId(gameId);
+    setPosition(position);
+    stopAudio().catch();
+  };
+
+  const onGameBattleWinReceived = ({ gameId }: GameBattleWinMessage): void => {
+    setStep(IGameEnum.BATTLE_END);
+    setRoyalGameId(gameId);
+    setPosition(0);
+    stopAudio().catch();
+  };
+
   const countdownMs = querystring.parse(location.search).countdownMs as string;
 
-  ConnectionManager.getInstance().registerCallbackForMessage(
-    MessageType.QUESTION_UPDATE,
-    onQuestionUpdateReceived
-  );
+  useEffect(() => {
+    ConnectionManager.getInstance().registerCallbackForMessage(
+      MessageType.QUESTION_UPDATE,
+      onQuestionUpdateReceived
+    );
 
-  ConnectionManager.getInstance().registerCallbackForMessage(
-    MessageType.ANSWER_RESULT,
-    onAnswerResultReceived
-  );
+    ConnectionManager.getInstance().registerCallbackForMessage(
+      MessageType.ANSWER_RESULT,
+      onAnswerResultReceived
+    );
 
-  ConnectionManager.getInstance().registerCallbackForMessage(
-    MessageType.GAME_END,
-    onGameEndReceived
-  );
+    ConnectionManager.getInstance().registerCallbackForMessage(
+      MessageType.GAME_END,
+      onGameEndReceived
+    );
+
+    ConnectionManager.getInstance().registerCallbackForMessage(
+      MessageType.BATTLE_LOSE,
+      onGameBattleLoseReceived
+    );
+
+    ConnectionManager.getInstance().registerCallbackForMessage(
+      MessageType.BATTLE_WIN,
+      onGameBattleWinReceived
+    );
+    // eslint-disable-next-line
+  }, []);
 
   const handleAnswer = (answer: Answer): void => {
     if (userContext.user) {
@@ -108,7 +150,18 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
       {step === IGameEnum.ANSWER_SUBMITTED && (
         <AnswerResult isCorrect={isAnswerCorrect} />
       )}
-      <audio ref={player} data-vscid="obacc5arn" muted={isMuted} />
+      {step === IGameEnum.BATTLE_END && (
+        <BattleRoyaleResult
+          position={position}
+          won={position === 0}
+          goToLeaderBoard={() => {
+            history.push(`/leaderboard?gameId=${royalGameId}`);
+          }}
+        />
+      )}
+      {previewUrl && (
+        <audio ref={player} data-vscid="obacc5arn" muted={isMuted} />
+      )}
     </div>
   );
 };

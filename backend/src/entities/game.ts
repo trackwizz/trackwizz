@@ -70,7 +70,10 @@ export class Game {
     // Delete game after 10s without users.
     if (this.isEmpty()) {
       setTimeout(() => {
-        gameSessions.deleteGame(this.id).catch();
+        if (!this.isEmpty()) {
+          return;
+        }
+        this.end();
       }, 10 * 1000);
     }
 
@@ -79,8 +82,10 @@ export class Game {
     }
 
     // Mode battle royale
-    if (this.mode === 1) {
-      await this.kickBadPlayers();
+    if (this.mode === 1 && this.currentTrackIndex >= 0) {
+      if (await this.kickBadPlayers()) {
+        return;
+      }
     }
 
     this.currentTrackIndex += 1;
@@ -199,6 +204,7 @@ export class Game {
     this.roomManager.clearPingTimeout();
     // Disconnect all users
     this.roomManager.disconnectAllPlayers();
+    gameSessions.deleteGame(this.id).catch();
     logger.info(`Game ${this.title} ended!`);
   }
 
@@ -211,11 +217,11 @@ export class Game {
     return Math.ceil(p / n);
   }
 
-  public async kickBadPlayers(): Promise<void> {
+  public async kickBadPlayers(): Promise<boolean> {
     const players = this.roomManager.getPlayers();
     // In case someone left during game and there is only 1 player left.
     if (await this.sendWinMessage()) {
-      return;
+      return true; // end game
     }
     const kickedNumber: number = this.getKickedNumber();
     const scores: Score[] = await getRepository(Score).find({
@@ -239,6 +245,7 @@ export class Game {
           {
             type: OutboundMessageType.BATTLE_LOSE,
             gameId: this.id,
+            position: this.roomManager.getPlayers().length,
           },
           player.id,
         );
@@ -249,7 +256,7 @@ export class Game {
     }
 
     // If there is only 1 player left after kicks, send him win message.
-    await this.sendWinMessage();
+    return await this.sendWinMessage();
   }
 
   public async sendWinMessage(): Promise<boolean> {

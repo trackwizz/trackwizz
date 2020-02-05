@@ -15,7 +15,7 @@ const Countdown: React.FC<ICountdown> = ({
   );
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (countdown > 0) {
         setCountdown(countdown - 1);
       }
@@ -24,6 +24,9 @@ const Countdown: React.FC<ICountdown> = ({
         setStep(IGameEnum.QUIZZ);
       }
     }, 1000);
+    return (): void => {
+      clearTimeout(timeout);
+    };
   }, [countdown, setStep]);
 
   return (

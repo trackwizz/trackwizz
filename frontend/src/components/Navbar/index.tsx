@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import { useLastLocation } from "react-router-last-location";
 import { ReactComponent as Back } from "../../images/back.svg";
 import "./navbar.css";
+import ConnectionManager from '../../websockets/ConnectionManager';
 
 const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [isHome, setIsHome] = useState<boolean>(false);
@@ -30,6 +31,7 @@ const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
           onClick={(event): void => {
             event.preventDefault();
             if (isGame) {
+              ConnectionManager.clearConnection();
               history.push("/");
             } else {
               history.goBack();

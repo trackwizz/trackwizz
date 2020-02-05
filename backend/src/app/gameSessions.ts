@@ -20,10 +20,6 @@ export class GameSessions {
     if (game === undefined) {
       return;
     }
-    if (!game.isEmpty()) {
-      return;
-    }
-    await game.end();
     delete this.games[id];
   }
 }

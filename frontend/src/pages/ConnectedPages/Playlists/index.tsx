@@ -17,6 +17,7 @@ const Playlists: React.FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     requestPlaylists();
+    // eslint-disable-next-line
   }, [userContext.user]);
 
   const requestPlaylists = async () => {
