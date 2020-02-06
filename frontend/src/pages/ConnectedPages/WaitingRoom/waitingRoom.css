@@ -59,7 +59,7 @@
 
 .gameModeButtonContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-direction: row;
   width: 100%;
   flex-wrap: wrap;
@@ -136,7 +136,7 @@
     border-radius: 10px 10px 0 0;
   }
   .startGameContainer {
-    padding-bottom: 4rem;
+    padding-bottom: 1rem;
   }
   .waitingRoomTitle {
     width: CALC(100% - 2rem);
@@ -144,7 +144,10 @@
   .gameModeContainer {
     width: 100%;
   }
-  .gameModeButtonContainer {
-    justify-content: center;
+  .gameModeButton {
+    font-size: 0.75rem;
+    padding: unset;
+    width: 45%;
+    margin: 0 2%;
   }
 }
