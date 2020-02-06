@@ -61,6 +61,7 @@
   justify-content: space-between;
   flex-direction: row;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .gameModeContainer {
@@ -72,8 +73,9 @@
 }
 
 .gameModeButton {
-  min-width: 10em;
+  min-width: 11em;
   height: 50px;
+  margin: 4px;
 }
 
 .gameModeButtonToggled {
