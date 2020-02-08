@@ -16,31 +16,32 @@ interface ILeaderboard {
 
 const Leaderboard: React.FC<RouteComponentProps> = ({
   location: { search }
-}) => {
+}: RouteComponentProps): JSX.Element => {
   const [leaderboardTable, setLeaderboardTable] = useState<
     ILeaderboard[] | null
   >(null);
 
   useEffect(() => {
+    const requestLeaderboard = async (): Promise<void> => {
+      const request = {
+        method: "get" as Method,
+        url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
+      };
+
+      const response = await axiosRequest(request);
+
+      if (response.complete && !response.error) {
+        setLeaderboardTable(response.data as ILeaderboard[]);
+      }
+
+      return;
+    };
+
     requestLeaderboard();
-    // eslint-disable-next-line
   }, []);
 
   const { gameId } = querystring.parse(search);
   const isForSpecificGame = !!gameId;
-
-  const requestLeaderboard = async () => {
-    const request = {
-      method: "get" as Method,
-      url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
-    };
-
-    const response = await axiosRequest(request);
-
-    if (response.complete && !response.error) {
-      setLeaderboardTable(response.data as ILeaderboard[]);
-    }
-  };
 
   const setRowClassName = (index: number): string => {
     let className = "";

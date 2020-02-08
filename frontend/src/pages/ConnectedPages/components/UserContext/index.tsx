@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IUser } from "./types";
 
-interface ICreateContext {
+export interface ICreateContext {
   user: undefined | IUser;
   setUser: undefined | React.Dispatch<undefined | IUser>;
 }

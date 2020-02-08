@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
 
 import "./waitingRoom.css";
@@ -9,7 +9,7 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import MessageType, {
   WaitingRoomUpdateMessage
 } from "../../../websockets/MessageType";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 
 interface IPlayers {
   id: string;
@@ -17,7 +17,7 @@ interface IPlayers {
 }
 
 const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
 
   const [roomId, setRoomId] = useState<number | null>(null);
   const [error, setError] = useState<boolean>(false);

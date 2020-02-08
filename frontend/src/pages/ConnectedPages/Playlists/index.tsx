@@ -5,10 +5,10 @@ import { Method } from "axios";
 import PlaylistContainer from "./components/PlaylistContainer";
 import { axiosRequest } from "../components/axiosRequest";
 import { IPlaylist } from "./types";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 
 const Playlists: React.FC<RouteComponentProps> = () => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
 
   const [yourPlaylists, setYourPlaylists] = useState<IPlaylist[] | null>(null);
   const [mostPopularPlaylists, setMostPopularPlaylists] = useState<
@@ -16,40 +16,41 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   >(null);
 
   useEffect(() => {
-    requestPlaylists();
-    // eslint-disable-next-line
-  }, [userContext.user]);
+    const requestPlaylists = async (): Promise<void> => {
+      if (userContext.user) {
+        const requestUserPlaylists = {
+          method: "GET" as Method,
+          url: `/spotify/playlists?userId=${userContext.user.id}`
+        };
+        const responseUserPlaylists = await axiosRequest(requestUserPlaylists);
 
-  const requestPlaylists = async () => {
-    if (userContext.user) {
-      const requestUserPlaylists = {
-        method: "GET" as Method,
-        url: `/spotify/playlists?userId=${userContext.user.id}`
-      };
-      const responseUserPlaylists = await axiosRequest(requestUserPlaylists);
-
-      if (responseUserPlaylists.complete && !responseUserPlaylists.error) {
-        setYourPlaylists(responseUserPlaylists.data as IPlaylist[]);
+        if (responseUserPlaylists.complete && !responseUserPlaylists.error) {
+          setYourPlaylists(responseUserPlaylists.data as IPlaylist[]);
+        }
       }
-    }
 
-    const requestMostPopularPlaylists = {
-      method: "GET" as Method,
-      url: "/spotify/playlists"
-    };
-    const responsetMostPopularPlaylists = await axiosRequest(
-      requestMostPopularPlaylists
-    );
-
-    if (
-      responsetMostPopularPlaylists.complete &&
-      !responsetMostPopularPlaylists.error
-    ) {
-      setMostPopularPlaylists(
-        responsetMostPopularPlaylists.data as IPlaylist[]
+      const requestMostPopularPlaylists = {
+        method: "GET" as Method,
+        url: "/spotify/playlists"
+      };
+      const responsetMostPopularPlaylists = await axiosRequest(
+        requestMostPopularPlaylists
       );
-    }
-  };
+
+      if (
+        responsetMostPopularPlaylists.complete &&
+        !responsetMostPopularPlaylists.error
+      ) {
+        setMostPopularPlaylists(
+          responsetMostPopularPlaylists.data as IPlaylist[]
+        );
+      }
+
+      return;
+    };
+
+    requestPlaylists();
+  }, [userContext.user]);
 
   return (
     <div className="all-playlists">

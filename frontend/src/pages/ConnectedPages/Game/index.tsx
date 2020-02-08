@@ -7,19 +7,20 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   Answer,
   AnswerResultMessage,
-  GameBattleLoseMessage, GameBattleWinMessage,
+  GameBattleLoseMessage,
+  GameBattleWinMessage,
   GameEndMessage,
   QuestionUpdateMessage
-} from '../../../websockets/MessageType';
+} from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 import AnswerResult from "./AnswerResult";
 import { adjustVolume } from "../../../utils/audio";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 import BattleRoyaleResult from "./BattleRoyaleResult";
 
 const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
