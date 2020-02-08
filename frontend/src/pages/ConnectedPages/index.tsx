@@ -17,14 +17,16 @@ import { getUserInfoResponse } from "../../utils/getUserInfoResponse";
 
 const ConnectedPages: React.FC = () => {
   const userContext: ICreateContext = useContext(UserContext);
+  const setUserContext: React.Dispatch<IUser | undefined> | undefined =
+    userContext.setUser;
 
   useEffect(() => {
     const updateUser = async (): Promise<void> => {
       const responseUser = await getUserInfoResponse();
 
       if (responseUser.complete && !responseUser.error) {
-        if (userContext.setUser) {
-          userContext.setUser(responseUser.data as IUser);
+        if (setUserContext) {
+          setUserContext(responseUser.data as IUser);
         }
       }
 
@@ -33,7 +35,7 @@ const ConnectedPages: React.FC = () => {
 
     setDefaultAuthorization();
     updateUser();
-  }, [userContext.setUser]);
+  }, [setUserContext]);
 
   if (!isTokenValid()) {
     return <Redirect to="/login" />;

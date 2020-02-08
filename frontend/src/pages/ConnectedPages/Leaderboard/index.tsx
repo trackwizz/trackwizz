@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-
-import "./leaderboard.css";
-import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
 import { RouteComponentProps, withRouter } from "react-router";
 import querystring from "query-string";
+
+import "./leaderboard.css";
+import { axiosRequest } from "../components/axiosRequest";
 
 interface ILeaderboard {
   userId: string;
@@ -20,6 +20,9 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
   const [leaderboardTable, setLeaderboardTable] = useState<
     ILeaderboard[] | null
   >(null);
+
+  const { gameId } = querystring.parse(search);
+  const isForSpecificGame = !!gameId;
 
   useEffect(() => {
     const requestLeaderboard = async (): Promise<void> => {
@@ -38,10 +41,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
     };
 
     requestLeaderboard();
-  }, []);
-
-  const { gameId } = querystring.parse(search);
-  const isForSpecificGame = !!gameId;
+  }, [gameId]);
 
   const setRowClassName = (index: number): string => {
     let className = "";
@@ -76,7 +76,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
   };
 
   if (leaderboardTable === null) {
-    return <div></div>;
+    return <div />;
   }
 
   return (
