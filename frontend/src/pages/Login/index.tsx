@@ -34,7 +34,7 @@ const Login: React.FC<RouteComponentProps> = ({
   }, 8000);
 
   useEffect(() => {
-    async function connectUser() {
+    const connectUser = async (): Promise<void> => {
       /**
        * The user is already logged in, just pass.
        */
@@ -106,7 +106,8 @@ const Login: React.FC<RouteComponentProps> = ({
        */
       setIsLoggedIn(false);
       setHasError(false);
-    }
+      return;
+    };
 
     connectUser();
   }, [search]);
