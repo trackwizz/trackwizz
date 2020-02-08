@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { useLastLocation } from "react-router-last-location";
 import { ReactComponent as Back } from "../../../images/back.svg";
 import "../navbar.css";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 
-const BackButton: React.FC<RouteComponentProps> = ({
-  location,
-  history
-}): JSX.Element => {
-  const [isGame, setIsGame] = useState<boolean>(false);
+type IBackButton = { isGame: boolean } & RouteComponentProps;
 
-  useEffect(() => {
-    setIsGame(location.pathname === "/game");
-  }, [location]);
-
+const BackButton: React.FC<IBackButton> = ({
+  history,
+  isGame
+}: IBackButton): JSX.Element => {
   const lastLocation = useLastLocation();
 
   const handleClickBackButton = (

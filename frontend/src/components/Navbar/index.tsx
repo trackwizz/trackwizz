@@ -3,28 +3,51 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 
 import BackButton from "./components/BackButton";
 import StandarNavbar from "./components/StandardNavbar";
+
 import "./navbar.css";
 
+interface ICurrentLocation {
+  isHome: boolean;
+  isLeaderboard: boolean;
+  isLogin: boolean;
+  isGame: boolean;
+}
+
+const DEFAULT_CURRENT_LOCATION: ICurrentLocation = {
+  isHome: false,
+  isLeaderboard: false,
+  isLogin: false,
+  isGame: false
+};
+
 const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
-  const [isHome, setIsHome] = useState<boolean>(false);
-  const [isLeaderboard, setIsLeaderboard] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [currentLocation, setCurrentLocation] = useState<ICurrentLocation>(
+    DEFAULT_CURRENT_LOCATION
+  );
 
   useEffect(() => {
-    setIsHome(location.pathname === "/");
-    setIsLeaderboard(location.pathname === "/leaderboard");
-    setIsLogin(location.pathname === "/login");
+    setCurrentLocation({
+      isHome: location.pathname === "/",
+      isLeaderboard: location.pathname === "/leaderboard",
+      isLogin: location.pathname === "/login",
+      isGame: location.pathname === "/game"
+    });
   }, [location]);
 
-  if (isLogin) {
+  if (currentLocation.isLogin) {
     return <div />;
   }
 
-  if (!isHome && !isLeaderboard) {
-    return <BackButton />;
+  if (!currentLocation.isHome && !currentLocation.isLeaderboard) {
+    return <BackButton isGame={currentLocation.isGame} />;
   }
 
-  return <StandarNavbar isHome={isHome} isLeaderboard={isLeaderboard} />;
+  return (
+    <StandarNavbar
+      isHome={currentLocation.isHome}
+      isLeaderboard={currentLocation.isLeaderboard}
+    />
+  );
 };
 
 export default withRouter(Navbar);
