@@ -8,7 +8,7 @@ interface IRemainingPlayTime {
 const RemainingPlayTime: React.FC<IRemainingPlayTime> = ({
   remainingPlayTimeSeconds,
   remainingPlayers
-}: IRemainingPlayTime) => {
+}: IRemainingPlayTime): JSX.Element => {
   return (
     <div>
       <h2 className="fancy-text">

@@ -17,7 +17,10 @@ interface IPlayers {
   name: string;
 }
 
-const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
+const WaitingRoom: React.FC<RouteComponentProps> = ({
+  history,
+  location
+}): JSX.Element => {
   const userContext: ICreateContext = useContext(UserContext);
 
   const [roomId, setRoomId] = useState<number | null>(null);

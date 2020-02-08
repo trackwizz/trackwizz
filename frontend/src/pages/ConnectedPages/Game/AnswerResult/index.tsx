@@ -6,7 +6,7 @@ interface IAnswerResult {
 
 const AnswerResult: React.FC<IAnswerResult> = ({
   isCorrect
-}: IAnswerResult) => {
+}: IAnswerResult): JSX.Element => {
   return (
     <div className="flex-container column">
       <div className="text-center">

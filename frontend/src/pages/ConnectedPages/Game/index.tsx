@@ -37,6 +37,8 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
   >();
   const player = useRef<null | HTMLAudioElement>(null);
 
+  const countdownMs = querystring.parse(location.search).countdownMs as string;
+
   const reloadPlayer = async (): Promise<void> => {
     if (player && player.current) {
       await adjustVolume(player.current, 0, { duration: 200 });
@@ -61,7 +63,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     // eslint-disable-next-line
   }, [previewUrl]);
 
-  const updateRemaingPlayTime = (time: number) => {
+  const updateRemaingPlayTime = (time: number): void => {
     if (remainingPlayTimeoutId) {
       clearTimeout(remainingPlayTimeoutId);
     }
@@ -110,8 +112,6 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     setPosition(0);
     stopAudio().catch();
   };
-
-  const countdownMs = querystring.parse(location.search).countdownMs as string;
 
   useEffect(() => {
     ConnectionManager.getInstance().registerCallbackForMessage(
