@@ -15,6 +15,10 @@ export class Answer {
   public artist: string;
 }
 
+/**
+ * Class Game.
+ * Stores some game data in the database and some data in memory when the game is running.
+ */
 @Entity()
 export class Game {
   @PrimaryGeneratedColumn()
@@ -146,7 +150,7 @@ export class Game {
   }
 
   /**
-   * Update the score for the people who have not answer the question
+   * Updates the score for the people who have not answer the question
    */
   public setPlayersMissingScores(): void {
     const players = this.roomManager.getPlayers();
@@ -174,7 +178,7 @@ export class Game {
   }
 
   /**
-   * Get an answer from one user, check it and save it.
+   * Receives an answer from one user, check it and save it.
    */
   public receiveAnswer(player: Player): void {
     this.receivedAnswersForCurrentTrack.push(player);
@@ -189,6 +193,9 @@ export class Game {
     }
   }
 
+  /**
+   * Ends the game.
+   */
   public async end(): Promise<void> {
     this.isEnded = true;
     await getRepository(Game).save(this);
@@ -209,6 +216,10 @@ export class Game {
     logger.info(`Game ${this.title} ended!`);
   }
 
+  /**
+   * For Battle Royale only:
+   * Returns the number of users to eject before starting the next track.
+   */
   public getKickedNumber(): number {
     const n: number = this.questionsNumber - this.currentTrackIndex;
     const p: number = this.roomManager.getPlayers().length;
@@ -218,6 +229,10 @@ export class Game {
     return Math.min(Math.ceil(p / n), n - 1);
   }
 
+  /**
+   * For Battle Royale only:
+   * Removes the loosing users before starting the next track.
+   */
   public async kickBadPlayers(): Promise<boolean> {
     const players = this.roomManager.getPlayers();
     // In case someone left during game and there is only 1 player left.
@@ -260,6 +275,10 @@ export class Game {
     return await this.sendWinMessage();
   }
 
+  /**
+   * For Battle Royale only:
+   * Send win message to the winner and ends the game.
+   */
   public async sendWinMessage(): Promise<boolean> {
     const players = this.roomManager.getPlayers();
     if (players.length === 1) {
