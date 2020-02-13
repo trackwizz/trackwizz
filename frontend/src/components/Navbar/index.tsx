@@ -1,73 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { withRouter, RouteComponentProps, Link } from "react-router-dom";
-import { useLastLocation } from "react-router-last-location";
-import { ReactComponent as Back } from "../../images/back.svg";
-import "./navbar.css";
-import ConnectionManager from '../../websockets/ConnectionManager';
+import { withRouter, RouteComponentProps } from "react-router-dom";
 
-const Navbar: React.FC<RouteComponentProps> = ({ location, history }) => {
-  const [isHome, setIsHome] = useState<boolean>(false);
-  const [isLeaderboard, setIsLeaderboard] = useState<boolean>(false);
-  const [isGame, setIsGame] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+import BackButton from "./components/BackButton";
+import StandarNavbar from "./components/StandardNavbar";
+
+import "./navbar.css";
+
+interface ICurrentLocation {
+  isHome: boolean;
+  isLeaderboard: boolean;
+  isLogin: boolean;
+  isGame: boolean;
+}
+
+const DEFAULT_CURRENT_LOCATION: ICurrentLocation = {
+  isHome: false,
+  isLeaderboard: false,
+  isLogin: false,
+  isGame: false
+};
+
+const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
+  const [currentLocation, setCurrentLocation] = useState<ICurrentLocation>(
+    DEFAULT_CURRENT_LOCATION
+  );
 
   useEffect(() => {
-    setIsHome(location.pathname === "/");
-    setIsLeaderboard(location.pathname === "/leaderboard");
-    setIsGame(location.pathname === "/game");
-    setIsLogin(location.pathname === "/login");
+    setCurrentLocation({
+      isHome: location.pathname === "/",
+      isLeaderboard: location.pathname === "/leaderboard",
+      isLogin: location.pathname === "/login",
+      isGame: location.pathname === "/game"
+    });
   }, [location]);
 
-  const lastLocation = useLastLocation();
-
-  if (isLogin) {
-    return <div></div>;
+  if (currentLocation.isLogin) {
+    return <div />;
   }
 
-  if (!isHome && !isLeaderboard) {
-    return (
-      <div className="back-button-container">
-        <a
-          onClick={(event): void => {
-            event.preventDefault();
-            if (isGame) {
-              ConnectionManager.clearConnection();
-              history.push("/");
-            } else {
-              history.goBack();
-            }
-          }}
-          href={isGame ? "/" : (lastLocation || { pathname: "/" }).pathname}
-        >
-          <Back />
-          {isGame ? "Home" : "Back"}
-        </a>
-      </div>
-    );
+  if (!currentLocation.isHome && !currentLocation.isLeaderboard) {
+    return <BackButton isGame={currentLocation.isGame} />;
   }
 
   return (
-    <div className="mobileBottomMargin">
-      <div className="navbarContainer">
-        <Link className="navbarLink" to="/">
-          <button
-            className={isHome ? "navbarButton currentLocation" : "navbarButton"}
-          >
-            Home
-          </button>
-        </Link>
-
-        <Link className="navbarLink" to="/leaderboard">
-          <button
-            className={
-              isLeaderboard ? "navbarButton currentLocation" : "navbarButton"
-            }
-          >
-            Leaderboard
-          </button>
-        </Link>
-      </div>
-    </div>
+    <StandarNavbar
+      isHome={currentLocation.isHome}
+      isLeaderboard={currentLocation.isLeaderboard}
+    />
   );
 };
 
