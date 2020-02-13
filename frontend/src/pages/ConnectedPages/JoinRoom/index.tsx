@@ -5,10 +5,10 @@ import "./joinRoom.css";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import { Method } from "axios";
 import { axiosRequest } from "../components/axiosRequest";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 
 const JoinRoom: React.FC = () => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isRedirected, setIsRedirected] = useState<boolean>(false);
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);

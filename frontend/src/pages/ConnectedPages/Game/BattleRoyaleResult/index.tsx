@@ -10,7 +10,7 @@ const BattleRoyaleResult: React.FC<IAnswerResult> = ({
   won,
   position,
   goToLeaderBoard
-}: IAnswerResult) => {
+}: IAnswerResult): JSX.Element => {
   return (
     <div className="flex-container column">
       <div className="text-center">

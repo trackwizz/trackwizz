@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-
-import "./leaderboard.css";
-import { axiosRequest } from "../components/axiosRequest";
 import { Method } from "axios";
 import { RouteComponentProps, withRouter } from "react-router";
 import querystring from "query-string";
+
+import "./leaderboard.css";
+import { axiosRequest } from "../components/axiosRequest";
 
 interface ILeaderboard {
   userId: string;
@@ -16,31 +16,32 @@ interface ILeaderboard {
 
 const Leaderboard: React.FC<RouteComponentProps> = ({
   location: { search }
-}) => {
+}: RouteComponentProps): JSX.Element => {
   const [leaderboardTable, setLeaderboardTable] = useState<
     ILeaderboard[] | null
   >(null);
 
-  useEffect(() => {
-    requestLeaderboard();
-    // eslint-disable-next-line
-  }, []);
-
   const { gameId } = querystring.parse(search);
   const isForSpecificGame = !!gameId;
 
-  const requestLeaderboard = async () => {
-    const request = {
-      method: "get" as Method,
-      url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
+  useEffect(() => {
+    const requestLeaderboard = async (): Promise<void> => {
+      const request = {
+        method: "get" as Method,
+        url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
+      };
+
+      const response = await axiosRequest(request);
+
+      if (response.complete && !response.error) {
+        setLeaderboardTable(response.data as ILeaderboard[]);
+      }
+
+      return;
     };
 
-    const response = await axiosRequest(request);
-
-    if (response.complete && !response.error) {
-      setLeaderboardTable(response.data as ILeaderboard[]);
-    }
-  };
+    requestLeaderboard();
+  }, [gameId]);
 
   const setRowClassName = (index: number): string => {
     let className = "";
@@ -75,7 +76,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
   };
 
   if (leaderboardTable === null) {
-    return <div></div>;
+    return <div />;
   }
 
   return (

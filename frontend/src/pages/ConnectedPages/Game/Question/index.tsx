@@ -23,7 +23,7 @@ const Question: React.FC<IQuestion> = ({
   setIsMuted,
   remainingPlayTimeSeconds,
   remainingPlayers
-}: IQuestion) => {
+}: IQuestion): JSX.Element => {
   return (
     <div className="flex-container column" style={{ overflow: "auto" }}>
       <button

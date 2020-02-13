@@ -10,29 +10,32 @@ import Playlists from "./Playlists";
 import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
-import { UserContext } from "./components/UserContext";
+import { UserContext, ICreateContext } from "./components/UserContext";
 import { setDefaultAuthorization } from "./components/axiosRequest";
 import { IUser } from "./components/UserContext/types";
 import { getUserInfoResponse } from "../../utils/getUserInfoResponse";
 
 const ConnectedPages: React.FC = () => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
+  const setUserContext: React.Dispatch<IUser | undefined> | undefined =
+    userContext.setUser;
 
   useEffect(() => {
+    const updateUser = async (): Promise<void> => {
+      const responseUser = await getUserInfoResponse();
+
+      if (responseUser.complete && !responseUser.error) {
+        if (setUserContext) {
+          setUserContext(responseUser.data as IUser);
+        }
+      }
+
+      return;
+    };
+
     setDefaultAuthorization();
     updateUser();
-    // eslint-disable-next-line
-  }, []);
-
-  const updateUser = async () => {
-    const responseUser = await getUserInfoResponse();
-
-    if (responseUser.complete && !responseUser.error) {
-      if (userContext.setUser) {
-        userContext.setUser(responseUser.data as IUser);
-      }
-    }
-  };
+  }, [setUserContext]);
 
   if (!isTokenValid()) {
     return <Redirect to="/login" />;

@@ -9,7 +9,7 @@ interface ICountdown {
 const Countdown: React.FC<ICountdown> = ({
   setStep,
   countdownMs
-}: ICountdown) => {
+}: ICountdown): JSX.Element => {
   const [countdown, setCountdown] = useState<number>(
     Math.round(countdownMs / 1000)
   );

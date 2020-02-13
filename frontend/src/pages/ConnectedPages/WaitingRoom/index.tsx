@@ -1,5 +1,6 @@
-import React, {useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Redirect, RouteComponentProps, withRouter } from "react-router-dom";
+import querystring from "query-string";
 
 import "./waitingRoom.css";
 import { IRoom } from "../components/types";
@@ -9,18 +10,21 @@ import ConnectionManager from "../../../websockets/ConnectionManager";
 import MessageType, {
   WaitingRoomUpdateMessage
 } from "../../../websockets/MessageType";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 
 interface IPlayers {
   id: string;
   name: string;
 }
 
-const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
-  const userContext = useContext(UserContext);
+const WaitingRoom: React.FC<RouteComponentProps> = ({
+  history,
+  location
+}): JSX.Element => {
+  const userContext: ICreateContext = useContext(UserContext);
 
   const [roomId, setRoomId] = useState<number | null>(null);
-  const [error, setError] = useState<boolean>(false);
+  const [isRedirected, setIsRedirected] = useState<boolean>(false);
   const [players, setPlayers] = useState<IPlayers[] | null>(null);
   /*
     0: normal,
@@ -29,39 +33,32 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [gameMode, setGameMode] = useState<-1 | 0 | 1>(-1);
 
   useEffect(() => {
-    if (userContext.user) {
-      if (location.search !== "") {
-        if (location.search.slice(1).includes("roomId=") !== undefined) {
-          const roomId = location.search
-            .slice(1)
-            .split("roomId=")
-            .filter(el => el !== "")
-            .shift();
-
-          if (roomId) {
-            ConnectionManager.createInstance(roomId.toString(), {
-              id: userContext.user.id,
-              name: userContext.user.display_name
-            });
-            ConnectionManager.getInstance().registerCallbackForMessage(
-              MessageType.WAITING_ROOM_UPDATE,
-              onWaitingRoomUpdateReceived
-            );
-            ConnectionManager.getInstance().registerCallbackForMessage(
-              MessageType.START_GAME,
-              ({ countdownMs }) =>
-                history.push(
-                  `/game?gameId=${roomId}&countdownMs=${countdownMs}`
-                )
-            );
-          }
-
-          requestRoomInfo(roomId || "");
-        }
-      }
+    const getUrlRoomId = (querystring.parse(location.search).roomId ||
+      "") as string;
+    if (getUrlRoomId === "") {
+      setIsRedirected(true);
+    } else {
+      requestRoomInfo(getUrlRoomId);
     }
-    // eslint-disable-next-line
   }, [location.search]);
+
+  useEffect(() => {
+    if (userContext.user && roomId) {
+      ConnectionManager.createInstance(roomId.toString(), {
+        id: userContext.user.id,
+        name: userContext.user.display_name
+      });
+      ConnectionManager.getInstance().registerCallbackForMessage(
+        MessageType.WAITING_ROOM_UPDATE,
+        onWaitingRoomUpdateReceived
+      );
+      ConnectionManager.getInstance().registerCallbackForMessage(
+        MessageType.START_GAME,
+        ({ countdownMs }) =>
+          history.push(`/game?gameId=${roomId}&countdownMs=${countdownMs}`)
+      );
+    }
+  }, [roomId, history, userContext.user]);
 
   useEffect(() => {
     // prevents unnecessary call of the effect on component initialisation.
@@ -75,8 +72,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
       };
       axiosRequest(changeGameMode);
     }
-    // eslint-disable-next-line
-  }, [gameMode]);
+  }, [gameMode, roomId]);
 
   const onWaitingRoomUpdateReceived = ({
     players,
@@ -98,7 +94,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
 
     if (responseRoom.complete === true && responseRoom.error === true) {
-      setError(true);
+      setIsRedirected(true);
     }
   };
 
@@ -111,7 +107,7 @@ const WaitingRoom: React.FC<RouteComponentProps> = ({ history, location }) => {
     history.push(`/game?gameId=${roomId}`);
   };
 
-  if (location.search === "" || error === true) {
+  if (isRedirected === true) {
     return <Redirect to={"/"} />;
   }
 

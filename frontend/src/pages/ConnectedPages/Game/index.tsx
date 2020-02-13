@@ -7,19 +7,20 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import MessageType, {
   Answer,
   AnswerResultMessage,
-  GameBattleLoseMessage, GameBattleWinMessage,
+  GameBattleLoseMessage,
+  GameBattleWinMessage,
   GameEndMessage,
   QuestionUpdateMessage
-} from '../../../websockets/MessageType';
+} from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
 import Question from "./Question";
 import AnswerResult from "./AnswerResult";
 import { adjustVolume } from "../../../utils/audio";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 import BattleRoyaleResult from "./BattleRoyaleResult";
 
 const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
   const [step, setStep] = useState<IGameEnum>(IGameEnum.COUNTDOWN);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -35,6 +36,8 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     NodeJS.Timeout
   >();
   const player = useRef<null | HTMLAudioElement>(null);
+
+  const countdownMs = querystring.parse(location.search).countdownMs as string;
 
   const reloadPlayer = async (): Promise<void> => {
     if (player && player.current) {
@@ -60,7 +63,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     // eslint-disable-next-line
   }, [previewUrl]);
 
-  const updateRemaingPlayTime = (time: number) => {
+  const updateRemaingPlayTime = (time: number): void => {
     if (remainingPlayTimeoutId) {
       clearTimeout(remainingPlayTimeoutId);
     }
@@ -109,8 +112,6 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     setPosition(0);
     stopAudio().catch();
   };
-
-  const countdownMs = querystring.parse(location.search).countdownMs as string;
 
   useEffect(() => {
     ConnectionManager.getInstance().registerCallbackForMessage(

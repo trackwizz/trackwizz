@@ -4,12 +4,15 @@ import { IPlaylist } from "../../types";
 import PlaylistCard from "../PlaylistCard";
 import "./playlistContainer.css";
 
-interface IProps {
+interface IPlaylistContainer {
   title: string;
   playlists: IPlaylist[];
 }
 
-const PlaylistContainer: React.FC<IProps> = ({ title, playlists }: IProps) => {
+const PlaylistContainer: React.FC<IPlaylistContainer> = ({
+  title,
+  playlists
+}: IPlaylistContainer): JSX.Element => {
   return (
     <div className="playlistContainer">
       <h1 className="playlistsTitle">{title}</h1>

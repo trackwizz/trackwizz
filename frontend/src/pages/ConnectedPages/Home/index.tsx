@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import "./home.css";
-import { UserContext } from "../components/UserContext";
+import { UserContext, ICreateContext } from "../components/UserContext";
 
 const Home: React.FC<RouteComponentProps> = ({ history }) => {
-  const userContext = useContext(UserContext);
+  const userContext: ICreateContext = useContext(UserContext);
 
   const handleNewGame = (): void => {
     history.push("/playlists");

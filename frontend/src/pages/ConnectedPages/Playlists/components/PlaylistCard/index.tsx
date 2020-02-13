@@ -10,11 +10,13 @@ interface IProps {
   playlist: IPlaylist;
 }
 
-type PlaylistCardProp = IProps & RouteComponentProps;
+type IPlaylistCardProp = IProps & RouteComponentProps;
 
-const PlaylistCard: React.FC<PlaylistCardProp> = ({ playlist, history }: PlaylistCardProp) => {
-
-  const handleRedirection = async () => {
+const PlaylistCard: React.FC<IPlaylistCardProp> = ({
+  playlist,
+  history
+}: IPlaylistCardProp): JSX.Element => {
+  const handleRedirection = async (): Promise<void> => {
     const requestNewRoom = {
       data: {
         idSpotifyPlaylist: playlist.id
@@ -28,6 +30,8 @@ const PlaylistCard: React.FC<PlaylistCardProp> = ({ playlist, history }: Playlis
       const room = responseNewRoom.data as IRoom;
       history.push(`/waitingRoom?roomId=${room.id}`);
     }
+
+    return;
   };
 
   return (
