@@ -8,7 +8,7 @@ import * as crypto from "crypto";
 import { Track } from "../providers/track";
 import { requestSpotifyTracks } from "../providers/spotify/tracks";
 import { GameRoomManager } from "../app/gameRoomManager";
-import { OutboundMessageType } from "./websockets_controller";
+import { OutboundMessageType } from "../websockets/messages";
 
 export class GameController extends Controller {
   constructor() {

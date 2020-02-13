@@ -4,7 +4,7 @@ import Timeout = NodeJS.Timeout;
 import { GameRoomManager } from "../app/gameRoomManager";
 import { logger } from "../utils/logger";
 import { getNRandom, toDate } from "../utils";
-import { OutboundMessageType, Player } from "../controllers/websockets_controller";
+import { OutboundMessageType } from "../websockets/messages";
 import gameSessions from "../app/gameSessions";
 import { Score } from "./score";
 import { User } from "./user";
@@ -55,7 +55,7 @@ export class Game {
   currentPossibleAnswers: Array<Answer>;
   updateTimeout: Timeout;
   questionStartTimestamp: number;
-  receivedAnswersForCurrentTrack: Array<Player>;
+  receivedAnswersForCurrentTrack: Array<User>;
   roomManager: GameRoomManager;
 
   /**
@@ -180,7 +180,7 @@ export class Game {
   /**
    * Receives an answer from one user, check it and save it.
    */
-  public receiveAnswer(player: Player): void {
+  public receiveAnswer(player: User): void {
     this.receivedAnswersForCurrentTrack.push(player);
     if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getPlayers().length) {
       // Wait for 3 seconds before switching to the next track
@@ -255,7 +255,7 @@ export class Game {
     let kicked = 0;
     let i = 0;
     while (kicked < kickedNumber && i < scores.length) {
-      const player: Player | null = players.reduce((p1: Player | null, p2: Player) => (p2.id === scores[i].user.id ? p2 : p1), null);
+      const player: User | null = players.reduce((p1: User | null, p2: User) => (p2.id === scores[i].user.id ? p2 : p1), null);
       if (player !== null) {
         this.roomManager.sendMessage(
           {

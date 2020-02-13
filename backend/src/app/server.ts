@@ -4,7 +4,7 @@ import express, { Express, Response } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import WebSocket from "ws";
-import MessageHandlerFactory from "../controllers/websockets_controller";
+import MessageHandlerFactory from "../websockets";
 import swaggerUi from "swagger-ui-express";
 import { apiSpecs } from "../utils/swagger";
 import { RequestWithCache, setAppCache } from "../middlewares/app_cache";
