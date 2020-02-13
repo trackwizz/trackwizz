@@ -22,7 +22,9 @@ const adjectives = [
   "wizarding"
 ];
 
-const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
+const Login: React.FC<RouteComponentProps> = ({
+  location: { search }
+}: RouteComponentProps): JSX.Element => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
   const [superAdjectiveIndex, setSuperAdjectiveIndex] = useState<number>(0);
@@ -32,7 +34,7 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
   }, 8000);
 
   useEffect(() => {
-    (async (): Promise<void> => {
+    const connectUser = async (): Promise<void> => {
       /**
        * The user is already logged in, just pass.
        */
@@ -104,12 +106,11 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
        */
       setIsLoggedIn(false);
       setHasError(false);
-    })();
-  }, [search]);
+      return;
+    };
 
-  if (isLoggedIn) {
-    return <Redirect to="/" />;
-  }
+    connectUser();
+  }, [search]);
 
   const handleLoginButtonClick = async (): Promise<void> => {
     const response = await axios.get("/login");
@@ -117,6 +118,10 @@ const Login: React.FC<RouteComponentProps> = ({ location: { search } }) => {
       response.data
     )}`;
   };
+
+  if (isLoggedIn) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <div className="flex-container">
