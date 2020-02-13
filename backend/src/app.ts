@@ -7,6 +7,9 @@ config(); // Get environment variables
 import server from "./app/server";
 import { connectToDatabase } from "./utils/database";
 
+/**
+ * Main function, start of the program.
+ */
 async function main(): Promise<void> {
   const connection: Connection | null = await connectToDatabase();
   if (connection === null) {
@@ -23,6 +26,7 @@ async function main(): Promise<void> {
   });
 }
 
+// Display trackwizz logo
 console.log(
   logo({
     name: "T R A C K W I Z Z",
@@ -40,6 +44,7 @@ console.log(
     .render(),
 );
 
+// Start program with error handler.
 main().catch((err: Error) => {
   logger.error(err.message);
 });

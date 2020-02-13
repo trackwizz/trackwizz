@@ -1,3 +1,8 @@
+/**
+ * Swagger is an open-source documentation specification for rest-api.
+ * This is to built this documentation. The 'swagger-jsdoc' library takes .yaml files in the project
+ * and creates a json documentation available at: /api-docs
+ */
 import swaggerJSDoc from "swagger-jsdoc";
 
 let url: string = "http://localhost:5000";

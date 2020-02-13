@@ -31,6 +31,11 @@ if (process.env.DATABASE_URL) {
   };
 }
 
+/**
+ * Connects the app to the database using 'typeORM' library.
+ * It will try n times before returning an error that will stop the server.
+ * @param tries: number of tries before stopping the server.
+ */
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
   if (tries === 0 || DBConfig === null) {
     return null;
