@@ -65,6 +65,10 @@ export function del({ path }: { path: string } = { path: "" }) {
   };
 }
 
+/**
+ * Abstract class Controller that contains an express router and a path.
+ * All function in a Controller class can use the decorators below to add their functions as express handlers.
+ */
 export abstract class Controller {
   public router: Router;
   public path: string;
