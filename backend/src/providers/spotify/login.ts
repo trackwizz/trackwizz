@@ -19,10 +19,18 @@ if (process.env.FRONTEND_NAME_FULL) {
   front_redirect_uri = process.env.FRONTEND_NAME_FULL + "/login?";
 }
 
+/**
+ * Converts the expires_in in ms to an expires_at in unix timestamp.
+ * @param expiresIn: number in ms
+ */
 function getExpiresAt(expiresIn: number): number {
   return new Date().getTime() + expiresIn * 1000 - 120 * 1000;
 }
 
+/**
+ * Save the logged in user in the database with his username and id.
+ * @param accessToken: user access token
+ */
 async function createUser(accessToken: string): Promise<void> {
   const spotifyUser = await getSpotifyUser(accessToken);
   const user: User = new User();
@@ -31,6 +39,11 @@ async function createUser(accessToken: string): Promise<void> {
   await getRepository(User).save(user);
 }
 
+/**
+ * Called by the frontend to login with spotify
+ * @param req: Express request object
+ * @param res: Express response object
+ */
 export function login(req: Request, res: Response): void {
   // Generate and cache secure random state for later verification.
   const state = crypto.randomBytes(16).toString("hex");
@@ -48,6 +61,11 @@ export function login(req: Request, res: Response): void {
   res.end();
 }
 
+/**
+ * Called by spotify to check that the login was asked by our server.
+ * @param req: Express request object
+ * @param res: Express response object
+ */
 export function callback(req: Request, res: Response): void {
   const code = req.query.code || null;
   const state = req.query.state || null;
@@ -107,6 +125,11 @@ export function callback(req: Request, res: Response): void {
   });
 }
 
+/**
+ * Called by the frontend when user access token has expired, to request a new one.
+ * @param req: Express request object
+ * @param res: Express response object
+ */
 export function refreshToken(req: Request, res: Response): void {
   // requesting access token from refresh token
   const refresh_token = req.query.refresh_token;

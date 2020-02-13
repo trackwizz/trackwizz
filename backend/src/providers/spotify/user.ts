@@ -6,6 +6,10 @@ export interface SpotifyUser {
   id: string;
 }
 
+/**
+ * Returns the spotify user using an access token.
+ * @param accessToken: string, user access token
+ */
 export function getSpotifyUser(accessToken: string): Promise<SpotifyUser> {
   const authOptions = {
     headers: {

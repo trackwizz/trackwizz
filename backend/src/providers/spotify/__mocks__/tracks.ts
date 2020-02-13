@@ -1,3 +1,6 @@
+/**
+ * Mocks spotify functions to run the tests without spotify account.
+ */
 import { Request, Response } from "express";
 import { Track } from "../../track";
 

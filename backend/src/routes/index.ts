@@ -1,3 +1,6 @@
+/**
+ * Takes all the controllers exported in controllers/index.js and use their routes.
+ */
 import { Router } from "express";
 import * as controllers from "../controllers";
 import { Controller } from "../controllers/controller";
