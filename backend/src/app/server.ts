@@ -11,6 +11,7 @@ import { RequestWithCache, setAppCache } from "../middlewares/app_cache";
 import { removeTrailingSlash } from "../middlewares/trailing_slash";
 import { spotifyRouter } from "../providers/spotify";
 import { routes } from "../routes";
+import { logErrors } from "../middlewares/error_handler";
 
 type ExpressWithWebSockets = Express & { ws: Function };
 
@@ -22,6 +23,7 @@ require("express-ws")(server);
 server.enable("strict routing");
 
 /* --- Middlewares --- */
+server.use(logErrors);
 server.use(helmet());
 server.use(cors());
 server.use(removeTrailingSlash);
