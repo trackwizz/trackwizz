@@ -24,8 +24,6 @@ For the frontend, the application has been built in React/Typescript. This choic
 * Typescript adds typing and allows to have a better structure. It makes it easier to develop better code with fewer knowledge of the codebase.
 * Both allowed fast development and efficient performances.
 
-![](/ReadmeImages/ReactTypescriptLogo.png =250px)
-
 #### Backend
 
 We started to build the application in Rust. But we met difficulties learning the language and we felt like it wasn't mature enough to efficiently build a web application.
@@ -35,13 +33,9 @@ We finally decided to move on and build the backend in NodeJS and Typescript.
 * It allowed us to use the same language and network libraries across the application.
 * We already had a template of NodeJS backend that we used at the early prototyping phase.
 
-![](/ReadmeImages/NodeTypescriptLogo.png =250px)
-
 #### Database
 
 We planned to save the players, the scores and the games in a relational database. We chose PostgreSQL, which is an open-source relational database. It has proven performances, an active community, a good documentation. It is also supported by many libraries in different languages.
-
-![](/ReadmeImages/PostgreSQLLogo.png =250px)
 
 #### Deployment
 
