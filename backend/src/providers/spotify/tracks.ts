@@ -46,7 +46,7 @@ export function requestSpotifyTracks(token: string, spotifyPlaylistId: string): 
             id: track.track.id,
             name: track.track.name,
             trackNumber: track.track.track_number,
-            artist: track.track.artists.map((a) => a.name).join(" & "),
+            artist: track.track.artists.map(a => a.name).join(" & "),
           });
         }
         resolve(tracks);
