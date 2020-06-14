@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import request from "request";
 import * as querystring from "querystring";
 import { Track } from "../track";
+import { transformTypingRequest } from "../../utils/transformTyping";
 
 interface SpotifyTracks {
   items: Array<{
@@ -45,7 +46,7 @@ export function requestSpotifyTracks(token: string, spotifyPlaylistId: string): 
             id: track.track.id,
             name: track.track.name,
             trackNumber: track.track.track_number,
-            artist: track.track.artists.map(a => a.name).join(" & "),
+            artist: track.track.artists.map((a) => a.name).join(" & "),
           });
         }
         resolve(tracks);
@@ -64,7 +65,7 @@ export function requestSpotifyTracks(token: string, spotifyPlaylistId: string): 
  */
 export async function getSpotifyTracks(req: Request, res: Response): Promise<void> {
   const token: string | undefined = req.header("Authorization");
-  const spotifyPlaylistId: string | undefined = req.query.spotifyPlaylistId;
+  const spotifyPlaylistId: string | undefined = transformTypingRequest(req.query.spotifyPlaylistId);
   if (token === undefined) {
     throw "Bearer authorization missing !";
   }

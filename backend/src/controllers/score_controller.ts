@@ -5,6 +5,7 @@ import { Score } from "../entities/score";
 import { Game } from "../entities/game";
 import { User } from "../entities/user";
 import { toDate } from "../utils";
+import { transformTypingRequest } from "../utils/transformTyping";
 
 export class ScoreController extends Controller {
   constructor() {
@@ -13,7 +14,7 @@ export class ScoreController extends Controller {
 
   @get()
   public async getScores(req: Request, res: Response): Promise<void> {
-    const params: { where?: { game: { id: number } }; relations?: ["user"] } = req.query.idGame !== undefined ? { where: { game: { id: parseInt(req.query.idGame, 10) || 0 } } } : {};
+    const params: { where?: { game: { id: number } }; relations?: ["user"] } = req.query.idGame !== undefined ? { where: { game: { id: parseInt(transformTypingRequest(req.query.idGame) || "", 10) || 0 } } } : {};
     params.relations = ["user"];
     const scores: Score[] = await getRepository(Score).find(params);
     res.send(scores);

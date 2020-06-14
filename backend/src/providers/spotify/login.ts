@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/camelcase: 0 */
 import * as crypto from "crypto";
 import { Request, Response } from "express";
 import * as querystring from "querystring";
@@ -71,7 +70,7 @@ export function callback(req: Request, res: Response): void {
   const state = req.query.state || null;
 
   // Check that it is indeed Spotify answering us.
-  if (state === null || !req.appCache.get(state)) {
+  if (state === null || typeof state !== "string" || !req.appCache.get(state)) {
     res.redirect(
       front_redirect_uri +
         querystring.stringify({
