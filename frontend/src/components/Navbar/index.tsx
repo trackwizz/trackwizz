@@ -11,13 +11,15 @@ interface ICurrentLocation {
   isLeaderboard: boolean;
   isLogin: boolean;
   isGame: boolean;
+  isProfile: boolean;
 }
 
 const DEFAULT_CURRENT_LOCATION: ICurrentLocation = {
   isHome: false,
   isLeaderboard: false,
   isLogin: false,
-  isGame: false
+  isGame: false,
+  isProfile: false,
 };
 
 const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
@@ -30,7 +32,8 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
       isHome: location.pathname === "/",
       isLeaderboard: location.pathname === "/leaderboard",
       isLogin: location.pathname === "/login",
-      isGame: location.pathname === "/game"
+      isGame: location.pathname === "/game",
+      isProfile: location.pathname === "/profile",
     });
   }, [location]);
 
@@ -38,7 +41,11 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
     return <div />;
   }
 
-  if (!currentLocation.isHome && !currentLocation.isLeaderboard) {
+  if (
+    !currentLocation.isHome &&
+    !currentLocation.isLeaderboard &&
+    !currentLocation.isProfile
+  ) {
     return <BackButton isGame={currentLocation.isGame} />;
   }
 
@@ -46,6 +53,7 @@ const Navbar: React.FC<RouteComponentProps> = ({ location }): JSX.Element => {
     <StandarNavbar
       isHome={currentLocation.isHome}
       isLeaderboard={currentLocation.isLeaderboard}
+      isProfile={currentLocation.isProfile}
     />
   );
 };

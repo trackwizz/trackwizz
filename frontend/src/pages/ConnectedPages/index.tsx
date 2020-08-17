@@ -14,6 +14,7 @@ import { UserContext, ICreateContext } from "./components/UserContext";
 import { setDefaultAuthorization } from "./components/axiosRequest";
 import { IUser } from "./components/UserContext/types";
 import { getUserInfoResponse } from "../../utils/getUserInfoResponse";
+import Profile from "./Profile";
 
 const ConnectedPages: React.FC = () => {
   const userContext: ICreateContext = useContext(UserContext);
@@ -53,6 +54,7 @@ const ConnectedPages: React.FC = () => {
         <Route path="/waitingRoom" component={WaitingRoom} />
         <Route path="/joinRoom" component={JoinRoom} />
         <Route path="/leaderboard" component={Leaderboard} />
+        <Route path="/profile/" component={Profile} />
         <Route path="/" component={Home} />
       </Switch>
     </div>

@@ -11,7 +11,7 @@ interface ILinkButton {
 const LinkButton: React.FC<ILinkButton> = ({
   isCurrentLink,
   linkPath,
-  linkName
+  linkName,
 }: ILinkButton): JSX.Element => {
   return (
     <Link className="navbarLink" to={linkPath}>
@@ -29,11 +29,13 @@ const LinkButton: React.FC<ILinkButton> = ({
 interface IStandarNavbar {
   isHome: boolean;
   isLeaderboard: boolean;
+  isProfile: boolean;
 }
 
 const StandarNavbar: React.FC<IStandarNavbar> = ({
   isHome,
-  isLeaderboard
+  isLeaderboard,
+  isProfile,
 }: IStandarNavbar): JSX.Element => {
   return (
     <div className="mobileBottomMargin">
@@ -43,6 +45,11 @@ const StandarNavbar: React.FC<IStandarNavbar> = ({
           isCurrentLink={isLeaderboard}
           linkPath="/leaderboard"
           linkName="Leaderboard"
+        />
+        <LinkButton
+          isCurrentLink={isProfile}
+          linkPath="/profile"
+          linkName="Profile"
         />
       </div>
     </div>

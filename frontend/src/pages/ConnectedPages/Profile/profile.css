@@ -1,0 +1,39 @@
+.toggle {
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 60px;
+  height: 30px;
+  background: #80808087;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+}
+
+.toggleInactive::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 19px;
+  height: 19px;
+  background: #fff;
+  border-radius: 90px;
+  transition: 0.3s;
+}
+
+.toggleActive {
+  background: #fff;
+}
+
+.toggleActive::after {
+  left: calc(100% - 5px);
+  transform: translateX(-100%);
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 19px;
+  height: 19px;
+  background: #80808087;
+  border-radius: 90px;
+  transition: 0.3s;
+}
