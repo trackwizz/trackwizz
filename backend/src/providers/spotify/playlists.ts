@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import request from "request";
 import { Playlist } from "../playlist";
+import { transformTypingRequest } from "../../utils/transformTyping";
 
 interface SpotifyPlaylistsResponse {
   href: string;
@@ -68,7 +69,7 @@ export function requestSpotifyPlaylists(token: string, userId: string | undefine
  */
 export async function getSpotifyPlaylists(req: Request, res: Response): Promise<void> {
   const token: string | undefined = req.header("Authorization");
-  const userId: string | undefined = req.query.userId;
+  const userId: string | undefined = transformTypingRequest(req.query.userId);
   if (token === undefined) {
     throw "Bearer authorization missing !";
   }
