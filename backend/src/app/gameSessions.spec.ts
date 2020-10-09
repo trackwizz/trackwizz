@@ -36,11 +36,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await getConnection()
-    .createQueryBuilder()
-    .delete()
-    .from(Game)
-    .execute();
+  await getConnection().createQueryBuilder().delete().from(Game).execute();
 });
 
 describe("Test game in game session", () => {

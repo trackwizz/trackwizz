@@ -71,9 +71,7 @@ export class ScoreController extends Controller {
 
   @get({ path: "/leaderboard" })
   public async getLeaderboard(req: Request, res: Response): Promise<void> {
-    let queryBuilder = getRepository(Score)
-      .createQueryBuilder("score")
-      .leftJoinAndSelect("score.user", "user");
+    let queryBuilder = getRepository(Score).createQueryBuilder("score").leftJoinAndSelect("score.user", "user");
 
     if (req.query.gameId) {
       queryBuilder = queryBuilder.innerJoin("score.game", "game", "game.id = :gameId", { gameId: req.query.gameId });
@@ -92,7 +90,7 @@ export class ScoreController extends Controller {
 
     res.send(
       // Change count type to int (it is a string probably because of a typeorm bug)
-      leaderboard.map(playerStats => ({
+      leaderboard.map((playerStats) => ({
         ...playerStats,
         gamesNumber: parseInt(playerStats.gamesNumber),
         answers: parseInt(playerStats.answers),

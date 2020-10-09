@@ -7,7 +7,7 @@ let DBConfig: ConnectionOptions | null = null;
 // production
 if (process.env.DATABASE_URL) {
   DBConfig = {
-    type: "postgres" as "postgres",
+    type: "postgres" as const,
     url: process.env.DATABASE_URL,
     entities: [path.join(__dirname, "../entities/*.js"), path.join(__dirname, "../entities/*.ts")],
     logging: false,
@@ -26,7 +26,7 @@ if (process.env.DATABASE_URL) {
     port: parseInt(process.env.DB_PORT || "5432", 10),
     subscribers: [path.join(__dirname, "../subscriber/**/*.js")],
     synchronize: true,
-    type: "postgres" as "postgres",
+    type: "postgres" as const,
     username: process.env.DB_USER,
   };
 }

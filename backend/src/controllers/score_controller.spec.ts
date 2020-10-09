@@ -50,28 +50,14 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await getConnection()
-    .createQueryBuilder()
-    .delete()
-    .from(Score)
-    .execute();
-  await getConnection()
-    .createQueryBuilder()
-    .delete()
-    .from(User)
-    .execute();
-  await getConnection()
-    .createQueryBuilder()
-    .delete()
-    .from(Game)
-    .execute();
+  await getConnection().createQueryBuilder().delete().from(Score).execute();
+  await getConnection().createQueryBuilder().delete().from(User).execute();
+  await getConnection().createQueryBuilder().delete().from(Game).execute();
 });
 
 describe("Test GET ALL", () => {
   it("should return pre-created score as a list", async () => {
-    const res = await request(server)
-      .get("/scores")
-      .send();
+    const res = await request(server).get("/scores").send();
     expect(res.status).toEqual(200);
     expect(res.body.length).toBe(1);
     expect(res.body[0].id).toBe(score.id);
@@ -83,9 +69,7 @@ describe("Test GET ALL", () => {
     expect(res.body[0].user.name).toBe(user.name);
   });
   it("should return pre-created score as a list, using game's ID", async () => {
-    const res = await request(server)
-      .get(`/scores?idGame=${game.id}`)
-      .send();
+    const res = await request(server).get(`/scores?idGame=${game.id}`).send();
     expect(res.status).toEqual(200);
     expect(res.body.length).toBe(1);
     expect(res.body[0].id).toBe(score.id);
@@ -100,9 +84,7 @@ describe("Test GET ALL", () => {
 
 describe("Test GET, DELETE, GET score", () => {
   it("should return pre-created score", async () => {
-    const res = await request(server)
-      .get(`/scores/${score.id}`)
-      .send();
+    const res = await request(server).get(`/scores/${score.id}`).send();
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(score.id);
     expect(res.body.idSpotifyTrack).toBe(score.idSpotifyTrack);
@@ -111,15 +93,11 @@ describe("Test GET, DELETE, GET score", () => {
     expect(res.body.reactionTimeMs).toBe(score.reactionTimeMs);
   });
   it("should delete pre-created score", async () => {
-    const res = await request(server)
-      .delete(`/scores/${score.id}`)
-      .send();
+    const res = await request(server).delete(`/scores/${score.id}`).send();
     expect(res.status).toEqual(204);
   });
   it("should not return pre-created score", async () => {
-    const res = await request(server)
-      .get(`/scores/${score.id}`)
-      .send();
+    const res = await request(server).get(`/scores/${score.id}`).send();
     expect(res.status).toEqual(404);
   });
 });
@@ -148,17 +126,13 @@ describe("Test POST, PUT, GET", () => {
     score.id = res.body.id;
   });
   it("should update the score", async () => {
-    const res = await request(server)
-      .put(`/scores/${score.id}`)
-      .send({
-        reactionTimeMs: 999,
-      });
+    const res = await request(server).put(`/scores/${score.id}`).send({
+      reactionTimeMs: 999,
+    });
     expect(res.status).toEqual(200);
   });
   it("should get the updated score", async () => {
-    const res = await request(server)
-      .put(`/scores/${score.id}`)
-      .send();
+    const res = await request(server).put(`/scores/${score.id}`).send();
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(score.id);
     expect(res.body.idSpotifyTrack).toBe(score.idSpotifyTrack);

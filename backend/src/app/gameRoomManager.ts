@@ -23,10 +23,10 @@ export class GameRoomManager {
   }
 
   public getPlayers(): User[] {
-    return Object.keys(this.playersConnections).map(id => this.playersConnections[id].player);
+    return Object.keys(this.playersConnections).map((id) => this.playersConnections[id].player);
   }
 
-  public sendMessage(message: object, id: string): void {
+  public sendMessage(message: Record<string, unknown>, id: string): void {
     try {
       this.playersConnections[id].connection.send(JSON.stringify(message));
     } catch (e) {
@@ -34,8 +34,8 @@ export class GameRoomManager {
     }
   }
 
-  public broadcastMessage(message: object): void {
-    Object.keys(this.playersConnections).forEach(id => {
+  public broadcastMessage(message: Record<string, unknown>): void {
+    Object.keys(this.playersConnections).forEach((id) => {
       try {
         this.playersConnections[id].connection.send(JSON.stringify(message));
       } catch (e) {
