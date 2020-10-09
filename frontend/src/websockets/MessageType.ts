@@ -17,6 +17,11 @@ export interface Player {
   name: string;
 }
 
+export interface PlayerInGame {
+  userName: string;
+  correctAnswers: number;
+}
+
 export interface Answer {
   id: string;
   name: string;
@@ -34,6 +39,7 @@ export interface QuestionUpdateMessage {
   previewUrl: string;
   answers: Answer[];
   playersNumber: number;
+  playersInGame: PlayerInGame[];
 }
 
 export interface SubmitAnswerMessage {

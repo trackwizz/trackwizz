@@ -1,12 +1,12 @@
 import WebSocket from "ws";
 import Timeout = NodeJS.Timeout;
-import { User } from "../entities/user";
+import { PlayerInGame, User } from "../entities/user";
 import { OutboundMessageType } from "../websockets/messages";
 
 const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
-  private readonly playersConnections: { [id: string]: { connection: WebSocket; lastPing: number; player: User } };
+  private readonly playersConnections: { [id: string]: { connection: WebSocket; lastPing: number; player: PlayerInGame } };
   private pingTimeout: Timeout;
 
   constructor() {
@@ -14,16 +14,24 @@ export class GameRoomManager {
     this.pingTimeout = setTimeout(this.removeDisconnectedPlayers, PING_TIMEOUT_MS);
   }
 
-  public addPlayer(client: WebSocket, player: User): void {
-    this.playersConnections[player.id] = {
+  public addPlayer(client: WebSocket, user: User): void {
+    this.playersConnections[user.id] = {
       connection: client,
       lastPing: new Date().getTime(),
-      player,
+      player: { user, correctAnswers: 0 },
     };
   }
 
-  public getPlayers(): User[] {
+  public incrementPlayerCorrectAnswers(id: string): void {
+    this.playersConnections[id].player.correctAnswers++;
+  }
+
+  public getPlayers(): PlayerInGame[] {
     return Object.keys(this.playersConnections).map((id) => this.playersConnections[id].player);
+  }
+
+  public getUsers(): User[] {
+    return this.getPlayers().map((p) => p.user);
   }
 
   public sendMessage(message: Record<string, unknown>, id: string): void {
@@ -60,7 +68,7 @@ export class GameRoomManager {
     if (hasRemovedPlayers) {
       this.broadcastMessage({
         type: OutboundMessageType.WAITING_ROOM_UPDATE,
-        players: this.getPlayers(),
+        players: this.getUsers(),
       });
     }
 

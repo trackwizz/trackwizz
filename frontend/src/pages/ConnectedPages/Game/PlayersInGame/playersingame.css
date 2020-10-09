@@ -1,0 +1,32 @@
+.playersInGameContainer {
+  margin: 32px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  box-sizing: border-box;
+  width: 90%;
+  overflow: auto;
+}
+
+.playersInGameTable {
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  border-spacing: 0;
+}
+
+.playersInGameEvenRowColor {
+  background-color: #00000014;
+}
+
+.playersInGameParRowColor {
+  background-color: #00000030;
+}
+
+.playersInGameColumn {
+  text-align: start;
+  padding: 8px;
+}

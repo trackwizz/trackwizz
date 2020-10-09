@@ -28,6 +28,6 @@ export function joinGameHandler(ws: WebSocket, req: RequestWithCache, { gameId, 
 
   game.roomManager.broadcastMessage({
     type: OutboundMessageType.WAITING_ROOM_UPDATE,
-    players: game.roomManager.getPlayers(),
+    players: game.roomManager.getUsers(),
   });
 }

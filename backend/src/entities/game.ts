@@ -16,6 +16,15 @@ export class Answer {
 }
 
 /**
+ * Class FrontendPlayerInGame.
+ * Data to send to the frontend for a given player.
+ */
+export class FrontendPlayerInGame {
+  public userName: string;
+  public correctAnswers: number;
+}
+
+/**
  * Class Game.
  * Stores some game data in the database and some data in memory when the game is running.
  */
@@ -138,14 +147,25 @@ export class Game {
   }
 
   /**
-   * Returns the data for the frontend: 4 possible answers and one preview url (audio to play).
+   * Returns the data for the frontend: 4 possible answers and one preview url (audio to play),
+   * as well as the players in the game.
    */
-  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[]; playersNumber: number } {
+  public getQuestionUpdateMessage(): {
+    type: string;
+    previewUrl: string;
+    answers: Answer[];
+    playersNumber: number;
+    playersInGame: FrontendPlayerInGame[];
+  } {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
       playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
+      playersInGame: this.roomManager.getPlayers().map((p) => ({
+        userName: p.user.name,
+        correctAnswers: p.correctAnswers,
+      })),
     };
   }
 
@@ -153,7 +173,7 @@ export class Game {
    * Updates the score for the people who have not answer the question
    */
   public setPlayersMissingScores(): void {
-    const players = this.roomManager.getPlayers();
+    const players = this.roomManager.getUsers();
     for (let i = 0; i < players.length; i++) {
       if (!this.receivedAnswersForCurrentTrack.map((p) => p.id).includes(players[i].id)) {
         const score: Score = new Score();
@@ -234,7 +254,7 @@ export class Game {
    * Removes the loosing users before starting the next track.
    */
   public async kickBadPlayers(): Promise<boolean> {
-    const players = this.roomManager.getPlayers();
+    const users = this.roomManager.getUsers();
     // In case someone left during game and there is only 1 player left.
     if (await this.sendWinMessage()) {
       return true; // end game
@@ -255,7 +275,7 @@ export class Game {
     let kicked = 0;
     let i = 0;
     while (kicked < kickedNumber && i < scores.length) {
-      const player: User | null = players.reduce((p1: User | null, p2: User) => (p2.id === scores[i].user.id ? p2 : p1), null);
+      const player: User | null = users.reduce((p1: User | null, p2: User) => (p2.id === scores[i].user.id ? p2 : p1), null);
       if (player !== null) {
         this.roomManager.sendMessage(
           {
@@ -280,7 +300,7 @@ export class Game {
    * Send win message to the winner and ends the game.
    */
   public async sendWinMessage(): Promise<boolean> {
-    const players = this.roomManager.getPlayers();
+    const players = this.roomManager.getUsers();
     if (players.length === 1) {
       this.roomManager.sendMessage(
         {
