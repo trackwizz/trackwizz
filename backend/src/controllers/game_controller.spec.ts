@@ -26,18 +26,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await getConnection()
-    .createQueryBuilder()
-    .delete()
-    .from(Game)
-    .execute();
+  await getConnection().createQueryBuilder().delete().from(Game).execute();
 });
 
 describe("Test GET ALL", () => {
   it("should return pre-created game as list", async () => {
-    const res = await request(server)
-      .get("/games")
-      .send();
+    const res = await request(server).get("/games").send();
     expect(res.status).toEqual(200);
     expect(res.body.length).toBe(1);
     expect(res.body[0].id).toBe(game.id);
@@ -54,9 +48,7 @@ describe("Test GET ALL", () => {
 
 describe("Test GET, DELETE, GET game", () => {
   it("should return pre-created game", async () => {
-    const res = await request(server)
-      .get(`/games/${game.id}`)
-      .send();
+    const res = await request(server).get(`/games/${game.id}`).send();
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(game.id);
     expect(res.body.startDate).toBe("2020-01-21T15:24:16.331Z");
@@ -69,15 +61,11 @@ describe("Test GET, DELETE, GET game", () => {
     expect(res.body.idSpotifyPlaylist).toBe(game.idSpotifyPlaylist);
   });
   it("should delete pre-created game", async () => {
-    const res = await request(server)
-      .delete(`/games/${game.id}`)
-      .send();
+    const res = await request(server).delete(`/games/${game.id}`).send();
     expect(res.status).toEqual(204);
   });
   it("should not return pre-created game", async () => {
-    const res = await request(server)
-      .get(`/games/${game.id}`)
-      .send();
+    const res = await request(server).get(`/games/${game.id}`).send();
     expect(res.status).toEqual(404);
   });
 });
@@ -94,35 +82,28 @@ describe("Test POST, PUT, GET", () => {
   game.idSpotifyPlaylist = "new_id";
 
   it("should create a new game", async () => {
-    const res = await request(server)
-      .post("/games")
-      .auth("ooooohLookAtThisLovelyLittleAccessTokenHeIsSoooooCuteILoveItAlready!!!", { type: "bearer" })
-      .send({
-        startDate: 1579622125436,
-        isEnded: game.isEnded,
-        score: game.score,
-        title: game.title,
-        questionsNumber: game.questionsNumber,
-        isPublic: game.isPublic,
-        mode: game.mode,
-        idSpotifyPlaylist: game.idSpotifyPlaylist,
-      });
+    const res = await request(server).post("/games").auth("ooooohLookAtThisLovelyLittleAccessTokenHeIsSoooooCuteILoveItAlready!!!", { type: "bearer" }).send({
+      startDate: 1579622125436,
+      isEnded: game.isEnded,
+      score: game.score,
+      title: game.title,
+      questionsNumber: game.questionsNumber,
+      isPublic: game.isPublic,
+      mode: game.mode,
+      idSpotifyPlaylist: game.idSpotifyPlaylist,
+    });
     expect(res.status).toEqual(200);
     game.id = res.body.id;
   });
   it("should update the game", async () => {
-    const res = await request(server)
-      .put(`/games/${game.id}`)
-      .send({
-        questionsNumber: 54,
-        title: "AnOtHeR nEw TiTlE",
-      });
+    const res = await request(server).put(`/games/${game.id}`).send({
+      questionsNumber: 54,
+      title: "AnOtHeR nEw TiTlE",
+    });
     expect(res.status).toEqual(200);
   });
   it("should get the updated game", async () => {
-    const res = await request(server)
-      .put(`/games/${game.id}`)
-      .send();
+    const res = await request(server).put(`/games/${game.id}`).send();
     expect(res.status).toEqual(200);
     expect(res.body.id).toBe(game.id);
     expect(typeof res.body.startDate).toEqual("string");

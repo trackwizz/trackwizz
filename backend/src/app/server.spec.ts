@@ -4,9 +4,7 @@ import { getConnection } from "typeorm";
 
 describe("Test server is running", () => {
   it("should return hello world", async () => {
-    const res = await request(server)
-      .get("/")
-      .send();
+    const res = await request(server).get("/").send();
     expect(res.status).toEqual(200);
     expect(res.text).toBe("TrackWizz server is running!");
   });

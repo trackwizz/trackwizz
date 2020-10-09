@@ -155,7 +155,7 @@ export class Game {
   public setPlayersMissingScores(): void {
     const players = this.roomManager.getPlayers();
     for (let i = 0; i < players.length; i++) {
-      if (!this.receivedAnswersForCurrentTrack.map(p => p.id).includes(players[i].id)) {
+      if (!this.receivedAnswersForCurrentTrack.map((p) => p.id).includes(players[i].id)) {
         const score: Score = new Score();
         score.idSpotifyTrack = this.tracks[this.currentTrackIndex].id;
         score.timestamp = toDate(Date.now());

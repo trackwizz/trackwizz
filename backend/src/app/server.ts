@@ -13,6 +13,7 @@ import { spotifyRouter } from "../providers/spotify";
 import { routes } from "../routes";
 import { logErrors } from "../middlewares/error_handler";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ExpressWithWebSockets = Express & { ws: Function };
 
 const server = express();

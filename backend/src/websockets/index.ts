@@ -13,7 +13,7 @@ import { SubmitAnswerHandler } from "./submit_answer_handler";
  * @param req: Express request object
  */
 function MessageHandlerFactory(ws: WebSocket, req: RequestWithCache) {
-  return function(msg: string): void {
+  return function (msg: string): void {
     try {
       const content = JSON.parse(msg);
 
