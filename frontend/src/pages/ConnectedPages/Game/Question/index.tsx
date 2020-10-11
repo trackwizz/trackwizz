@@ -29,21 +29,11 @@ const Question: React.FC<IQuestion> = ({
 }: IQuestion): JSX.Element => {
   return (
     <div className="flex-container line" style={{ overflow: "auto" }}>
-      <div className="flex-container column" style={
-        {
-          overflow: "auto",
-          flexBasis: "40%",
-        }
-      }>
+      <div className="flex-container column playersInGame">
         <h2 className="fancy-text">Players in game</h2>
         <UsersInGame users={usersInGame} />
       </div>
-      <div className="flex-container column" style={
-        {
-          overflow: "auto",
-          flexBasis: "60%",
-        }
-      }>
+      <div className="flex-container column questionAndAnswers">
         <button
           className="play-button muted-button mobile-only fixedTop"
           onClick={(): void => {

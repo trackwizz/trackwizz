@@ -34,3 +34,13 @@ img.hidden {
   display: flex;
   flex: 0 0 38px;
 }
+
+.playersInGame {
+  overflow: "auto";
+  flex-basis: 40%;
+}
+
+.questionAndAnswers {
+  overflow: "auto";
+  flex-basis: 60%; 
+}
