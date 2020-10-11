@@ -67,7 +67,7 @@ export class Game {
     if (numberSongs <= 0 || numberSongs > maxTracks) {
       numberSongs = maxTracks;
     }
-    this.tracks = tracks.slice(0, numberSongs);;
+    this.tracks = tracks.slice(0, numberSongs);
     this.questionsNumber = numberSongs;
   }
 
