@@ -8,7 +8,7 @@ interface IPlayersInGame {
 }
 
 const maxPlayersToDisplay = 14;
-const maxCharactersPerName = 16;
+const maxCharactersPerName = 8;
 
 const PlayersInGame: React.FC<IPlayersInGame> = ({ players }: IPlayersInGame): JSX.Element => {
   players.sort((p1, p2) => p2.correctAnswers - p1.correctAnswers)
