@@ -7,11 +7,15 @@ import "./playlistContainer.css";
 interface IPlaylistContainer {
   title: string;
   playlists: IPlaylist[];
+  numberSongsTen: number;
+  numberSongsUnit: number;
 }
 
 const PlaylistContainer: React.FC<IPlaylistContainer> = ({
   title,
-  playlists
+  playlists,
+  numberSongsTen,
+  numberSongsUnit,
 }: IPlaylistContainer): JSX.Element => {
   return (
     <div className="playlistContainer">
@@ -19,7 +23,12 @@ const PlaylistContainer: React.FC<IPlaylistContainer> = ({
       <div className="playlists">
         {playlists &&
           playlists.map(el => {
-            return <PlaylistCard key={el.id} playlist={el} />;
+            return <PlaylistCard
+              key={el.id}
+              playlist={el}
+              numberSongsTen={numberSongsTen}
+              numberSongsUnit={numberSongsUnit}
+            />;
           })}
       </div>
     </div>

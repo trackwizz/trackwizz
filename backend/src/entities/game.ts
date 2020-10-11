@@ -3,7 +3,7 @@ import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
 import { GameRoomManager } from "../app/gameRoomManager";
 import { logger } from "../utils/logger";
-import { getNRandom, toDate } from "../utils";
+import { getNRandom, shuffleArray, toDate } from "../utils";
 import { OutboundMessageType } from "../websockets/messages";
 import gameSessions from "../app/gameSessions";
 import { Score } from "./score";
@@ -66,6 +66,23 @@ export class Game {
   questionStartTimestamp: number;
   receivedAnswersForCurrentTrack: Array<User>;
   roomManager: GameRoomManager;
+
+  /**
+   * Sets the game's tracks. Suffles the tracks and add the requested
+   * number of tracks to the game. If numberSongs is not between 1 and
+   * the number of tracks, then all tracks are added to the game.
+   * It also sets the game's questions number (persisted to DB).
+   */
+  public setTracksAndQuestionsNumber(tracks: Track[], numberSongs: number): void {
+    tracks = shuffleArray(tracks);
+    const maxTracks = tracks.length;
+    if (numberSongs <= 0 || numberSongs > maxTracks) {
+      numberSongs = maxTracks;
+    }
+    tracks = tracks.slice(0, numberSongs);
+    this.tracks = tracks;
+    this.questionsNumber = numberSongs;
+  }
 
   /**
    * Starts a game.

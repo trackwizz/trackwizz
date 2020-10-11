@@ -6,6 +6,7 @@ import PlaylistContainer from "./components/PlaylistContainer";
 import { axiosRequest } from "../components/axiosRequest";
 import { IPlaylist } from "./types";
 import { UserContext, ICreateContext } from "../components/UserContext";
+import GameLength from "./components/GameLength";
 
 const Playlists: React.FC<RouteComponentProps> = () => {
   const userContext: ICreateContext = useContext(UserContext);
@@ -14,6 +15,8 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   const [mostPopularPlaylists, setMostPopularPlaylists] = useState<
     IPlaylist[] | null
   >(null);
+  const [numberSongsTen, setNumberSongsTen] = useState<number>(0);
+  const [numberSongsUnit, setNumberSongsUnit] = useState<number>(0);
 
   useEffect(() => {
     const requestPlaylists = async (): Promise<void> => {
@@ -58,14 +61,24 @@ const Playlists: React.FC<RouteComponentProps> = () => {
         <PlaylistContainer
           title="Your playlists"
           playlists={yourPlaylists || []}
+          numberSongsTen={numberSongsTen}
+          numberSongsUnit={numberSongsUnit}
         />
       )}
       {(mostPopularPlaylists || []).length > 0 && (
         <PlaylistContainer
           title="Most popular playlists"
           playlists={mostPopularPlaylists || []}
+          numberSongsTen={numberSongsTen}
+          numberSongsUnit={numberSongsUnit}
         />
       )}
+      <GameLength
+        numberSongsTen={numberSongsTen}
+        setNumberSongsTen={setNumberSongsTen}
+        numberSongsUnit={numberSongsUnit}
+        setNumberSongsUnit={setNumberSongsUnit}
+        />
     </div>
   );
 };
