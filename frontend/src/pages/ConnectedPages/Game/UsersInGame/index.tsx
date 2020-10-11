@@ -12,11 +12,7 @@ const maxCharactersPerName = 8;
 
 const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JSX.Element => {
   const setRowClassName = (index: number): string => {
-    let className = "";
-    className +=
-      (index + 1) % 2 ? "usersInGameEvenRowColor" : "usersInGameParRowColor";
-
-    return className;
+    return (index + 1) % 2 ? "usersInGameEvenRowColor" : "usersInGameParRowColor";
   };
 
   const emojiPrefix = (index: number): string => {

@@ -44,11 +44,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
   }, [gameId]);
 
   const setRowClassName = (index: number): string => {
-    let className = "";
-    className +=
-      (index + 1) % 2 ? "leaderboardEvenRowColor" : "leaderboardParRowColor";
-
-    return className;
+    return (index + 1) % 2 ? "leaderboardEvenRowColor" : "leaderboardParRowColor";
   };
 
   const setColumnClassName = (index: number, column: number): string => {
