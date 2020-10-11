@@ -262,7 +262,7 @@ export class Game {
    * Removes the loosing users before starting the next track.
    */
   public async kickBadPlayers(): Promise<boolean> {
-    const users = this.roomManager.getPlayers();
+    const players = this.roomManager.getPlayers();
     // In case someone left during game and there is only 1 player left.
     if (await this.sendWinMessage()) {
       return true; // end game
@@ -283,7 +283,7 @@ export class Game {
     let kicked = 0;
     let i = 0;
     while (kicked < kickedNumber && i < scores.length) {
-      const player: User | null = users.reduce((p1: User | null, p2: User) => (p2.id === scores[i].user.id ? p2 : p1), null);
+      const player: User | null = players.reduce((p1: User | null, p2: User) => (p2.id === scores[i].user.id ? p2 : p1), null);
       if (player !== null) {
         this.roomManager.sendMessage(
           {
