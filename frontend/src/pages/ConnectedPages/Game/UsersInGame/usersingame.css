@@ -6,15 +6,15 @@
   padding: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
-  border-radius: 10px;
   box-sizing: border-box;
   width: 90%;
   overflow: auto;
 }
 
 .usersInGameTable {
+  border-radius: 10px;
   font-size: 1.4rem;
-  margin: 0 1rem;
+  margin: 0.5rem 1rem;
   border-spacing: 0;
 }
 
@@ -29,4 +29,28 @@
 .usersInGameColumn {
   text-align: start;
   padding: 8px;
+}
+
+.usersInGameTopLeftCorner{
+  border-radius: 10px 0 0 0;
+}
+
+.usersInGameTopRightCorner {
+  border-radius: 0 10px 0 0;
+}
+
+.usersInGameBottomRightCorner {
+  border-radius: 0 0 10px 0;
+}
+
+.usersInGameBottomLeftCorner {
+  border-radius: 0 0 0 10px;
+}
+
+.usersInGameFullLeftCorner {
+  border-radius: 10px 0 0 10px;
+}
+
+.usersInGameFullRightCorner {
+  border-radius: 0 10px 10px 0;
 }
