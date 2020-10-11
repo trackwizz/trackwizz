@@ -9,15 +9,24 @@ addons:
 env:
   global:
   - REGISTRY_URL=registry.heroku.com
-  - HEROKU_APP_FRONT=trackwizz
-  - HEROKU_APP_BACK=trackwizz-api
-  - DOCKER_REPO_FRONT=trackwizz/web
-  - DOCKER_REPO_BACK=trackwizz-api/web
-  - BUILD_BACKEND=trackwizz-api.herokuapp.com
-  - BUILD_BACKEND_FULL=https://trackwizz-api.herokuapp.com
-  - BUILD_BACKEND_WS_FULL=wss://trackwizz-api.herokuapp.com
-  - BUILD_FRONTEND=trackwizz.herokuapp.com
-  - BUILD_FRONTEND_FULL=https://trackwizz.herokuapp.com
+  - PROD_HEROKU_APP_FRONT=trackwizz
+  - PROD_HEROKU_APP_BACK=trackwizz-api
+  - PROD_DOCKER_REPO_FRONT=trackwizz/web
+  - PROD_DOCKER_REPO_BACK=trackwizz-api/web
+  - PROD_BUILD_BACKEND=trackwizz-api.herokuapp.com
+  - PROD_BUILD_BACKEND_FULL=https://trackwizz-api.herokuapp.com
+  - PROD_BUILD_BACKEND_WS_FULL=wss://trackwizz-api.herokuapp.com
+  - PROD_BUILD_FRONTEND=trackwizz.herokuapp.com
+  - PROD_BUILD_FRONTEND_FULL=https://trackwizz.herokuapp.com
+  - STAGING_HEROKU_APP_FRONT=trackwizz-staging
+  - STAGING_HEROKU_APP_BACK=trackwizz-staging-api
+  - STAGING_DOCKER_REPO_FRONT=trackwizz-staging/web
+  - STAGING_DOCKER_REPO_BACK=trackwizz-staging-api/web
+  - STAGING_BUILD_BACKEND=trackwizz-staging-api.herokuapp.com
+  - STAGING_BUILD_BACKEND_FULL=https://trackwizz-staging-api.herokuapp.com
+  - STAGING_BUILD_BACKEND_WS_FULL=wss://trackwizz-staging-api.herokuapp.com
+  - STAGING_BUILD_FRONTEND=trackwizz-staging.herokuapp.com
+  - STAGING_BUILD_FRONTEND_FULL=https://trackwizz-staging.herokuapp.com
   - secure: elG3r35kyXuPdSFlce6MrXtxy9ZQTWBlWNNO0/6pMakUPV75FoCr2d2nGwBsBjul0ZxpCzPUDAVDc2lgVoibDxcWfONpgSHnfZidkcAkmRkohSs3teZQtuDSMXfhFdrM91G1LyxOLA4YQ0IxcaISO+/a3NKCdZFLqS2bbsYMohM4+zUTiX8urqTSaMnSuRKcWgk1jQams5xE0dFNG/ZYp5gzI/oYMijA9CpN7zhi2cPY9tkb5QaasJc7Dnx37DrNeNEWhKQIzj6pq94pVfgxvoSwTmFyfAUQKEh87h+AR/EfoQv2wIgZgaExEIKwX4o8qn2PnqKV1uspFzPr9LNSKg2f+tElfEcbfL4tiVbBP2HBiv4CfovHtLBFojjJwXmAaAM9XvAo9fFRSzOm5dak4Stbjleixu4zJc9YSGoYLCoe0UYnAd/80YZR2Pj48Qt7GXta8GExhvQGImAuzUUOvNJ7o6QP0hSXvU+Pu0S8YUzpSD+AiPoomhdpNNybP3A0BubXrO7p84Io8hgROoiye67Rf3aJ95A2jIE9OM96DWpw59lmK4W3lANcqv99oGz2MEK4272nBeSjt9RvkWCIyPivaeI+EVjUhdyN9FLydDpE6vmwKitiA0yS1Gsb2J/i9w6UtDeXPJOd0CMDJlIE1jwhITA9+bGMmmZhNv9rxN8=
   - secure: 2e65G0Jyb/fgOYxCNB/hxiZS3Hnrbjtl7N4GQVInLBFo/x8aM1WjJaA/5Zs/tbFiKwc36PAYvhq/TmoZTrLIbRXfmDJeeO/4mY5N5vvpeba6TpsbFrZoyAmCB3tP8+dRjdEk+J75ZqRwiYWNM8ctCysDBLhlbixmmZDp8pxoj4qQL6neuQr8c1+pisflziJZld/VfboDk9x08cIbzxy5ldnDq37W3O9VhlwCWetI4Nt1KTA67YnrS2eZCXtbgbVfBiyOAAK/YrYHXIQksbRicKJtDg9hZAvq5S30uqEpjbcS7UwIMj1a18G675VR915ubqD6JxmazLzxFtA5xS4ZCWeqROvRbf+Fixi0sJv3PxDtIQT6QVpfCoCnwCStE0Odp1NGhb19X4MgFcTXG7BFo+UH1bCm5acludwYySWsUPTVLz3TVOsqI6I2aqrXE8L4In1D+/8zPwTiSgpzOaVX8+jRfiTLo/Ge7sShVIMcYCSAseumN8M5ekmddSkygBKhl5CU+jBhtDpQUZyZoCnEuu24pw6eLgfxRsd8hAes5P9YUCBhgrNZ+/hGCgN3KhDLKrrfuEYW8qmU2R5O84bF1h8ZhLLK1mQjtIWzdjK4MRZHJmgww4uLZFsdNrcJ34IODFScdlhg+L3GLbDzePDCQGu6CzkxftqLwltpP8CvwJw=
   - secure: vT/EgCIRWlUCa+Fao8RI/zQOQS5YctaBVgHY7+gY5Pggkf65D8R1b+4klaX/eqHWyQLm4zVUN4gGDz1rjcJjOAlZBo+7VWb+qPXbBsB4OMRo/Tmn73HCs+OU6KEf4LSDPocyf+DvxvuwLluWIEbTSsYqDqQajrzSId3N9QCnp+ibNdZ42fPF3pUQc/o9Eisy6yfIHvRI9aYaDDKBos5uUedwaUnNEV5P0Gi+BvbyR4iZx2T8w5nLt80iWriC50NonBvb14Gkl+9whIBSC3mszdRhFpNTutAkul5Q7yrO9MGTaTCMkj23G+yIWjG08jfYkbs86f7dJgaeZ1HuTeeG1MJRnw4WTcU6CoL17SSGTOQnlRnaOgYtBkjbleM/K1yf+JqcDVRjwzS/OA63W2o85aqjFeDKgp2oPTlGnvVfxlGUzs0PBiamfbD2Yzez8LVQ8ji704dr4H67+PTojW5ZZEEebxOzNXq9cpJMRNSBUEqIlx/fUhCqbJhzBnWM9hfqQHxy+nLeeR/kPhIQoTUCNMWSKPt1Rvxd6BZXvLiTnQgLhsz8K69ZXMlDLI1+V+mjzyxjsjRMufp+mRN74yrQkzE/ichj3MrRvxb9urr2dpTD4nQrSNSHEkBIdzm2y4VMGKWnGYJcDiShgv4BSrcxHltqeRBdf0qXciTh7ovVbf0=
@@ -30,6 +39,10 @@ stages:
   if: branch = master
 - name: release
   if: branch = master
+- name: deploy-staging
+  if: branch = staging
+- name: release-staging
+  if: branch = staging
 jobs:
   include:
   - stage: test
@@ -38,18 +51,33 @@ jobs:
     - docker-compose -f docker-compose.yml -f docker-compose.test.yml build
     script:
     - docker-compose -f docker-compose.yml -f docker-compose.test.yml run backend
+  - stage: deploy-staging
+    name: Deploy Staging
+    deploy:
+      provider: script
+      script: bash scripts/deploy.sh staging
+  - stage: release-staging
+    name: Release staging backend
+    deploy:
+      provider: script
+      script: bash scripts/heroku_release.sh $STAGING_HEROKU_APP_BACK
+  - stage: release-staging
+    name: Release staging frontend
+    deploy:
+      provider: script
+      script: bash scripts/heroku_release.sh $STAGING_HEROKU_APP_FRONT
   - stage: deploy
-    name: Deploy
+    name: Deploy Prod
     deploy:
       provider: script
-      script: bash scripts/deploy.sh
+      script: bash scripts/deploy.sh prod
   - stage: release
-    name: Release backend
+    name: Release prod backend
     deploy:
       provider: script
-      script: bash scripts/heroku_release.sh $HEROKU_APP_BACK
+      script: bash scripts/heroku_release.sh $PROD_HEROKU_APP_BACK
   - stage: release
-    name: Release frontend
+    name: Release prod frontend
     deploy:
       provider: script
-      script: bash scripts/heroku_release.sh $HEROKU_APP_FRONT
+      script: bash scripts/heroku_release.sh $PROD_HEROKU_APP_FRONT
