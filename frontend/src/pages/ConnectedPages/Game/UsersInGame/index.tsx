@@ -11,8 +11,6 @@ const maxUsersToDisplay = 14;
 const maxCharactersPerName = 8;
 
 const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JSX.Element => {
-  users.sort((p1, p2) => p2.correctAnswers - p1.correctAnswers)
-
   const setRowClassName = (index: number): string => {
     let className = "";
     className +=
@@ -37,6 +35,8 @@ const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JS
     }
     return ""
   }
+
+  users.sort((p1, p2) => p2.correctAnswers - p1.correctAnswers)
 
   return (
     <div className="usersInGameContainer">
