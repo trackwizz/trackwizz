@@ -4,9 +4,13 @@ import { Method } from "axios";
 
 import PlaylistContainer from "./components/PlaylistContainer";
 import { axiosRequest } from "../components/axiosRequest";
-import { IPlaylist } from "./types";
+import { IPlaylist, NumberOperation, NumberProperty } from "./types";
 import { UserContext, ICreateContext } from "../components/UserContext";
 import GameLength from "./components/GameLength";
+
+export const splitNumber = (n: number): number[] => {
+  return [Math.floor(n / 10), n % 10]
+}
 
 const Playlists: React.FC<RouteComponentProps> = () => {
   const userContext: ICreateContext = useContext(UserContext);
@@ -15,8 +19,33 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   const [mostPopularPlaylists, setMostPopularPlaylists] = useState<
     IPlaylist[] | null
   >(null);
-  const [numberSongsTen, setNumberSongsTen] = useState<number>(0);
-  const [numberSongsUnit, setNumberSongsUnit] = useState<number>(0);
+  const [numberSongs, setNumberSongs] = useState<number>(0);
+
+  const setNewNumberSongs = (np: NumberProperty) => (no: NumberOperation) => () => {
+    let [tens, unit] = splitNumber(numberSongs);
+    let modifier: (n: number) => number;
+    switch (no) {
+      case "add":
+        modifier = (n: number) => (n + 1 === 10 ? 0 : n + 1);
+        break;
+      case "sub":
+        modifier = (n: number) => (n - 1 === -1 ? 9 : n - 1);
+        break;
+      default:
+        return;
+    }
+    switch (np) {
+      case "unit":
+        unit = modifier(unit);
+        break;
+      case "tens":
+        tens = modifier(tens);
+        break;
+      default:
+        break;
+    }
+    setNumberSongs(tens * 10 + unit);
+  }
 
   useEffect(() => {
     const requestPlaylists = async (): Promise<void> => {
@@ -61,24 +90,20 @@ const Playlists: React.FC<RouteComponentProps> = () => {
         <PlaylistContainer
           title="Your playlists"
           playlists={yourPlaylists || []}
-          numberSongsTen={numberSongsTen}
-          numberSongsUnit={numberSongsUnit}
+          numberSongs={numberSongs}
         />
       )}
       {(mostPopularPlaylists || []).length > 0 && (
         <PlaylistContainer
           title="Most popular playlists"
           playlists={mostPopularPlaylists || []}
-          numberSongsTen={numberSongsTen}
-          numberSongsUnit={numberSongsUnit}
+          numberSongs={numberSongs}
         />
       )}
       <GameLength
-        numberSongsTen={numberSongsTen}
-        setNumberSongsTen={setNumberSongsTen}
-        numberSongsUnit={numberSongsUnit}
-        setNumberSongsUnit={setNumberSongsUnit}
-        />
+        numberSongs={numberSongs}
+        setNumberSongs={setNewNumberSongs}
+      />
     </div>
   );
 };

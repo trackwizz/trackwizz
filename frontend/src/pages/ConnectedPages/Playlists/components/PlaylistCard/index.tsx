@@ -8,8 +8,7 @@ import { IRoom } from "../../../components/types";
 
 interface IProps {
   playlist: IPlaylist;
-  numberSongsTen: number;
-  numberSongsUnit: number;
+  numberSongs: number;
 }
 
 type IPlaylistCardProp = IProps & RouteComponentProps;
@@ -17,14 +16,13 @@ type IPlaylistCardProp = IProps & RouteComponentProps;
 const PlaylistCard: React.FC<IPlaylistCardProp> = ({
   playlist,
   history,
-  numberSongsTen,
-  numberSongsUnit,
+  numberSongs,
 }: IPlaylistCardProp): JSX.Element => {
   const handleRedirection = async (): Promise<void> => {
     const requestNewRoom = {
       data: {
         idSpotifyPlaylist: playlist.id,
-        numberSongs: numberSongsTen*10+numberSongsUnit, 
+        numberSongs: numberSongs, 
       },
       method: "POST" as Method,
       url: "/games"

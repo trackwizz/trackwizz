@@ -3,3 +3,7 @@ export interface IPlaylist {
   name: string;
   image: string;
 }
+
+export type NumberProperty = "tens" | "unit";
+
+export type NumberOperation = "add" | "sub";
