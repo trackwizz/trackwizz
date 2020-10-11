@@ -21,22 +21,22 @@ const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JS
   const setColumnClassName = (row: number, col: number): string => {
     let className = "usersInGameColumn";
 
-    if (row == 0 && col == 0) {
+    if (row === 0 && col === 0) {
       if (totalPlayers === 1) {
         return className += " usersInGameFullLeftCorner"
       }
       return className + " usersInGameTopLeftCorner"
     }
-    if (row == totalPlayers - 1 && col == 0) {
+    if (row === totalPlayers - 1 && col === 0) {
       return className + " usersInGameBottomLeftCorner"
     }
-    if (row == 0 && col == totalColumns - 1) {
+    if (row === 0 && col === totalColumns - 1) {
       if (totalPlayers === 1) {
         return className += " usersInGameFullRightCorner"
       }
       return className + " usersInGameTopRightCorner"
     }
-    if (row == totalPlayers - 1 && col == totalColumns - 1) {
+    if (row === totalPlayers - 1 && col === totalColumns - 1) {
       return className + " usersInGameBottomRightCorner"
     }
 
