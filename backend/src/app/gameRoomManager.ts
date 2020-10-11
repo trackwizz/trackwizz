@@ -26,12 +26,12 @@ export class GameRoomManager {
     this.playersConnections[id].player.correctAnswers++;
   }
 
-  public getPlayers(): UserInGame[] {
+  public getUsersInGame(): UserInGame[] {
     return Object.keys(this.playersConnections).map((id) => this.playersConnections[id].player);
   }
 
-  public getUsers(): User[] {
-    return this.getPlayers().map((p) => p.user);
+  public getPlayers(): User[] {
+    return this.getUsersInGame().map((p) => p.user);
   }
 
   public sendMessage(message: Record<string, unknown>, id: string): void {
@@ -68,7 +68,7 @@ export class GameRoomManager {
     if (hasRemovedPlayers) {
       this.broadcastMessage({
         type: OutboundMessageType.WAITING_ROOM_UPDATE,
-        players: this.getUsers(),
+        players: this.getPlayers(),
       });
     }
 

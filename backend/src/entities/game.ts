@@ -169,8 +169,8 @@ export class Game {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
-      playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
-      usersInGame: this.roomManager.getPlayers().map((p) => ({
+      playersNumber: this.mode === 1 ? this.roomManager.getUsersInGame().length : -1,
+      usersInGame: this.roomManager.getUsersInGame().map((p) => ({
         user: p.user,
         correctAnswers: p.correctAnswers,
       })),
@@ -181,7 +181,7 @@ export class Game {
    * Updates the score for the people who have not answer the question
    */
   public setPlayersMissingScores(): void {
-    const players = this.roomManager.getUsers();
+    const players = this.roomManager.getPlayers();
     for (let i = 0; i < players.length; i++) {
       if (!this.receivedAnswersForCurrentTrack.map((p) => p.id).includes(players[i].id)) {
         const score: Score = new Score();
@@ -202,7 +202,7 @@ export class Game {
    * Returns true if there are no more users in the game room.
    */
   public isEmpty(): boolean {
-    return this.roomManager.getPlayers().length === 0;
+    return this.roomManager.getUsersInGame().length === 0;
   }
 
   /**
@@ -210,7 +210,7 @@ export class Game {
    */
   public receiveAnswer(player: User): void {
     this.receivedAnswersForCurrentTrack.push(player);
-    if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getPlayers().length) {
+    if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getUsersInGame().length) {
       // Wait for 3 seconds before switching to the next track
       if (this.updateTimeout !== undefined) {
         clearTimeout(this.updateTimeout);
@@ -250,7 +250,7 @@ export class Game {
    */
   public getKickedNumber(): number {
     const n: number = this.questionsNumber - this.currentTrackIndex;
-    const p: number = this.roomManager.getPlayers().length;
+    const p: number = this.roomManager.getUsersInGame().length;
     if (n >= p) {
       return 1;
     }
@@ -262,7 +262,7 @@ export class Game {
    * Removes the loosing users before starting the next track.
    */
   public async kickBadPlayers(): Promise<boolean> {
-    const users = this.roomManager.getUsers();
+    const users = this.roomManager.getPlayers();
     // In case someone left during game and there is only 1 player left.
     if (await this.sendWinMessage()) {
       return true; // end game
@@ -289,7 +289,7 @@ export class Game {
           {
             type: OutboundMessageType.BATTLE_LOSE,
             gameId: this.id,
-            position: this.roomManager.getPlayers().length,
+            position: this.roomManager.getUsersInGame().length,
           },
           player.id,
         );
@@ -308,7 +308,7 @@ export class Game {
    * Send win message to the winner and ends the game.
    */
   public async sendWinMessage(): Promise<boolean> {
-    const players = this.roomManager.getUsers();
+    const players = this.roomManager.getPlayers();
     if (players.length === 1) {
       this.roomManager.sendMessage(
         {

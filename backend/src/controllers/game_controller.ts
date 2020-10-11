@@ -130,7 +130,7 @@ export class GameController extends Controller {
 
       gameInSession.roomManager.broadcastMessage({
         type: OutboundMessageType.WAITING_ROOM_UPDATE,
-        players: gameInSession.roomManager.getUsers(),
+        players: gameInSession.roomManager.getPlayers(),
         gameMode: gameInSession.mode,
       });
     }
