@@ -59,10 +59,7 @@ export class Game {
   roomManager: GameRoomManager;
 
   /**
-   * Sets the game's tracks. Suffles the tracks and add the requested
-   * number of tracks to the game. If numberSongs is not between 1 and
-   * the number of tracks, then all tracks are added to the game.
-   * It also sets the game's questions number (persisted to DB).
+   * Sets the game's tracks (kept in memory) and questions number (persisted to DB).
    */
   public setTracksAndQuestionsNumber(tracks: Track[], numberSongs: number): void {
     tracks = shuffleArray(tracks);
@@ -70,8 +67,7 @@ export class Game {
     if (numberSongs <= 0 || numberSongs > maxTracks) {
       numberSongs = maxTracks;
     }
-    tracks = tracks.slice(0, numberSongs);
-    this.tracks = tracks;
+    this.tracks = tracks.slice(0, numberSongs);;
     this.questionsNumber = numberSongs;
   }
 
