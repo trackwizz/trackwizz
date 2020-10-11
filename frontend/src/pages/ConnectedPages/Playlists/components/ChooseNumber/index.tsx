@@ -12,11 +12,11 @@ const ChooseNumber: React.FC<IChooseNumber> = ({
   setNumber,
 }: IChooseNumber): JSX.Element => {
   const incrNumber = (): void => {
-    setNumber((((number + 1) % 10) + 10) % 10);
+    setNumber(number + 1 === 10 ? 0 : number + 1);
   }
 
   const decrNumber = (): void => {
-    setNumber((((number - 1) % 10) + 10) % 10);
+    setNumber(number - 1 === -1 ? 9 : number - 1);
   }
 
   return (
