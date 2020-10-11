@@ -10,7 +10,7 @@ import MessageType, {
   GameBattleLoseMessage,
   GameBattleWinMessage,
   GameEndMessage,
-  PlayerInGame,
+  UserInGame,
   QuestionUpdateMessage
 } from "../../../websockets/MessageType";
 import ConnectionManager from "../../../websockets/ConnectionManager";
@@ -33,7 +33,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     number
   >(30);
   const [remainingPlayers, setRemainingPlayers] = useState<number>(-1);
-  const [playersInGame, setPlayersInGame] = useState<PlayerInGame[]>([]);
+  const [UsersInGame, setUsersInGame] = useState<UserInGame[]>([]);
   const [remainingPlayTimeoutId, setRemainingPlayTimeoutId] = useState<
     NodeJS.Timeout
   >();
@@ -87,7 +87,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
     setAnswers(question.answers);
     setPreviewUrl(question.previewUrl);
     setRemainingPlayers(question.playersNumber);
-    setPlayersInGame(question.playersInGame);
+    setUsersInGame(question.usersInGame);
   };
 
   const onAnswerResultReceived = ({ isCorrect }: AnswerResultMessage): void => {
@@ -174,7 +174,7 @@ const Game: React.FC<RouteComponentProps> = ({ location, history }) => {
           isMuted={isMuted}
           setIsMuted={setIsMuted}
           remainingPlayers={remainingPlayers}
-          playersInGame={playersInGame}
+          usersInGame={UsersInGame}
           remainingPlayTimeSeconds={remainingPlayTimeSeconds}
         />
       )}

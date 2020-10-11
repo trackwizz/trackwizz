@@ -1,12 +1,12 @@
 import WebSocket from "ws";
 import Timeout = NodeJS.Timeout;
-import { PlayerInGame, User } from "../entities/user";
+import { UserInGame, User } from "../entities/user";
 import { OutboundMessageType } from "../websockets/messages";
 
 const PING_TIMEOUT_MS = 3000;
 
 export class GameRoomManager {
-  private readonly playersConnections: { [id: string]: { connection: WebSocket; lastPing: number; player: PlayerInGame } };
+  private readonly playersConnections: { [id: string]: { connection: WebSocket; lastPing: number; player: UserInGame } };
   private pingTimeout: Timeout;
 
   constructor() {
@@ -26,7 +26,7 @@ export class GameRoomManager {
     this.playersConnections[id].player.correctAnswers++;
   }
 
-  public getPlayers(): PlayerInGame[] {
+  public getPlayers(): UserInGame[] {
     return Object.keys(this.playersConnections).map((id) => this.playersConnections[id].player);
   }
 

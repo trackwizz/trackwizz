@@ -1,4 +1,4 @@
-.playersInGameContainer {
+.usersInGameContainer {
   margin: 32px;
   height: 100%;
   display: flex;
@@ -12,21 +12,21 @@
   overflow: auto;
 }
 
-.playersInGameTable {
+.usersInGameTable {
   font-size: 1.4rem;
   margin: 0 1rem;
   border-spacing: 0;
 }
 
-.playersInGameEvenRowColor {
+.usersInGameEvenRowColor {
   background-color: #00000014;
 }
 
-.playersInGameParRowColor {
+.usersInGameParRowColor {
   background-color: #00000030;
 }
 
-.playersInGameColumn {
+.usersInGameColumn {
   text-align: start;
   padding: 8px;
 }

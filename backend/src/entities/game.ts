@@ -7,21 +7,12 @@ import { getNRandom, shuffleArray, toDate } from "../utils";
 import { OutboundMessageType } from "../websockets/messages";
 import gameSessions from "../app/gameSessions";
 import { Score } from "./score";
-import { User } from "./user";
+import { UserInGame, User } from "./user";
 
 export class Answer {
   public id: string;
   public name: string;
   public artist: string;
-}
-
-/**
- * Class FrontendPlayerInGame.
- * Data to send to the frontend for a given player.
- */
-export class FrontendPlayerInGame {
-  public userName: string;
-  public correctAnswers: number;
 }
 
 /**
@@ -172,15 +163,15 @@ export class Game {
     previewUrl: string;
     answers: Answer[];
     playersNumber: number;
-    playersInGame: FrontendPlayerInGame[];
+    usersInGame: UserInGame[];
   } {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
       playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
-      playersInGame: this.roomManager.getPlayers().map((p) => ({
-        userName: p.user.name,
+      usersInGame: this.roomManager.getPlayers().map((p) => ({
+        user: p.user,
         correctAnswers: p.correctAnswers,
       })),
     };

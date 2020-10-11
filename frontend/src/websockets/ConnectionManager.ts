@@ -1,5 +1,5 @@
 import { BACKEND_WS } from "../constants";
-import MessageType, { Player } from "./MessageType";
+import MessageType, { User } from "./MessageType";
 import {
   getGameIdFromCookies,
   setGameIdCookie,
@@ -18,12 +18,12 @@ class ConnectionManager {
 
   private readonly client: WebSocket;
   private readonly gameId: string;
-  private readonly player: Player;
+  private readonly player: User;
   private readonly messageCallbacks: { [k: string]: MessageCallback[] };
 
   private connectionErrors = 0;
 
-  private constructor(gameId: string, player: Player) {
+  private constructor(gameId: string, player: User) {
     this.client = new WebSocket(BACKEND_WS);
     this.gameId = gameId;
     this.player = player;
@@ -46,7 +46,7 @@ class ConnectionManager {
    */
   public static createInstance = (
     gameId: string,
-    player: Player
+    player: User
   ): ConnectionManager => {
     if (
       !ConnectionManager.instance ||

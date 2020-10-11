@@ -3,8 +3,8 @@ import "./question.css";
 import Dancers from "../../components/Dancers";
 import { ReactComponent as Mute } from "../../../../images/mute.svg";
 import { ReactComponent as Volume } from "../../../../images/volume.svg";
-import { Answer, PlayerInGame } from "../../../../websockets/MessageType";
-import PlayersInGame from "../PlayersInGame";
+import { Answer, UserInGame } from "../../../../websockets/MessageType";
+import UsersInGame from "../UsersInGame";
 import RemainingPlayTime from "../RemainingPlayTime";
 
 interface IQuestion {
@@ -15,7 +15,7 @@ interface IQuestion {
   isMuted: boolean;
   remainingPlayTimeSeconds: number;
   remainingPlayers: number;
-  playersInGame: PlayerInGame[];
+  usersInGame: UserInGame[];
 }
 
 const Question: React.FC<IQuestion> = ({
@@ -25,7 +25,7 @@ const Question: React.FC<IQuestion> = ({
   setIsMuted,
   remainingPlayTimeSeconds,
   remainingPlayers,
-  playersInGame,
+  usersInGame: usersInGame,
 }: IQuestion): JSX.Element => {
   return (
     <div className="flex-container line" style={{ overflow: "auto" }}>
@@ -36,7 +36,7 @@ const Question: React.FC<IQuestion> = ({
         }
       }>
         <h2 className="fancy-text">Players in game</h2>
-        <PlayersInGame players={playersInGame} />
+        <UsersInGame users={usersInGame} />
       </div>
       <div className="flex-container column" style={
         {

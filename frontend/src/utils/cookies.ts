@@ -1,5 +1,5 @@
 import Cookies from "universal-cookie";
-import { Player } from "../websockets/MessageType";
+import { User } from "../websockets/MessageType";
 
 const cookies = new Cookies();
 
@@ -37,10 +37,10 @@ export const setGameIdCookie = (gameId: string): void => {
   cookies.set(CookieKey.GAME_ID, gameId, { path: "/" });
 };
 
-export const getPlayerCookie = (): Player | undefined => {
+export const getPlayerCookie = (): User | undefined => {
   return cookies.get(CookieKey.PLAYER);
 };
 
-export const setPlayerCookie = (player: Player): void => {
+export const setPlayerCookie = (player: User): void => {
   cookies.set(CookieKey.PLAYER, player, { path: "/" });
 };

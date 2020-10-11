@@ -10,10 +10,10 @@ export class User {
 }
 
 /**
- * Class PlayerInGame.
+ * Class UserInGame.
  * This is a User who takes part in a game. Records correct answers in memory.
  */
-export class PlayerInGame {
+export class UserInGame {
   user: User;
   correctAnswers: number;
 }

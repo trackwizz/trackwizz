@@ -12,13 +12,13 @@ enum MessageType {
   BATTLE_WIN = "BATTLE_WIN"
 }
 
-export interface Player {
+export interface User {
   id: string;
   name: string;
 }
 
-export interface PlayerInGame {
-  userName: string;
+export interface UserInGame {
+  user: User;
   correctAnswers: number;
 }
 
@@ -30,7 +30,7 @@ export interface Answer {
 
 export interface WaitingRoomUpdateMessage {
   type: MessageType.WAITING_ROOM_UPDATE;
-  players: Player[];
+  players: User[];
   gameMode: 0 | 1;
 }
 
@@ -39,7 +39,7 @@ export interface QuestionUpdateMessage {
   previewUrl: string;
   answers: Answer[];
   playersNumber: number;
-  playersInGame: PlayerInGame[];
+  usersInGame: UserInGame[];
 }
 
 export interface SubmitAnswerMessage {
