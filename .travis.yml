@@ -56,16 +56,22 @@ jobs:
     deploy:
       provider: script
       script: bash scripts/deploy.sh staging
+      on:
+        branch: staging
   - stage: release-staging
     name: Release staging backend
     deploy:
       provider: script
       script: bash scripts/heroku_release.sh $STAGING_HEROKU_APP_BACK
+      on:
+        branch: staging
   - stage: release-staging
     name: Release staging frontend
     deploy:
       provider: script
       script: bash scripts/heroku_release.sh $STAGING_HEROKU_APP_FRONT
+      on:
+        branch: staging
   - stage: deploy
     name: Deploy Prod
     deploy:
