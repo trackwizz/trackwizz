@@ -15,7 +15,7 @@ interface ILeaderboard {
 }
 
 const Leaderboard: React.FC<RouteComponentProps> = ({
-  location: { search }
+  location: { search },
 }: RouteComponentProps): JSX.Element => {
   const [leaderboardTable, setLeaderboardTable] = useState<
     ILeaderboard[] | null
@@ -28,7 +28,7 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
     const requestLeaderboard = async (): Promise<void> => {
       const request = {
         method: "get" as Method,
-        url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`
+        url: `/scores/leaderboard${gameId ? `?gameId=${gameId}` : ""}`,
       };
 
       const response = await axiosRequest(request);
@@ -42,38 +42,6 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
 
     requestLeaderboard();
   }, [gameId]);
-
-  const setRowClassName = (index: number): string => {
-    let className = "";
-    className +=
-      (index + 1) % 2 ? "leaderboardEvenRowColor" : "leaderboardParRowColor";
-
-    return className;
-  };
-
-  const setColumnClassName = (index: number, column: number): string => {
-    let className = "";
-
-    if (column === 0) {
-      className += "leaderboardFirstColumn";
-    }
-
-    if (column !== 0) {
-      className += "leaderboardColumn";
-    }
-
-    if (leaderboardTable && index === leaderboardTable.length - 1) {
-      if (column === 0) {
-        className += " leaderboardLastRowFirstColumn";
-      }
-
-      if (column === 3) {
-        className += " leaderboardLastRowLastColumn";
-      }
-    }
-
-    return className;
-  };
 
   if (leaderboardTable === null) {
     return <div />;
@@ -98,17 +66,15 @@ const Leaderboard: React.FC<RouteComponentProps> = ({
           </tr>
         </thead>
         <tbody>
-          {leaderboardTable.map((p, index) => {
+          {leaderboardTable.map((p) => {
             return (
-              <tr key={p.userId} className={setRowClassName(index)}>
-                <td className={setColumnClassName(index, 0)}>{p.userName}</td>
+              <tr key={p.userId} className="leaderboardRow">
+                <td className="leaderboardBodyColumn">{p.userName}</td>
                 {!isForSpecificGame && (
-                  <td className={setColumnClassName(index, 1)}>
-                    {p.gamesNumber}
-                  </td>
+                  <td className="leaderboardBodyColumn">{p.gamesNumber}</td>
                 )}
-                <td className={setColumnClassName(index, 2)}>{p.successes}</td>
-                <td className={setColumnClassName(index, 3)}>
+                <td className="leaderboardBodyColumn">{p.successes}</td>
+                <td className="leaderboardBodyColumn">
                   {Math.round((p.successes / p.answers) * 100) / 100}
                 </td>
               </tr>

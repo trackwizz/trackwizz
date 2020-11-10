@@ -41,33 +41,34 @@
   border-radius: 0 10px 0 0;
 }
 
-.leaderboardFirstColumn {
-  text-align: center;
-  padding: 8px;
+.leaderboardRow:nth-child(2n + 1) {
+  background-color: #00000014;
 }
 
-.leaderboardColumn {
+.leaderboardRow:nth-child(2n) {
+  background-color: #00000030;
+}
+
+.leaderboardBodyColumn {
   text-align: end;
   padding: 8px;
 }
 
-.leaderboardEvenRowColor {
-  background-color: #00000014;
+.leaderboardBodyColumn:nth-child(4n + 1) {
+  text-align: center;
 }
 
-.leaderboardParRowColor {
-  background-color: #00000030;
-}
-
-.leaderboardLastRowFirstColumn {
-  border-radius: 0 0 0 10px;
-}
-
-.leaderboardLastRowLastColumn {
+.leaderboardBodyColumn:nth-last-child(1) {
+  text-align: end;
+  padding: 8px;
   border-radius: 0 0 10px 0;
 }
 
-@media only screen and (max-width: 768px){
+.leaderboardBodyColumn:nth-last-child(4) {
+  border-radius: 0 0 0 10px;
+}
+
+@media only screen and (max-width: 768px) {
   .leaderboardContainer {
     width: CALC(100% - 2rem);
   }
