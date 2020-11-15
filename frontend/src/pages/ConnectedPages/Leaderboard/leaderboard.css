@@ -58,13 +58,11 @@
   text-align: center;
 }
 
-.leaderboardBodyColumn:nth-last-child(1) {
-  text-align: end;
-  padding: 8px;
+tbody > tr:last-of-type > .leaderboardBodyColumn:nth-last-child(1) {
   border-radius: 0 0 10px 0;
 }
 
-.leaderboardBodyColumn:nth-last-child(4) {
+tbody > tr:last-of-type > .leaderboardBodyColumn:nth-last-child(4) {
   border-radius: 0 0 0 10px;
 }
 
