@@ -28,12 +28,12 @@ const Question: React.FC<IQuestion> = ({
   usersInGame: usersInGame,
 }: IQuestion): JSX.Element => {
   return (
-    <div className="flex-container line" style={{ overflow: "auto" }}>
-      <div className="flex-container column playersInGame">
+    <div className="question-container">
+      <div className="playersInGame">
         <h2 className="fancy-text">Players in game</h2>
         <UsersInGame users={usersInGame} />
       </div>
-      <div className="flex-container column questionAndAnswers">
+      <div className="questionAndAnswers">
         <button
           className="play-button muted-button mobile-only fixedTop"
           onClick={(): void => {
@@ -67,7 +67,9 @@ const Question: React.FC<IQuestion> = ({
           <div>
             <div className="grid">
               {answers.map((answer, index) => (
-                <button key={index} onClick={() => handleAnswer(answer)}>
+                <button
+                  className="answerButton"
+                  key={index} onClick={() => handleAnswer(answer)}>
                   <div>{`${answer.name}`}</div>
                   <div>{`by ${answer.artist}`}</div>
                 </button>

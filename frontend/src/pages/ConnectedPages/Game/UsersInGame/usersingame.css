@@ -54,3 +54,18 @@
 .usersInGameFullRightCorner {
   border-radius: 0 10px 10px 0;
 }
+
+@media only screen and (max-width: 768px){
+  .usersInGameContainer {
+    margin: 12px;
+    padding: 12px;
+    width: 90%;
+  }
+  .usersInGameTable {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  .usersInGameColumn {
+    padding: 4px;
+  }
+}

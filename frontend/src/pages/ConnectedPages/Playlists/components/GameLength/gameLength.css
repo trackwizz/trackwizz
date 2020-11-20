@@ -28,3 +28,15 @@
   font-family: "Roboto", cursive;
   font-size: 1.5rem;
 }
+
+@media only screen and (max-width: 768px){
+  .gameLengthContainer {
+    padding: 0 5%;
+  }
+  .numbersSelectionContainer {
+    width: 100%;
+  }
+  .allSongsInfo {
+    margin-left: 8px;
+  }
+}

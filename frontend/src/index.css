@@ -160,11 +160,6 @@ button:hover {
   display: none;
 }
 
-.bottomPadding {
-  height: 2rem;
-  min-height: 2rem;
-}
-
 .fixedTop {
   position: fixed;
   top: 0.5rem;

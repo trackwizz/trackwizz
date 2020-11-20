@@ -25,3 +25,10 @@
   font-weight: bold;
   background-color: #00000046; 
 }
+
+@media only screen and (max-width: 768px){
+  .chooseNumberContainer {
+    width: 350px;
+  }
+}
+
