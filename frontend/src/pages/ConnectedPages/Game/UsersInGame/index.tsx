@@ -12,35 +12,11 @@ const maxCharactersPerName = 8;
 
 const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JSX.Element => {
   const totalPlayers = users.length;
-  const totalColumns = 3;
-
-  const setRowClassName = (index: number): string => {
-    return (index + 1) % 2 ? "usersInGameEvenRowColor" : "usersInGameParRowColor";
-  }
-
-  const setColumnClassName = (row: number, col: number): string => {
-    let className = "usersInGameColumn";
-
-    if (row === 0 && col === 0) {
-      if (totalPlayers === 1) {
-        return className += " usersInGameFullLeftCorner"
-      }
-      return className + " usersInGameTopLeftCorner"
-    }
-    if (row === totalPlayers - 1 && col === 0) {
-      return className + " usersInGameBottomLeftCorner"
-    }
-    if (row === 0 && col === totalColumns - 1) {
-      if (totalPlayers === 1) {
-        return className += " usersInGameFullRightCorner"
-      }
-      return className + " usersInGameTopRightCorner"
-    }
-    if (row === totalPlayers - 1 && col === totalColumns - 1) {
-      return className + " usersInGameBottomRightCorner"
-    }
-
-    return className;
+  var columnClassName = "usersInGameColumn";
+  if (totalPlayers === 1) {
+    columnClassName += " oneUser";
+  } else {
+    columnClassName += " multipleUsers";
   }
 
   const emojiPrefix = (index: number): string => {
@@ -68,12 +44,12 @@ const UsersInGame: React.FC<IUsersInGame> = ({ users: users }: IUsersInGame): JS
         <tbody>
           {users.slice(0, maxUsersToDisplay).map((p, i) => {
             return (
-              <tr className={setRowClassName(i)}>
-                <td className={setColumnClassName(i, 0)}>{emojiPrefix(i)}</td>
-                <td className={setColumnClassName(i, 1)}>
+              <tr className="usersInGameRow">
+                <td className={columnClassName}>{emojiPrefix(i)}</td>
+                <td className={columnClassName}>
                   {p.user.name.slice(0, maxCharactersPerName)}
                 </td>
-                <td className={setColumnClassName(i, 2)}>{p.correctAnswers}</td>
+                <td className={columnClassName}>{p.correctAnswers}</td>
               </tr>
             );
           })}

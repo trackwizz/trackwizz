@@ -18,11 +18,11 @@
   border-spacing: 0;
 }
 
-.usersInGameEvenRowColor {
+.usersInGameRow:nth-child(2n + 1) {
   background-color: #00000014;
 }
 
-.usersInGameParRowColor {
+.usersInGameRow:nth-child(2n) {
   background-color: #00000030;
 }
 
@@ -31,20 +31,28 @@
   padding: 8px;
 }
 
-.usersInGameTopLeftCorner{
+tbody > tr:first-of-type > .multipleUsers:nth-child(1) {
   border-radius: 10px 0 0 0;
 }
 
-.usersInGameTopRightCorner {
+tbody > tr:first-of-type > .multipleUsers:nth-child(3) {
   border-radius: 0 10px 0 0;
 }
 
-.usersInGameBottomRightCorner {
+tbody > tr:last-of-type > .multipleUsers:nth-last-child(1) {
   border-radius: 0 0 10px 0;
 }
 
-.usersInGameBottomLeftCorner {
+tbody > tr:last-of-type > .multipleUsers:nth-last-child(3) {
   border-radius: 0 0 0 10px;
+}
+
+.oneUser:nth-child(1) {
+  border-radius: 10px 0 0 10px;
+}
+
+.oneUser:nth-child(3) {
+  border-radius: 0 10px 10px 0;
 }
 
 .usersInGameFullLeftCorner {
