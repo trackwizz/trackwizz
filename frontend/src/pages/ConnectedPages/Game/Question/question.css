@@ -61,6 +61,10 @@ img.hidden {
   flex-basis: 60%; 
 }
 
+.questionTextSmall {
+  display: none;
+}
+
 @media only screen and (max-width: 768px){
   .playersInGame {
     flex-basis: 55%;
@@ -83,5 +87,11 @@ img.hidden {
   }
   .answerButton {
     padding: 0;
+  }
+  .questionTextFull {
+    display: none;
+  }
+  .questionTextSmall {
+    display: block;
   }
 }

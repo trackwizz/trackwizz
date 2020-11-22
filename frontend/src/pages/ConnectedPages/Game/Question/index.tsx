@@ -47,7 +47,8 @@ const Question: React.FC<IQuestion> = ({
             className="flex-container"
             style={{ height: "unset", marginBottom: "1rem" }}
           >
-            <h2 className="fancy-text">Which song is currently playing?</h2>
+            <h2 className="fancy-text questionTextFull">Which song is currently playing?</h2>
+            <h2 className="fancy-text questionTextSmall">Current song?</h2>
             <button
               className="play-button muted-button mobile-hidden"
               onClick={(): void => {
