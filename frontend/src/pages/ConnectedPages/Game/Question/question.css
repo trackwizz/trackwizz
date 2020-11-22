@@ -63,10 +63,10 @@ img.hidden {
 
 @media only screen and (max-width: 768px){
   .playersInGame {
-    flex-basis: 60%;
+    flex-basis: 55%;
   }
   .questionAndAnswers {
-    flex-basis: 40%;
+    flex-basis: 45%;
     padding: 0px 8px;
   }
   .grid {
