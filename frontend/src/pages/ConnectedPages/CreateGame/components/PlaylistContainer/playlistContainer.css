@@ -1,0 +1,12 @@
+.playlists::-webkit-scrollbar {
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.26);
+  border: none;
+  border-radius: 10px;
+}
+
+.playlists::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 10px;
+  width: 0;
+}

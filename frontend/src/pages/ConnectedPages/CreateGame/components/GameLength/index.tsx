@@ -3,6 +3,7 @@ import React from "react";
 import ChooseNumber from "../ChooseNumber";
 import { splitNumber } from "../..";
 import { NumberOperation, NumberProperty } from "../../types";
+import "../../createGame.css";
 import "./gameLength.css";
 
 interface IGameLength {
@@ -16,9 +17,9 @@ const GameLength: React.FC<IGameLength> = ({
 }: IGameLength): JSX.Element => {
   let [tens, unit] = splitNumber(numberSongs);
   return (
-    <div className="gameLengthContainer">
-      <h1 className="gameLengthTitle">Choose the number of songs to play</h1>
-      <div className="numbersSelectionContainer">
+    <div className="sectionContainer">
+      <h1>Choose the number of songs to play</h1>
+      <div className="sectionContentContainer">
         <ChooseNumber number={tens} setNumber={setNumberSongs("tens")} />
         <ChooseNumber number={unit} setNumber={setNumberSongs("unit")} />
         <div className="allSongsInfo">

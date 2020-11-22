@@ -2,6 +2,7 @@ import React from "react";
 
 import { IPlaylist } from "../../types";
 import PlaylistCard from "../PlaylistCard";
+import "../../createGame.css";
 import "./playlistContainer.css";
 
 interface IPlaylistContainer {
@@ -16,9 +17,9 @@ const PlaylistContainer: React.FC<IPlaylistContainer> = ({
   numberSongs,
 }: IPlaylistContainer): JSX.Element => {
   return (
-    <div className="playlistContainer">
-      <h1 className="playlistsTitle">{title}</h1>
-      <div className="playlists">
+    <div className="sectionContainer">
+      <h1>{title}</h1>
+      <div className="sectionContentContainer playlists">
         {playlists &&
           playlists.map(el => {
             return <PlaylistCard

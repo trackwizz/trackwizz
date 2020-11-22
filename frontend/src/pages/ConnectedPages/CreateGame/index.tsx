@@ -12,7 +12,7 @@ export const splitNumber = (n: number): number[] => {
   return [Math.floor(n / 10), n % 10]
 }
 
-const Playlists: React.FC<RouteComponentProps> = () => {
+const CreateGame: React.FC<RouteComponentProps> = () => {
   const userContext: ICreateContext = useContext(UserContext);
 
   const [yourPlaylists, setYourPlaylists] = useState<IPlaylist[] | null>(null);
@@ -108,4 +108,4 @@ const Playlists: React.FC<RouteComponentProps> = () => {
   );
 };
 
-export default withRouter(Playlists);
+export default withRouter(CreateGame);
