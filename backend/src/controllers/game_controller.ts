@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Controller, del, get, post, put } from "./controller";
 import { getRepository } from "typeorm";
 import { Game } from "../entities/game";
-import { shuffleArray, toDate } from "../utils";
+import { toDate } from "../utils";
 import { Score } from "../entities/score";
 import * as crypto from "crypto";
 import { Track } from "../providers/track";
@@ -58,6 +58,7 @@ export class GameController extends Controller {
     if (idSpotifyPlaylist === null) {
       throw new Error("Spotify id missing !");
     }
+    const numberSongs: number = req.body.numberSongs || 0;
 
     let tracks: Array<Track>;
     try {
@@ -72,7 +73,7 @@ export class GameController extends Controller {
     game.isEnded = false;
     game.score = 0;
     game.title = req.body.title || `game-${crypto.randomBytes(4).toString("hex")}`;
-    game.questionsNumber = tracks.length;
+    game.setTracksAndQuestionsNumber(tracks, numberSongs);
     game.isPublic = req.body.isPublic || false;
     game.mode = parseInt(req.body.mode, 10) || 0;
     game.idSpotifyPlaylist = req.body.idSpotifyPlaylist || null;
@@ -82,7 +83,6 @@ export class GameController extends Controller {
     game.roomManager = new GameRoomManager();
 
     // set new game session
-    game.tracks = shuffleArray(tracks);
     game.currentTrackIndex = -1;
     game.currentPossibleAnswers = [];
     game.questionStartTimestamp = -1;

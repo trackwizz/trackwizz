@@ -26,7 +26,6 @@ const App: React.FC = () => {
           </LastLocationProvider>
         </Router>
       </UserProvider>
-      <div className="bottomPadding" />
     </div>
   );
 };

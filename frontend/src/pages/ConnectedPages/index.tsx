@@ -6,7 +6,7 @@ import "./connectedPages.css";
 
 import Game from "./Game";
 import Home from "./Home";
-import Playlists from "./Playlists";
+import CreateGame from "./CreateGame";
 import WaitingRoom from "./WaitingRoom";
 import JoinRoom from "./JoinRoom";
 import Leaderboard from "./Leaderboard";
@@ -49,7 +49,7 @@ const ConnectedPages: React.FC = () => {
     <div className="flex-container column height-100">
       <Switch>
         <Route path="/game" component={Game} />
-        <Route path="/playlists" component={Playlists} />
+        <Route path="/playlists" component={CreateGame} />
         <Route path="/waitingRoom" component={WaitingRoom} />
         <Route path="/joinRoom" component={JoinRoom} />
         <Route path="/leaderboard" component={Leaderboard} />

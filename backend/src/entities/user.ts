@@ -8,3 +8,8 @@ export class User {
   @Column()
   name: string;
 }
+
+export class UserInGame {
+  user: User;
+  correctAnswers: number;
+}

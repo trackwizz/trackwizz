@@ -44,6 +44,10 @@ export function SubmitAnswerHandler(ws: WebSocket, req: RequestWithCache, { answ
   score.user = new User();
   score.user.id = player.id;
 
+  if (score.isCorrect) {
+    game.roomManager.incrementPlayerCorrectAnswers(player.id);
+  }
+
   getRepository(Score)
     .save(score)
     .then((): void => {

@@ -1,3 +1,13 @@
+.question-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
 .grid-container {
   width: 100%;
   flex: 1 1 0;
@@ -29,8 +39,59 @@ img.hidden {
   opacity: 0;
 }
 
-.nextContainer {
-  margin-bottom: 16px;
+.playersInGame {
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex: 0 0 38px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  flex-basis: 40%;
+}
+
+.questionAndAnswers {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  flex-basis: 60%; 
+}
+
+.questionTextSmall {
+  display: none;
+}
+
+@media only screen and (max-width: 768px){
+  .playersInGame {
+    flex-basis: 55%;
+  }
+  .questionAndAnswers {
+    flex-basis: 45%;
+    padding: 0px 8px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 6px;
+  }
+  .grid-container {
+    padding-bottom: 12px;
+  }
+  .grid-container > div {
+    width: 100%;
+  }
+  .answerButton {
+    padding: 0;
+  }
+  .questionTextFull {
+    display: none;
+  }
+  .questionTextSmall {
+    display: block;
+  }
 }

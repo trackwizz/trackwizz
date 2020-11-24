@@ -1,0 +1,79 @@
+.usersInGameContainer {
+  margin: 32px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  box-sizing: border-box;
+  width: 90%;
+  overflow: auto;
+}
+
+.usersInGameTable {
+  border-radius: 10px;
+  font-size: 1.4rem;
+  margin: 0.5rem 1rem;
+  border-spacing: 0;
+}
+
+.usersInGameRow:nth-child(2n + 1) {
+  background-color: #00000014;
+}
+
+.usersInGameRow:nth-child(2n) {
+  background-color: #00000030;
+}
+
+.usersInGameColumn {
+  text-align: start;
+  padding: 8px;
+}
+
+tbody > tr:first-of-type > .multipleUsers:nth-child(1) {
+  border-radius: 10px 0 0 0;
+}
+
+tbody > tr:first-of-type > .multipleUsers:nth-child(3) {
+  border-radius: 0 10px 0 0;
+}
+
+tbody > tr:last-of-type > .multipleUsers:nth-last-child(1) {
+  border-radius: 0 0 10px 0;
+}
+
+tbody > tr:last-of-type > .multipleUsers:nth-last-child(3) {
+  border-radius: 0 0 0 10px;
+}
+
+.oneUser:nth-child(1) {
+  border-radius: 10px 0 0 10px;
+}
+
+.oneUser:nth-child(3) {
+  border-radius: 0 10px 10px 0;
+}
+
+.usersInGameFullLeftCorner {
+  border-radius: 10px 0 0 10px;
+}
+
+.usersInGameFullRightCorner {
+  border-radius: 0 10px 10px 0;
+}
+
+@media only screen and (max-width: 768px){
+  .usersInGameContainer {
+    margin: 12px;
+    padding: 8px;
+    width: 90%;
+  }
+  .usersInGameTable {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  .usersInGameColumn {
+    padding: 4px;
+  }
+}

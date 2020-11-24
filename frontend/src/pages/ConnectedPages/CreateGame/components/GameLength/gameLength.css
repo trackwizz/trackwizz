@@ -1,0 +1,11 @@
+.allSongsInfo {
+  margin-left: 16px;
+  font-family: "Roboto", cursive;
+  font-size: 1.5rem;
+}
+
+@media only screen and (max-width: 768px){
+  .allSongsInfo {
+    margin-left: 8px;
+  }
+}

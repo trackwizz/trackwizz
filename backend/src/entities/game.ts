@@ -3,11 +3,11 @@ import { Track } from "../providers/track";
 import Timeout = NodeJS.Timeout;
 import { GameRoomManager } from "../app/gameRoomManager";
 import { logger } from "../utils/logger";
-import { getNRandom, toDate } from "../utils";
+import { getNRandom, shuffleArray, toDate } from "../utils";
 import { OutboundMessageType } from "../websockets/messages";
 import gameSessions from "../app/gameSessions";
 import { Score } from "./score";
-import { User } from "./user";
+import { UserInGame, User } from "./user";
 
 export class Answer {
   public id: string;
@@ -57,6 +57,19 @@ export class Game {
   questionStartTimestamp: number;
   receivedAnswersForCurrentTrack: Array<User>;
   roomManager: GameRoomManager;
+
+  /**
+   * Sets the game's tracks (kept in memory) and questions number (persisted to DB).
+   */
+  public setTracksAndQuestionsNumber(tracks: Track[], numberSongs: number): void {
+    tracks = shuffleArray(tracks);
+    const maxTracks = tracks.length;
+    if (numberSongs <= 0 || numberSongs > maxTracks) {
+      numberSongs = maxTracks;
+    }
+    this.tracks = tracks.slice(0, numberSongs);
+    this.questionsNumber = numberSongs;
+  }
 
   /**
    * Starts a game.
@@ -138,14 +151,25 @@ export class Game {
   }
 
   /**
-   * Returns the data for the frontend: 4 possible answers and one preview url (audio to play).
+   * Returns the data for the frontend: 4 possible answers and one preview url (audio to play),
+   * as well as the players in the game.
    */
-  public getQuestionUpdateMessage(): { type: string; previewUrl: string; answers: Answer[]; playersNumber: number } {
+  public getQuestionUpdateMessage(): {
+    type: string;
+    previewUrl: string;
+    answers: Answer[];
+    playersNumber: number;
+    usersInGame: UserInGame[];
+  } {
     return {
       type: OutboundMessageType.QUESTION_UPDATE,
       previewUrl: this.tracks[this.currentTrackIndex].previewUrl,
       answers: this.currentPossibleAnswers,
-      playersNumber: this.mode === 1 ? this.roomManager.getPlayers().length : -1,
+      playersNumber: this.mode === 1 ? this.roomManager.getUsersInGame().length : -1,
+      usersInGame: this.roomManager.getUsersInGame().map((p) => ({
+        user: p.user,
+        correctAnswers: p.correctAnswers,
+      })),
     };
   }
 
@@ -174,7 +198,7 @@ export class Game {
    * Returns true if there are no more users in the game room.
    */
   public isEmpty(): boolean {
-    return this.roomManager.getPlayers().length === 0;
+    return this.roomManager.getUsersInGame().length === 0;
   }
 
   /**
@@ -182,7 +206,7 @@ export class Game {
    */
   public receiveAnswer(player: User): void {
     this.receivedAnswersForCurrentTrack.push(player);
-    if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getPlayers().length) {
+    if (this.receivedAnswersForCurrentTrack.length >= this.roomManager.getUsersInGame().length) {
       // Wait for 3 seconds before switching to the next track
       if (this.updateTimeout !== undefined) {
         clearTimeout(this.updateTimeout);
@@ -222,7 +246,7 @@ export class Game {
    */
   public getKickedNumber(): number {
     const n: number = this.questionsNumber - this.currentTrackIndex;
-    const p: number = this.roomManager.getPlayers().length;
+    const p: number = this.roomManager.getUsersInGame().length;
     if (n >= p) {
       return 1;
     }
@@ -261,7 +285,7 @@ export class Game {
           {
             type: OutboundMessageType.BATTLE_LOSE,
             gameId: this.id,
-            position: this.roomManager.getPlayers().length,
+            position: this.roomManager.getUsersInGame().length,
           },
           player.id,
         );
