@@ -35,6 +35,7 @@ async function createUser(accessToken: string): Promise<void> {
   const user: User = new User();
   user.id = spotifyUser.id;
   user.name = spotifyUser.display_name;
+  user.country = spotifyUser.country;
   await getRepository(User).save(user);
 }
 
